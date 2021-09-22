@@ -1,0 +1,712 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-weight: 400;
+    font-family: 'Roboto', sans-serif !important;
+	font-size: 16px;
+}
+
+.app {
+	padding: 2em;
+    flex: 1 1 auto;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    display: flex;
+    /* flex-direction: column; */
+    min-height: 100vh;
+    max-width: 100%;
+    position: relative;
+}
+
+.nav-bar {
+    height: 100vh;
+    top: 0px;
+    transform: translateX(0%);
+    width: 240px;
+    min-width: 240px;
+    max-height: calc(100% - 0px);
+
+    padding: 24px 16px 0px 10px;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    left: 0;
+    max-width: 100%;
+    overflow: hidden;
+    pointer-events: auto;
+    top: 0;
+    transition-duration: .2s;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-property: transform,visibility,width;
+}
+
+.nav-bar a {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    column-gap: .25em;
+    text-decoration: none;
+}
+
+.nav-bar> .nav-button.active >a {
+    color: #222;
+}
+
+.nav-bar> .nav-button >a {
+    color: #999;
+}
+
+.nav-bar> .nav-button.active >a:before {
+    content: "";
+    /* position: absolute; */
+    top: 15px;
+    left: -25px;
+    width: 15px;
+    border-top: 1px solid #1e87f0;
+}
+
+.main-page {
+    /* padding: 64px 256px 0px 300px; */
+    padding: 8px 30px 0px 30px;
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    max-width: calc(100% - 300px);
+    transition: .2s cubic-bezier(.4,0,.2,1);
+}
+
+/* .nav-bar> :active, a:hover {
+    outline: none;
+} */
+
+.mr5 {
+    margin-right: 5px;
+}
+
+.p10 {
+    padding: 10px;
+}
+
+.pl10 {
+    padding-left: 10px;
+}
+
+.pl20 {
+    padding-left: 20px;
+}
+
+.font-icon-test {
+    font-size: 20px;
+}
+
+.main-content {
+    width: auto;
+}
+
+@media screen and (min-width: 720px) {
+
+    .icons-container[content-vl25] {
+        grid-template-columns: repeat(auto-fill,112px);
+        -webkit-box-pack: justify;
+        -webkit-justify-content: space-between;
+        -moz-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+    }
+}
+
+.icons-container[content-vl25] {
+    -webkit-align-content: start;
+    -ms-flex-line-pack: start;
+    align-content: start;
+    display: grid;
+    -webkit-column-gap: 16px;
+    -moz-column-gap: 16px;
+    column-gap: 16px;
+    grid-template-columns: repeat(auto-fill,96px);
+    -webkit-justify-content: space-around;
+    -ms-flex-pack: distribute;
+    justify-content: space-around;
+    row-gap: 24px;
+}
+
+@media screen and (min-width: 720px) {
+
+    [host-vl37] {
+        height: 128px;
+        width: 112px;
+    }
+}
+
+[host-vl37] {
+    -webkit-appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: pointer;
+    height: 128px;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    width: 96px;
+}
+
+.icon-asset[content-vl37] {
+    display: block;
+    font-size: 40px;
+    left: 50%;
+    position: absolute;
+    top: 40px;
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    max-width: 88px;
+}
+
+.icon-name[content-vl37] {
+    bottom: 32px;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    left: 50%;
+    padding: 0 8px;
+    position: absolute;
+    -webkit-transform: translate(-50%,50%);
+    transform: translate(-50%,50%);
+    width: 100%;
+}
+
+.icon-container:hover {
+    background: #f3f3f3;
+}
+
+.icon-container {
+    color: #4d4d4d;
+}
+
+.tm-legend {
+    width: 100%;
+    color: inherit;
+    padding: 0;
+    font-size: 24px;
+    line-height: 1.4;
+}
+
+*+.tm-margin {
+    margin-top: 20px !important;
+}
+
+.tm-margin {
+    margin-bottom: 20px;
+}
+
+.tm-fieldset {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tm-checkbox:checked {
+    background-image: url(data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2214%22%20height%3D%2211%22%20viewBox%3D%220%200%2014%2011%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Cpolygon%20fill%3D%22%23fff%22%20points%3D%2212%201%205%207.5%202%205%201%205.5%205%2010%2013%201.5%22%20%2F%3E%0A%3C%2Fsvg%3E%0A);
+}
+
+.tm-radio:checked, .tm-checkbox:checked, .tm-checkbox:indeterminate {
+    background-color: #1867c0;
+    border-color: transparent;
+}
+
+.tm-radio:not(:disabled), .tm-checkbox:not(:disabled) {
+    cursor: pointer;
+}
+.tm-radio, .tm-checkbox {
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    overflow: hidden;
+    margin-top: -4px;
+    vertical-align: middle;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    border: 1px solid #ccc;
+    transition: .2s ease-in-out;
+    transition-property: background-color,border;
+}
+
+.tm-sublabel {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+/*
+ * Remove default style in iOS.
+ */
+.tm-input,
+.tm-textarea {
+    -webkit-appearance: none;
+}
+/*
+* 1. Prevent content overflow if a fixed width is used
+* 2. Take the full width
+* 3. Reset default
+* 4. Style
+*/
+.tm-input,
+.tm-select,
+.tm-textarea {
+/* 1 */
+    max-width: 100%;
+/* 2 */
+    width: 100%;
+/* 3 */
+    border: 0 none;
+/* 4 */
+    padding: 0 10px;
+    background: #fff;
+    color: #666;
+    border: 1px solid #e5e5e5;
+    transition: 0.2s ease-in-out;
+    transition-property: color, background-color, border;
+}
+
+.tm-input,
+.tm-select:not([multiple]):not([size]) {
+    height: 40px;
+    vertical-align: middle;
+    /* 1 */
+    display: inline-block;
+}
+/* 2 */
+.tm-input:not(input),
+.tm-select:not(select) {
+    line-height: 38px;
+}
+/*
+* Multi-line
+*/
+.tm-select[multiple],
+.tm-select[size],
+.tm-textarea {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    vertical-align: top;
+}
+.tm-select[multiple],
+.tm-select[size] {
+    resize: vertical;
+}
+ /* Focus */
+.tm-input:focus,
+.tm-select:focus,
+.tm-textarea:focus {
+    outline: none;
+    background-color: #fff;
+    color: #666;
+    border-color: #1e87f0;
+}
+/* Disabled */
+.tm-input:disabled,
+.tm-select:disabled,
+.tm-textarea:disabled {
+    background-color: #f8f8f8;
+    color: #999;
+    border-color: #e5e5e5;
+}
+/*
+* Placeholder
+*/
+.tm-input::-ms-input-placeholder {
+    color: #999 !important;
+}
+.tm-input::placeholder {
+     color: #999;
+}
+.tm-textarea::-ms-input-placeholder {
+   color: #999 !important;
+}
+.tm-textarea::placeholder {
+   color: #999;
+}
+
+/* ========================================================================
+   Component: Search
+ ========================================================================== */
+/*
+ * 1. Container fits its content
+ * 2. Create position context
+ * 3. Prevent content overflow
+ * 4. Reset `form`
+ */
+.tm-search {
+/* 1 */
+    display: inline-block;
+/* 2 */
+    position: relative;
+/* 3 */
+    max-width: 100%;
+/* 4 */
+    margin: 0;
+}
+/* Input
+========================================================================== */
+/*
+* Remove the inner padding and cancel buttons in Chrome on OS X and Safari on OS X.
+*/
+.tm-search-input::-webkit-search-cancel-button,
+.tm-search-input::-webkit-search-decoration {
+    -webkit-appearance: none;
+}
+/*
+* Removes placeholder transparency in Firefox.
+*/
+.tm-search-input::-moz-placeholder {
+    opacity: 1;
+}
+/*
+* 1. Define consistent box sizing.
+* 2. Address margins set differently in Firefox/IE and Chrome/Safari/Opera.
+* 3. Remove `border-radius` in iOS.
+* 4. Change font properties to `inherit` in all browsers
+* 5. Show the overflow in Edge.
+* 6. Remove default style in iOS.
+* 7. Vertical alignment
+* 8. Take the full container width
+* 9. Style
+*/
+.tm-search-input {
+    /* 1 */
+    box-sizing: border-box;
+    /* 2 */
+    margin: 0;
+    /* 3 */
+    border-radius: 0;
+    /* 4 */
+    font: inherit;
+    /* 5 */
+    overflow: visible;
+    /* 6 */
+    -webkit-appearance: none;
+    /* 7 */
+    vertical-align: middle;
+    /* 8 */
+    width: 100%;
+    /* 9 */
+    border: none;
+    color: #666;
+}
+.tm-search-input:focus {
+    outline: none;
+}
+  /* Placeholder */
+.tm-search-input:-ms-input-placeholder {
+    color: #999 !important;
+}
+.tm-search-input::placeholder {
+    color: #999;
+}
+/* Icon (Adopts `uk-icon`)
+========================================================================== */
+/*
+* Remove default focus style
+*/
+.tm-search-icon:focus {
+    outline: none;
+}
+/*
+* Position above input
+* 1. Set position
+* 2. Center icon vertically and horizontally
+* 3. Style
+*/
+.tm-search .tm-search-icon {
+    /* 1 */
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    /* left: 0; */
+    /* 2 */
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    /* 3 */
+    color: #999;
+}
+/*
+* Required for `a`.
+*/
+.tm-search .tm-search-icon:hover {
+    color: #999;
+}
+/*
+* Make `input` element clickable through icon, e.g. if it's a `span`
+*/
+.tm-search .tm-search-icon:not(a):not(button):not(input) {
+    pointer-events: none;
+}
+/*
+* Position modifier
+*/
+.tm-search .tm-search-icon-flip {
+    right: 0;
+    left: auto;
+} 
+/* Default modifier
+========================================================================== */
+.tm-search-default {
+    width: 240px;
+}
+/*
+* Input
+*/
+.tm-search-default .tm-search-input {
+    height: 40px;
+    padding-right: 6px;
+    padding-left: 46px;
+    background: transparent;
+    border: 1px solid #e5e5e5;
+    transition: width 0.2s ease-in-out;
+}
+
+/* Focus */
+.tm-search-default .tm-search-input:focus {
+    width: 600px;
+    background-color: transparent;
+    border-color: #1e87f0 !important;
+}
+/*
+* Icon
+*/
+.tm-search-default .tm-search-icon {
+    width: 40px;
+}
+.tm-search-default .tm-search-icon:not(.tm-search-icon-flip) ~ .tm-search-input {
+    padding-left: 40px;
+}
+.tm-search-default .tm-search-icon-flip ~ .tm-search-input {
+    padding-right: 40px;
+}
+
+.tm-icon {
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+    font: inherit;
+    color: inherit;
+    text-transform: none;
+    padding: 0;
+    background-color: transparent;
+    display: inline-block;
+    fill: currentcolor;
+    line-height: 0;
+}
+
+/* Modal */
+
+@keyframes fade-in {
+	from {opacity: 0;}
+	to {opacity: 1;}
+}
+
+@keyframes fade-out {
+	from {opacity: 1;}
+	to {opacity: 0;}
+}
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(255,255,255,0.75);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	animation: fade-in 0.5s;
+}
+.overlay.hide {
+	animation: fade-out 0.5s;
+}
+
+.turbo-modal {
+	width: 480px;
+	text-align: center;
+	padding: 4px 4px 10px 10px;
+    border-radius: 5px;
+    margin: 100px auto;
+    box-sizing: border-box;
+	background-color: #FFF;
+	box-shadow: 0.5em 0.5em 2em #999;
+	border: #CCC 1px solid;
+}
+
+.turbo-modal-footer {
+	margin-top: 1em;
+}
+
+.turbo-modal-footer button {
+	margin: 0 0.5em;
+}
+
+.turbo-modal-header {
+	padding: 6px 8px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}
+
+.turbo-modal-title {
+	font-size: 1.2rem;
+	font-weight: 200;
+}
+
+.turbo-modal-close {
+	cursor: pointer;
+	font-size: 24px;
+}
+
+.turbo-modal-body {
+
+	padding: 10px;
+}
+
+.turbo-modal-backdrop {
+	background: rgba(33,33,33,0.5);
+}
+
+.test {
+	width: 480px;
+}
+
+/* ========================================================================
+    Component: Accordion
+========================================================================== */
+.accordion__article {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0 20px 0 0;
+}
+
+.accordion {
+    background-color: #F2F2F2;
+    color: #444;
+    cursor: pointer;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    border: none;
+    outline: none;
+    transition: background-color 0.6s ease;
+}
+  
+.accordion:hover,
+.accordion.active {
+    background-color: #ccc;
+}
+  
+.accordion__title {
+    font-weight: 600;
+    font-size: 14px;
+    text-align: left;
+}
+  
+.accordion__icon {
+    margin-left: auto;
+    transition: transform 0.6s ease;
+}
+  
+.accordion__rotate {
+    transform: rotate(90deg);
+}
+
+.accordion__content {
+    background-color: white;
+    overflow: hidden;
+    /* transition: max-height 0.6s ease; */
+    /* transition: height 0.6s ease; */
+}
+  
+.accordion__text {
+    font-weight: 400;
+    font-size: 14px;
+    padding: 18px;
+}
+/*
+
+*/
+
+.btn {
+    align-items: center;
+    border-radius: 4px;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-weight: 500;
+    letter-spacing: .09em;
+    justify-content: center;
+    outline: 0;
+    position: relative;
+    text-decoration: none;
+    text-indent: .09em;
+    text-transform: uppercase;
+    transition-duration: .28s;
+    transition-property: box-shadow,transform,opacity;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.btn__content {
+    align-items: center;
+    color: inherit;
+    display: flex;
+    flex: 1 0 auto;
+    justify-content: inherit;
+    line-height: normal;
+    position: relative;
+    transition: inherit;
+    transition-property: opacity;
+}
+
+.btn--is-elevated {
+    box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
+}
+
+.btn:not(.btn--round) {
+    height: 36px;
+    min-width: 64px;
+    padding: 0 16px;
+}
+
+.btn {
+    color: #fff;
+	cursor: pointer;
+	border-style: none;
+	font-size: .875rem;
+}
+
+.btn.primary {
+    background-color: #1867c0 !important;
+    border-color: #1867c0 !important;
+}
+
+.btn.error {
+	background-color: #ff5252 !important;
+    border-color: #ff5252 !important;
+}
+
+.btn.success {
+    background-color: #4caf50 !important;
+    border-color: #4caf50 !important;
+}
