@@ -46,7 +46,11 @@ const STATE_TRANSITION_LEAVE     = 'transition-leave';
 class Accordion extends Component {
     oninit() {
         this.model = [];
-        this.options = {};
+        this.options = {
+            active      : -1,
+            collapsible : '',
+            multiple    : ''
+        };
 
         this.styleToggglableEnter = {
             'transition-property' : 'overflow, height, padding-top, padding-bottom, margin-top, margin-bottom',
@@ -146,8 +150,6 @@ class Accordion extends Component {
         let targ = e.currentTarget;
 
         if (targ.tagName !== 'DIV' && targ.nextElementSibling) {
-            e.preventDefault();
-            e.stopPropagation();
             return;
         }
 
@@ -196,26 +198,27 @@ class Accordion extends Component {
                     }
                 })
             }
-
+            // coomon toggle hook func w no value
             this.onToggleActionHook();
+            // toggle hook func w target element
+            this.toggle(e);
         }
     }
 
     generateModel(attrs) {
-        let { items = [], active = false, collapsible, multiple} = attrs,
+        let { items = [], active = false, collapsible = true, multiple = true} = attrs,
             model        = [],
             currentIndex = 0;
 
         if (this.model.length === 0 
-            || this.model.length !== items.length 
-            || this.options.collapsible !== collapsible
-            || this.options.multiple !== multiple) {
+            || this.model.length        !== items.length 
+            || this.options.active      !== active
+            || this.options.multiple    !== multiple
+            || this.options.collapsible !== collapsible) {
 
-            this.options.collapsible = collapsible;
+            this.options.active      = active;
             this.options.multiple    = multiple;
-
-            items  = items ? items : [];
-            active = active ? +active : -1;
+            this.options.collapsible = collapsible;
 
             items.forEach(item => {
                 let modelItem = {
@@ -350,6 +353,12 @@ class Accordion extends Component {
     onToggleActionHook() {
         if (typeof this.attrs.onToggleAction === "function") {
             this.attrs.onToggleAction();
+        }
+    }
+
+    toggle(e) {
+        if (typeof this.attrs.ontoggle === "function") {
+            this.attrs.ontoggle(e.currentTarget);
         }
     }
 }
