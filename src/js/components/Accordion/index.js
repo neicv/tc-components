@@ -20,7 +20,6 @@
  */
 
 import m from "mithril";
-import "mithril";
 import classNames from "classnames";
 import Component from "../../lib/Component";
 import { debounce } from "../../lib/Helpers";
@@ -36,6 +35,8 @@ const TRANSITION_TIMING_FUNCTION = 'ease';
 const CSS_CLASS_OPEN             = 'tc-open';
 const CSS_CLASS_ENTER            = 'tc-togglabe-enter';
 const CSS_CLASS_LEAVE            = 'tc-togglabe-leave';
+const CSS_TRANSITION_ENTER       = 'tc-transition-enter';
+const CSS_TRANSITION_LEAVE       = 'tc-transition-leave';
 
 const STATE_ACTIVE               = 'active'
 const STATE_ENTER                = 'enter';
@@ -91,6 +92,14 @@ class Accordion extends Component {
                             { [CSS_CLASS_LEAVE] : state.togglable === STATE_LEAVE }
                         );
 
+                        let classesWarpDiv = classNames(
+                            "tc-transition",
+                            { [CSS_CLASS_ENTER] : state.togglable === STATE_ENTER },
+                            { [CSS_CLASS_LEAVE] : state.togglable === STATE_LEAVE },
+                            { [CSS_TRANSITION_ENTER] : state.togglable === STATE_TRANSITION_ENTER},
+                            { [CSS_TRANSITION_LEAVE] : state.togglable === STATE_TRANSITION_LEAVE}
+                        )
+
                         return (
                             <div className={classesArticle} key={index}>
                                 {/* HEADER */}
@@ -112,7 +121,7 @@ class Accordion extends Component {
                                     <When condition={state.togglable !== ''}>
                                         {/* WRAPPER CONTENT */}
                                         <div 
-                                            className='tc-transition'
+                                            className={classesWarpDiv}
                                             style={this.transitionSwitch(state.togglable, index)}
                                             ontransitionend={(event) => this.transitionEndHandler(event.currentTarget, index)}
                                             ontransitionstart={(event) => this.transitionStartHandler(event.currentTarget, index)}
@@ -326,7 +335,7 @@ class Accordion extends Component {
     triggerTransition(index, cls) {
         this.model[index].state.togglable = cls;
 
-        m.redraw()
+        setTimeout(() => m.redraw(), 0);
     }
 
     getElementHeight(index) {

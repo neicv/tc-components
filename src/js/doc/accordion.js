@@ -1,12 +1,14 @@
 import '../../css/style.css'
 import m from 'mithril';
+import Highlight from '../components/Highlight';
 import Accordion from '../components/Accordion';
+import RadioButtonGroup from '../components/RadioButtonGroup'
 
 class AccordionDoc {
     oninit() {
         this.items = [
             {
-                "id": 1,
+                "id": 0,
                 "title": "Группа 1",
                 // "open": true,
                 "content": 
@@ -14,7 +16,7 @@ class AccordionDoc {
                     expedita aspernatur quo cum magni ut harum omnis eligendi, voluptates fugit, beatae neque amet nihil nesciunt officiis.`
             },
             {
-                "id": 2,
+                "id": 1,
                 "title": "Группа 2",
                 // "open": false,
                 "content": 
@@ -22,7 +24,7 @@ class AccordionDoc {
                     expedita aspernatur quo cum magni ut harum omnis eligendi, voluptates fugit, beatae neque amet nihil nesciunt officiis.`
             },
             {
-                "id": 3,
+                "id": 2,
                 "title": "Группа 3",
                 // "open": false,
                 "content": 
@@ -31,16 +33,18 @@ class AccordionDoc {
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.`
             }
         ]
+        this.active = 1;
         this.multiple    = true;
         this.collapsible = true;
     }
 
     view() {
+        let testHtmpTmpl = `<Accordion items=this.items active=${this.active} multiple=${this.multiple} collapsible=${this.collapsible}/>`
 
         return (
             <div className='main-content'>
-                <h1>Аккордион</h1>
-                <p>Тестовый аккордион</p>
+                <h1>Аккордеон</h1>
+                <p>Тестовый аккордеон</p>
                 <div class="tm-margin">
                     <fieldset class='tm-fieldset'  style={'width: 600px'}>
                         <legend class="tm-legend">Настройки</legend>
@@ -68,14 +72,37 @@ class AccordionDoc {
                                 />
                                 Несколько открытых разделов (Multiple)
                             </label>
-                            <div class='tm-sublabel '>Чтобы отображать несколько разделов содержимого одновременно,
+                            <div class='tm-sublabel'>Чтобы отображать несколько разделов содержимого одновременно,
                                 при этом один из них не сворачивается при открытии другого, добавьте параметр multiple: true
+                            </div>
+                        </div>
+                        <div class="tm-margin">
+                            <label>Установить открытый раздел</label>
+                            <div class='tm-sublabel'>
+                                Вы можете установить открытым отдельный элемент аккордеона изначально, добавив параметр
+                                <code>{`active: <index>`}</code> 
+                                к элементу <code>Accordion</code>, <code>например active: 1</code> для отображения второго элемента (индекс отсчитывается от нуля)
+                            </div>
+                            <div className='mt5'>
+                                <RadioButtonGroup
+                                    data={this.items}
+                                    valueId={this.active}
+                                    nameField='title'
+                                    onSelect={value => this.onChangeActive(value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div class="tm-margin">
+                            <label>Пример использования:</label>
+                            <div className='mt5'>
+                                <Highlight className='language-html' code={testHtmpTmpl} lang='xml'/>
                             </div>
                         </div>
                     </fieldset>
                     <div className='test'>
                         <p>
-                            <Accordion items={this.items} active={1} multiple={this.multiple} collapsible={this.collapsible}/>
+                            <Accordion items={this.items} active={this.active} multiple={this.multiple} collapsible={this.collapsible}/>
                         </p>
                     </div>
                 </div>
@@ -106,6 +133,10 @@ class AccordionDoc {
 
     onChangeColasible(value) {
         this.collapsible = value;
+    }
+
+    onChangeActive(value) {
+        this.active = value.id;
     }
 }
 
