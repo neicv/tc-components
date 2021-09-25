@@ -18,26 +18,24 @@ class Highlight extends Component {
     }
 
     view({children}) {
-
-        const {className, element: Element, innerHTML, code, lang} = this.attrs;
-        // const props = { ref: this.root, className };
+        const {className, element: Element, code, lang} = this.attrs;
         const props = { className };
 
-        const lg = hljs.getLanguage(lang);
+        // const lg = hljs.getLanguage(lang);
 
         if (Element) {
             return <Element {...props}>{children}</Element>;
         }
 
         return (
-                <pre>
-                    <code 
-                        className={`${className} hljs ${lang}`}
-                        innerHTML={hljs.highlight(code, {language: lang}).value}
-                    >
-                        {children}
-                    </code>
-                </pre>
+            <pre>
+                <code 
+                    className={`${className} hljs ${lang}`}
+                    innerHTML={hljs.highlight(code, {language: lang}).value}
+                >
+                    {children}
+                </code>
+            </pre>
         );
     }
 }

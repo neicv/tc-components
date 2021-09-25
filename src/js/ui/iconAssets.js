@@ -7,4 +7,3 @@ export const SearchIcon = {
         <path fill="none" stroke="#000" stroke-width="1.1" d="M14,14 L18,18 L14,14 Z"></path>
     </svg>
 }
-

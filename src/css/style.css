@@ -231,10 +231,10 @@ body {
 }
 .tm-radio, .tm-checkbox {
     display: inline-block;
-    height: 20px;
-    width: 20px;
+    height: 18px;
+    width: 18px;
     overflow: hidden;
-    margin-top: -4px;
+    margin-top: -2px;
     vertical-align: middle;
     -webkit-appearance: none;
     -moz-appearance: none;

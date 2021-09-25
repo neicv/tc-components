@@ -9,7 +9,6 @@ class FontIconsDoc {
     }
 
     view() {
-
         const items = this.searchIcon(icons, this.search);
 
         return (

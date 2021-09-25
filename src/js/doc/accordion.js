@@ -56,10 +56,11 @@ class AccordionDoc {
                                     checked={this.collapsible}
                                     onchange={event => this.onChangeColasible(event.target.checked)} 
                                 />
-                                    Сворачивание (No collapsing)
+                                    Сворачивание (Collapsing)
                             </label>
                             <div class='tm-sublabel '>По умолчанию все элементы аккордеона могут быть свернуты.
-                                Чтобы предотвратить такое поведение и всегда поддерживать один открытый элемент, добавьте к атрибуту параметр collapsible: false.
+                                Чтобы предотвратить такое поведение и всегда поддерживать один открытый элемент, добавьте к атрибуту параметр
+                                <code> collapsible: false.</code>
                             </div>
                         </div>
                         <div class="tm-margin">
@@ -73,15 +74,16 @@ class AccordionDoc {
                                 Несколько открытых разделов (Multiple)
                             </label>
                             <div class='tm-sublabel'>Чтобы отображать несколько разделов содержимого одновременно,
-                                при этом один из них не сворачивается при открытии другого, добавьте параметр multiple: true
+                                при этом один из них не сворачивается при открытии другого, добавьте параметр
+                                <code> multiple: true</code>
                             </div>
                         </div>
                         <div class="tm-margin">
-                            <label>Установить открытый раздел</label>
+                            <label>Установить открытый раздел (Active)</label>
                             <div class='tm-sublabel'>
                                 Вы можете установить открытым отдельный элемент аккордеона изначально, добавив параметр
                                 <code>{`active: <index>`}</code> 
-                                к элементу <code>Accordion</code>, <code>например active: 1</code> для отображения второго элемента (индекс отсчитывается от нуля)
+                                к элементу <code>Accordion</code>, например <code>active: 1</code> для отображения второго элемента (индекс отсчитывается от нуля)
                             </div>
                             <div className='mt5'>
                                 <RadioButtonGroup
