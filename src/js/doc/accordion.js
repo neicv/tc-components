@@ -39,7 +39,7 @@ class AccordionDoc {
     }
 
     view() {
-        let testHtmpTmpl = `<Accordion items=this.items active=${this.active} multiple=${this.multiple} collapsible=${this.collapsible}/>`
+        let testHtmpTmpl = `<Accordion items={this.items} active={${this.active}} multiple={${this.multiple}} collapsible={${this.collapsible}}/>`
 
         return (
             <div className='main-content'>

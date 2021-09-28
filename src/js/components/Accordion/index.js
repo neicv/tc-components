@@ -28,7 +28,7 @@ import Content from "./components/content";
 
 const CHEVRON_COLOR_BLUE         = '#0262ae';
 const CHEVRON_DIMENSION          = 16;
-const DELAY_DURATION             = 50;
+const DELAY_DURATION             = 200;
 const TRANSITION_DURATION        = 200;
 const TRANSITION_TIMING_FUNCTION = 'ease';
 
@@ -94,8 +94,8 @@ class Accordion extends Component {
 
                         let classesWarpDiv = classNames(
                             "tc-transition",
-                            { [CSS_CLASS_ENTER] : state.togglable === STATE_ENTER },
-                            { [CSS_CLASS_LEAVE] : state.togglable === STATE_LEAVE },
+                            { [CSS_CLASS_ENTER]      : state.togglable === STATE_ENTER },
+                            { [CSS_CLASS_LEAVE]      : state.togglable === STATE_LEAVE },
                             { [CSS_TRANSITION_ENTER] : state.togglable === STATE_TRANSITION_ENTER},
                             { [CSS_TRANSITION_LEAVE] : state.togglable === STATE_TRANSITION_LEAVE}
                         )
@@ -125,6 +125,7 @@ class Accordion extends Component {
                                             style={this.transitionSwitch(state.togglable, index)}
                                             ontransitionend={(event) => this.transitionEndHandler(event.currentTarget, index)}
                                             ontransitionstart={(event) => this.transitionStartHandler(event.currentTarget, index)}
+                                            oncreate={() => this.onCreateWarp(state.togglable, index)}
                                         >
                                             <Content
                                                 dataIndex={index}
@@ -283,6 +284,10 @@ class Accordion extends Component {
         return result;
     }
 
+    transitionStartHandler(el, index) {
+        // Без этой "пустой функции" не стартует одновременная отрисовка закрытия - открытия...
+    }
+
     transitionEndHandler(element, index) {
         if (this.model[index].state.togglable === STATE_TRANSITION_LEAVE) {
             this.model[index].state.hidden = true;
@@ -293,10 +298,6 @@ class Accordion extends Component {
         }
         
         this.model[index].state.togglable = '';
-    }
-
-    transitionStartHandler(el, index) {
-        // Без этой "пустой функции" не стартует одновременная отрисовка закрытия - открытия...
     }
 
     transitionSwitch(cls, index) {
@@ -318,13 +319,11 @@ class Accordion extends Component {
         }
         
         if (cls === STATE_ENTER) {
-            setTimeout(() => this.triggerTransition(index, STATE_TRANSITION_ENTER), DELAY_DURATION);
 
             return 'height: 0px';
         }
 
         if (cls === STATE_LEAVE) {
-            setTimeout(() => this.triggerTransition(index, STATE_TRANSITION_LEAVE), DELAY_DURATION);
 
             return `height: ${this.getElementHeight(index)}px`;
         }
@@ -336,6 +335,16 @@ class Accordion extends Component {
         this.model[index].state.togglable = cls;
 
         setTimeout(() => m.redraw(), 0);
+    }
+
+    onCreateWarp(cls, index) {
+        if (cls === STATE_ENTER) {
+            this.triggerTransition(index, STATE_TRANSITION_ENTER);
+        }
+
+        if (cls === STATE_LEAVE) {
+            this.triggerTransition(index, STATE_TRANSITION_LEAVE)
+        }
     }
 
     getElementHeight(index) {
