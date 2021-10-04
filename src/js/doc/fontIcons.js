@@ -1,15 +1,19 @@
 import '../../css/font-icons.css'
 import m from 'mithril';
+import Modal from '../components/Modal';
 import { SearchIcon } from '../ui/iconAssets';
 import ICONS, { icons } from '../lib/icons'
 
 class FontIconsDoc {
     onitit() {
         this.search = '';
+        this.showModal = false;
+        this.icon = { icon: '', text: '', code: ''}
     }
 
-    view() {
+    view({attrs}) {
         const items = this.searchIcon(icons, this.search);
+        // const { icon } = attrs
 
         return (
             <div className='main-content'>
@@ -32,11 +36,12 @@ class FontIconsDoc {
                                     content-vl27="" 
                                     aria-haspopup="dialog" 
                                     icon-item="" 
-                                    role="option" 
+                                    // role="option" 
                                     host-vl37="" 
                                     aria-label={`${item} Icon`} 
                                     aria-selected="false"
                                     className='icon-container'
+                                    onclick={() => this.onIconClick(index)}
                                 >
                                     <span
                                         content-vl37="" 
@@ -51,6 +56,25 @@ class FontIconsDoc {
                         })
                     }
                 </div>
+                <Choose>
+                    <When condition={this.showModal}>
+                        <Modal
+                            title = {
+                                <div className={`title__preview-icon font-icon ${this.icon.icon}`}> 
+                                <span className='title__name'>
+                                    {this.icon.text}
+                                </span>
+                                </div>}
+                            content={<div><div> Code point </div><div>{this.icon.code}</div></div>}
+                            buttons={[
+                                {id: 'ok', text: 'Закрыть', className: 'primary'},
+                            ]}
+                            backdrop={true}
+                            modal={false}
+                            onClose={()=> this.showModal = false}
+                        />
+                    </When>
+                </Choose>
             </div>
         )
     }
@@ -58,6 +82,25 @@ class FontIconsDoc {
     searchIcon(items = [], value = '') {
 
         return items.filter(item => item.toLowerCase().includes(value.toLowerCase()));
+    }
+
+    onIconClick(index) {
+
+        this.icon = {
+            text: this.ucFirst(icons[index]),
+            icon: icons[index],
+            code: 'E' + this.hex(index)
+        }
+
+        this.showModal = true;
+    }
+
+    hex = d => Number(d).toString(16).padStart(3, '0')
+
+    ucFirst(str) {
+        if (!str) return str;
+      
+        return str[0].toUpperCase() + str.slice(1);
     }
 }
 

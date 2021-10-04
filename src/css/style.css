@@ -195,6 +195,21 @@ body {
     color: #4d4d4d;
 }
 
+.title__preview-icon {
+    display: block;
+    font-size: 24px;
+    height: 24px;
+    width: 24px;
+}
+
+.title__name {
+    margin-left: 12px;
+    max-width: 176px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .tm-legend {
     width: 100%;
     color: inherit;

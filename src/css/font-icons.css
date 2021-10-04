@@ -533,3 +533,19 @@
 .font-icon.more::before {
     content: "\E080";
 }
+
+.font-icon.circle-empty::before {
+    content: "\E081";
+}
+
+.font-icon.circle-tick::before {
+    content: "\E082";
+}
+
+.font-icon.circle-more::before {
+    content: "\E083";
+}
+
+.font-icon.circle-uncompleted::before {
+    content: "\E084";
+}

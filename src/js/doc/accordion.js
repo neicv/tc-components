@@ -104,7 +104,13 @@ class AccordionDoc {
                     </fieldset>
                     <div className='test'>
                         <p>
-                            <Accordion items={this.items} active={this.active} multiple={this.multiple} collapsible={this.collapsible}/>
+                            <Accordion 
+                                items={this.items}
+                                active={this.active}
+                                multiple={this.multiple}
+                                collapsible={this.collapsible}
+                                // activeLocked={true}
+                            />
                         </p>
                     </div>
                 </div>

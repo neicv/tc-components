@@ -38,8 +38,10 @@ class Modal extends Component {
                     // Дождаться окончания анимации.
                     // Потом через калбак убрать Модалку (Компанент)
                     Promise.resolve().then(() => {
-                        attrs.onClose(_self.clickedId)
-                        m.redraw()
+                        if (typeof attrs.onClose === 'function') {
+                            attrs.onClose(_self.clickedId)
+                            m.redraw()
+                        }
                     })
                 },
                 close() {

@@ -52,6 +52,7 @@ class Accordion extends Component {
             collapsible : '',
             multiple    : ''
         };
+        this.currentItem = '';
 
         this.styleToggglableEnter = {
             'transition-property' : 'overflow, height, padding-top, padding-bottom, margin-top, margin-bottom',
@@ -123,8 +124,8 @@ class Accordion extends Component {
                                         <div 
                                             className={classesWarpDiv}
                                             style={this.transitionSwitch(state.togglable, index)}
-                                            ontransitionend={(event) => this.transitionEndHandler(event.currentTarget, index)}
-                                            ontransitionstart={(event) => this.transitionStartHandler(event.currentTarget, index)}
+                                            ontransitionend={(event) => this.transitionEndHandler(event, index)}
+                                            ontransitionstart={(event) => this.transitionStartHandler(event, index)}
                                             oncreate={() => this.onCreateWarp(state.togglable, index)}
                                         >
                                             <Content
@@ -175,54 +176,61 @@ class Accordion extends Component {
                 return;
             }
 
-            const {collapsible = true, multiple = true} = this.attrs;
+            this.toggleAccordionOnIndex(index);
 
-            if (collapsible === false) {
-                if (this.model[index].state.isOpen) {
-                    return;
-                }
-            }
-
-            this.model[index].state.togglable = this.model[index].state.isOpen ? STATE_LEAVE : STATE_ENTER;
-
-            this.model[index].state.isOpen    = !this.model[index].state.isOpen;
-            this.model[index].state.isActive  = this.model[index].state.isOpen ? STATE_ACTIVE : '';
-            this.model[index].state.rotate    = this.model[index].state.isOpen ? 'accordion__rotate' : '';
-
-            if (multiple === false || collapsible === false) {
-                this.model.forEach((item, loopIndex) => {
-                    if (loopIndex !== index) {
-                        if (this.model[loopIndex].state.isOpen) {
-                            this.model[loopIndex].state.togglable = STATE_LEAVE;
-                            this.model[loopIndex].state.hidden = true;
-                        }
-                        this.model[loopIndex].state.isOpen   = false;
-                        this.model[loopIndex].state.isActive = '';
-                        this.model[loopIndex].state.rotate   = '';
-                    }
-                })
-            } else {
-                this.model.forEach((item, loopIndex) => {
-                    if (loopIndex !== index) {
-                        this.model[loopIndex].state.isActive = "";
-                    }
-                })
-            }
-            // coomon toggle hook func w no value
-            this.onToggleActionHook();
             // toggle hook func w target element
             this.toggle(e);
         }
     }
 
+    toggleAccordionOnIndex(index) {
+        const {collapsible = true, multiple = true} = this.attrs;
+
+        if (collapsible === false) {
+            if (this.model[index].state.isOpen) {
+                return;
+            }
+        }
+
+        this.model[index].state.togglable = this.model[index].state.isOpen ? STATE_LEAVE : STATE_ENTER;
+
+        this.model[index].state.isOpen    = !this.model[index].state.isOpen;
+        this.model[index].state.isActive  = this.model[index].state.isOpen ? STATE_ACTIVE : '';
+        this.model[index].state.rotate    = this.model[index].state.isOpen ? 'accordion__rotate' : '';
+
+        if (multiple === false || collapsible === false) {
+            this.model.forEach((item, loopIndex) => {
+                if (loopIndex !== index) {
+                    if (this.model[loopIndex].state.isOpen) {
+                        this.model[loopIndex].state.togglable = STATE_LEAVE;
+                        this.model[loopIndex].state.hidden = true;
+                    }
+                    this.model[loopIndex].state.isOpen   = false;
+                    this.model[loopIndex].state.isActive = '';
+                    this.model[loopIndex].state.rotate   = '';
+                }
+            })
+        } else {
+            this.model.forEach((item, loopIndex) => {
+                if (loopIndex !== index) {
+                    this.model[loopIndex].state.isActive = "";
+                }
+            })
+        }
+
+        this.currentItem = index;
+        // coomon toggle hook func w no value
+        this.onToggleActionHook();
+    }
+
     generateModel(attrs) {
-        let { items = [], active = false, collapsible = true, multiple = true} = attrs,
+        let { items = [], active = false, collapsible = true, multiple = true, activeLocked = false } = attrs,
             model        = [],
             currentIndex = 0;
 
         if (this.model.length === 0 
             || this.model.length        !== items.length 
-            || this.options.active      !== active
+            || (this.options.active     !== active) && !activeLocked
             || this.options.multiple    !== multiple
             || this.options.collapsible !== collapsible) {
 
@@ -253,22 +261,29 @@ class Accordion extends Component {
                 currentIndex++;
             });
 
-        } else {
-            // Обновление в модели заголовка, контента.
+        } else { 
             model = this.model;
 
-            items.forEach(item => {
-                let modelItem = {
-                    id      : item.id || currentIndex,
-                    title   : item.title || '',
-                    content : item.content || '',
-                };
-    
-                model[currentIndex].id      = modelItem.id;
-                model[currentIndex].title   = modelItem.title;
-                model[currentIndex].content = modelItem.content;
-                currentIndex++;
-            })
+            if  ((this.options.active !== active) && activeLocked) {
+                this.options.active      = active;
+                this.toggleAccordionOnIndex(active);
+
+            } else {
+                // Обновление в модели заголовка, контента.
+                // model = this.model;
+                items.forEach(item => {
+                    let modelItem = {
+                        id      : item.id || currentIndex,
+                        title   : item.title || '',
+                        content : item.content || '',
+                    };
+        
+                    model[currentIndex].id      = modelItem.id;
+                    model[currentIndex].title   = modelItem.title;
+                    model[currentIndex].content = modelItem.content;
+                    currentIndex++;
+                })
+            }
         }
 
         return model
@@ -284,11 +299,11 @@ class Accordion extends Component {
         return result;
     }
 
-    transitionStartHandler(el, index) {
+    transitionStartHandler(e, index) {
         // Без этой "пустой функции" не стартует одновременная отрисовка закрытия - открытия...
     }
 
-    transitionEndHandler(element, index) {
+    transitionEndHandler(e, index) {
         if (this.model[index].state.togglable === STATE_TRANSITION_LEAVE) {
             this.model[index].state.hidden = true;
         }
@@ -298,6 +313,10 @@ class Accordion extends Component {
         }
         
         this.model[index].state.togglable = '';
+
+        if (this.currentItem === index) {
+            this.toggleEndAction();
+        }
     }
 
     transitionSwitch(cls, index) {
@@ -377,6 +396,12 @@ class Accordion extends Component {
     toggle(e) {
         if (typeof this.attrs.ontoggle === "function") {
             this.attrs.ontoggle(e.currentTarget);
+        }
+    }
+
+    toggleEndAction() {
+        if (typeof this.attrs.onToggleEndAction === "function") {
+            this.attrs.onToggleEndAction();
         }
     }
 }

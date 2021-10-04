@@ -126,5 +126,9 @@ export const icons = [
     'goal',
     'square-empty',
     'circle-filled',    
-    'more'
+    'more',
+    'circle-empty',
+    'circle-tick',
+    'circle-more',
+    'circle-uncompleted'
 ]
