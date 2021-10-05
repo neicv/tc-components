@@ -36,6 +36,24 @@ class AccordionDoc {
         this.active = 1;
         this.multiple    = true;
         this.collapsible = true;
+
+        this.exampleItemTmpl = 
+        `items = [
+            {
+                classTitle: "accordion__title__bordered",
+                id: step.id,
+                title:
+                    <Switcher
+                        currentStep={currentStep}
+                        step={step}
+                        onclick={() => this.onChangeStep(step)}
+                    />,
+                content:
+                    <div>
+                        {step.someContent}
+                    </div>
+            },
+        ]`
     }
 
     view() {
@@ -58,9 +76,12 @@ class AccordionDoc {
                                 />
                                     Сворачивание (Collapsing)
                             </label>
-                            <div class='tm-sublabel '>По умолчанию все элементы аккордеона могут быть свернуты.
-                                Чтобы предотвратить такое поведение и всегда поддерживать один открытый элемент, добавьте к атрибуту параметр
-                                <code> collapsible: false.</code>
+                            <div class='tm-sublabel '>
+                                <p>
+                                    По умолчанию все элементы аккордеона могут быть свернуты.
+                                    Чтобы предотвратить такое поведение и всегда поддерживать один открытый элемент, добавьте к атрибуту параметр
+                                    <code> collapsible: false.</code>
+                                </p>
                             </div>
                         </div>
                         <div class="tm-margin">
@@ -73,32 +94,69 @@ class AccordionDoc {
                                 />
                                 Несколько открытых разделов (Multiple)
                             </label>
-                            <div class='tm-sublabel'>Чтобы отображать несколько разделов содержимого одновременно,
-                                при этом один из них не сворачивается при открытии другого, добавьте параметр
-                                <code> multiple: true</code>
+                            <div class='tm-sublabel'>
+                                <p>
+                                    Чтобы отображать несколько разделов содержимого одновременно,
+                                    при этом один из них не сворачивается при открытии другого, добавьте параметр
+                                    <code> multiple: true</code>
+                                </p>
                             </div>
                         </div>
                         <div class="tm-margin">
                             <label>Установить открытый раздел (Active)</label>
                             <div class='tm-sublabel'>
+                                <p>
                                 Вы можете установить открытым отдельный элемент аккордеона изначально, добавив параметр
                                 <code>{`active: <index>`}</code> 
                                 к элементу <code>Accordion</code>, например <code>active: 1</code> для отображения второго элемента (индекс отсчитывается от нуля)
+                                </p>
                             </div>
                             <div className='mt5'>
-                                <RadioButtonGroup
-                                    data={this.items}
-                                    valueId={this.active}
-                                    nameField='title'
-                                    onSelect={value => this.onChangeActive(value)}
-                                />
+                                <p>
+                                    <RadioButtonGroup
+                                        data={this.items}
+                                        valueId={this.active}
+                                        nameField='title'
+                                        onSelect={value => this.onChangeActive(value)}
+                                    />
+                                </p>
                             </div>
                         </div>
+                        <div class="tm-margin">
+                            <label>Массив элементов аккордеона [Items]</label>
+                            <div class='tm-sublabel'>
+                                <p>Содержит объекты <code>{`item`}</code> со следущими полями:</p>
 
+                                <table class="tm-table tm-table-divider">
+                                    <thead><tr>
+                                        <th align="left">Имя</th>
+                                        <th align="left">Значение</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td align="left"><code>classTitle:</code></td>
+                                            <td align="left">Класс заголовка (не обязательный)</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left"><code>id:</code></td>
+                                            <td align="left"> Идетификатор (ID) элемента (не обязательный)</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left"><code>title:</code></td>
+                                            <td align="left">Контент заголовка Элемента Аккордеона</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left"><code>content:</code></td>
+                                            <td align="left">Контент самого Элемента Аккордеона</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                         <div class="tm-margin">
                             <label>Пример использования:</label>
                             <div className='mt5'>
-                                <Highlight className='language-html' code={testHtmpTmpl} lang='xml'/>
+                                <p><Highlight className='language-html' code={testHtmpTmpl} lang='xml'/></p>
                             </div>
                         </div>
                     </fieldset>
@@ -121,6 +179,12 @@ class AccordionDoc {
                 >
                     Add content
                 </button>
+                <div className="tm-margin" style={'width: 700px'}>
+                    <label>Пример содержимого элемента:</label>
+                    <div className='mt5'>
+                        <p><Highlight className='language-html' code={this.exampleItemTmpl} lang='xml'/></p>
+                    </div>
+                </div>
             </div>
         )
     }

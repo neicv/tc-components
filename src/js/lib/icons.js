@@ -130,5 +130,8 @@ export const icons = [
     'circle-empty',
     'circle-tick',
     'circle-more',
-    'circle-uncompleted'
+    'circle-uncompleted',
+    'add-employee',
+    'employee',
+    'personal-data'
 ]

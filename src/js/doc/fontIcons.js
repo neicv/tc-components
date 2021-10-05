@@ -89,7 +89,7 @@ class FontIconsDoc {
         this.icon = {
             text: this.ucFirst(icons[index]),
             icon: icons[index],
-            code: 'E' + this.hex(index)
+            code: 'E' + this.hex(index + 1)
         }
 
         this.showModal = true;
