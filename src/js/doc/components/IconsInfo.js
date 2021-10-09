@@ -2,6 +2,8 @@ import m from 'mithril';
 import Component from "../../lib/Component";
 import { ContentCopyIcon } from '../../ui/iconAssets';
 
+const ICON_FILL_COLOR = '#5f6368';
+
 class IconsInfo extends Component {
 
     view() {
@@ -20,7 +22,7 @@ class IconsInfo extends Component {
                         </pre>
                         <span className="tm-infocode-navbtn" onclick={()=> this.copyToClipBoard(icon.text)}>
                             <span className="tm-icon tm-infocode-icon">
-                            <ContentCopyIcon />
+                            <ContentCopyIcon fill={ICON_FILL_COLOR} />
                             </span>
                         </span>
                     </div>
@@ -37,7 +39,7 @@ class IconsInfo extends Component {
                         </pre>
                         <span className="tm-infocode-navbtn" onclick={()=> this.copyToClipBoard(icon.code)}>
                             <span className="tm-icon tm-infocode-icon">
-                            <ContentCopyIcon />
+                            <ContentCopyIcon fill={ICON_FILL_COLOR} />
                             </span>
                         </span>
                     </div>

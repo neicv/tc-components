@@ -205,6 +205,7 @@ body {
 .title__name {
     margin-left: 12px;
     max-width: 176px;
+    vertical-align: bottom;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -904,50 +905,4 @@ pre code {
     background-color: #ffecec;
 }.hljs-link {
     text-decoration:underline;
-}
-
-/*
-InfoIcons
-*/
-.tm-infocode-title {
-    margin-bottom: 11px;
-    display: block;
-    text-align: left;
-}
-
-.tm-infocode-content {
-    background: #f1f3f4;
-    margin-bottom: 16px;
-    overflow-wrap: break-word;
-    position: relative;
-    text-align: left;
-}
-
-.tm-infocode-content pre {
-    background: #f1f3f4;
-    color: #3c4043;
-    padding: 8px;
-    white-space: normal;
-    word-break: break-all;
-    margin: 0px;
-}
-
-.tm-infocode-navbtn {
-    background: #f1f3f4;
-    color: #5f6368;
-    display: block;
-    margin-top: -8px;
-    text-align: right;
-    cursor: pointer;
-}
-
-.tm-infocode-icon {
-    padding: 0;
-    min-width: 0;
-    width: 40px;
-    height: 40px;
-    flex-shrink: 0;
-    line-height: 40px;
-    border-radius: 50%;
-    text-align: center;
 }

@@ -1,0 +1,49 @@
+/* InfoIcons */
+@import "_variables";
+
+.tm-infocode-title {
+    margin-bottom: 11px;
+    display: block;
+    text-align: left;
+}
+
+.tm-infocode-content {
+    background: $second-backgroud-color;
+    margin-bottom: 16px;
+    overflow-wrap: break-word;
+    position: relative;
+    text-align: left;
+
+    .pre {
+        background: $second-backgroud-color;
+        color: #3c4043;
+        padding: 8px;
+        white-space: normal;
+        word-break: break-all;
+        margin: 0px;
+    }
+}
+
+.tm-infocode-navbtn {
+    background: $second-backgroud-color;
+    color: #5f6368;
+    display: block;
+    margin-top: -8px;
+    text-align: right;
+    cursor: pointer;
+}
+
+.tm-infocode-icon {
+    padding: 0;
+    min-width: 0;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    line-height: 40px;
+    border-radius: 50%;
+    text-align: center;
+}
+
+.tm-infocode-footer {
+    text-align: right;
+}

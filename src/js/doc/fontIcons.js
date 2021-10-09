@@ -67,6 +67,7 @@ class FontIconsDoc {
                                 </span>
                                 </div>}
                             content={<IconsInfo icon={this.icon}/>}
+                            classFooterName ='tm-infocode-footer'
                             buttons={[
                                 {id: 'ok', text: 'Закрыть', className: 'primary'},
                             ]}

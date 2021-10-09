@@ -75,7 +75,7 @@ class Modal extends Component {
                     {attrs.content}
                     {children}
                 </div>
-                <div className = 'turbo-modal-footer'>
+                <div className ={`turbo-modal-footer ${attrs.classFooterName} || '`}>
                     {
                         attrs.buttons.map(b =>
 							<Button
