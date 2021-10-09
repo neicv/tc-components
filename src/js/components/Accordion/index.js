@@ -104,24 +104,24 @@ class Accordion extends Component {
                         return (
                             <div className={classesArticle} key={index}>
                                 {/* HEADER */}
-                                <div 
-                                    className={`accordion ${state.isActive}`} 
+                                <div
+                                    className={`accordion ${state.isActive}`}
                                     aria-expanded={state.isActive ? 'true' : 'false'}
                                     onclick={(e, vnode) => this.toggleAccordion(e, index, vnode)}
                                 >
                                     <span className="accordion__title">
                                         {title}
                                     </span>
-                                    <Chevron 
-                                        className={`accordion__icon ${state.rotate}`} 
-                                        width={CHEVRON_DIMENSION} 
-                                        fill={`${CHEVRON_COLOR_BLUE}`} 
+                                    <Chevron
+                                        className={`accordion__icon ${state.rotate}`}
+                                        width={CHEVRON_DIMENSION}
+                                        fill={`${CHEVRON_COLOR_BLUE}`}
                                     />
                                 </div>
                                 <Choose>
                                     <When condition={state.togglable !== ''}>
                                         {/* WRAPPER CONTENT */}
-                                        <div 
+                                        <div
                                             className={classesWarpDiv}
                                             style={this.transitionSwitch(state.togglable, index)}
                                             ontransitionend={(event) => this.transitionEndHandler(event, index)}
@@ -218,7 +218,8 @@ class Accordion extends Component {
             })
         }
 
-        this.currentItem = index;
+        this.currentItem    = index;
+        // this.options.active = index;
         // coomon toggle hook func w no value
         this.onToggleActionHook();
     }
@@ -228,8 +229,8 @@ class Accordion extends Component {
             model        = [],
             currentIndex = 0;
 
-        if (this.model.length === 0 
-            || this.model.length        !== items.length 
+        if (this.model.length === 0
+            || this.model.length        !== items.length
             || (this.options.active     !== active) && !activeLocked
             || this.options.multiple    !== multiple
             || this.options.collapsible !== collapsible) {
@@ -261,7 +262,7 @@ class Accordion extends Component {
                 currentIndex++;
             });
 
-        } else { 
+        } else {
             model = this.model;
 
             if  ((this.options.active !== active) && activeLocked) {
@@ -277,7 +278,7 @@ class Accordion extends Component {
                         title   : item.title || '',
                         content : item.content || '',
                     };
-        
+
                     model[currentIndex].id      = modelItem.id;
                     model[currentIndex].title   = modelItem.title;
                     model[currentIndex].content = modelItem.content;
@@ -311,7 +312,7 @@ class Accordion extends Component {
         if (this.model[index].state.togglable === STATE_TRANSITION_ENTER) {
             this.model[index].state.hidden = false;
         }
-        
+
         this.model[index].state.togglable = '';
 
         if (this.currentItem === index) {
@@ -331,12 +332,12 @@ class Accordion extends Component {
             };
 
             return style;
-        } 
+        }
 
         if (cls === STATE_TRANSITION_LEAVE) {
             return this.styleToggglableLeave;
         }
-        
+
         if (cls === STATE_ENTER) {
 
             return 'height: 0px';

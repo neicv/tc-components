@@ -29,7 +29,7 @@ class Highlight extends Component {
 
         return (
             <pre>
-                <code 
+                <code
                     className={`${className} hljs ${lang}`}
                     innerHTML={hljs.highlight(code, {language: lang}).value}
                 >

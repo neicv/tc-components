@@ -11,24 +11,24 @@ class AccordionDoc {
                 "id": 0,
                 "title": "Группа 1",
                 // "open": true,
-                "content": 
-                    `1. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum animi odit eos similique, 
+                "content":
+                    `1. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum animi odit eos similique,
                     expedita aspernatur quo cum magni ut harum omnis eligendi, voluptates fugit, beatae neque amet nihil nesciunt officiis.`
             },
             {
                 "id": 1,
                 "title": "Группа 2",
                 // "open": false,
-                "content": 
-                    `2. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum animi odit eos similique, 
+                "content":
+                    `2. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum animi odit eos similique,
                     expedita aspernatur quo cum magni ut harum omnis eligendi, voluptates fugit, beatae neque amet nihil nesciunt officiis.`
             },
             {
                 "id": 2,
                 "title": "Группа 3",
                 // "open": false,
-                "content": 
-                    `3. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum animi odit eos similique, 
+                "content":
+                    `3. Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum animi odit eos similique,
                     expedita aspernatur quo cum magni ut harum omnis eligendi, voluptates fugit, beatae neque amet nihil nesciunt officiis.
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.`
             }
@@ -37,7 +37,7 @@ class AccordionDoc {
         this.multiple    = true;
         this.collapsible = true;
 
-        this.exampleItemTmpl = 
+        this.exampleItemTmpl =
         `items = [
             {
                 classTitle: "accordion__title__bordered",
@@ -68,11 +68,11 @@ class AccordionDoc {
                         <legend class="tm-legend">Настройки</legend>
                         <div class="tm-margin">
                             <label>
-                                <input 
+                                <input
                                     class="tm-checkbox"
                                     type="checkbox"
                                     checked={this.collapsible}
-                                    onchange={event => this.onChangeColasible(event.target.checked)} 
+                                    onchange={event => this.onChangeColasible(event.target.checked)}
                                 />
                                     Сворачивание (Collapsing)
                             </label>
@@ -86,7 +86,7 @@ class AccordionDoc {
                         </div>
                         <div class="tm-margin">
                             <label>
-                                <input 
+                                <input
                                     class="tm-checkbox"
                                     type="checkbox"
                                     checked={this.multiple}
@@ -107,7 +107,7 @@ class AccordionDoc {
                             <div class='tm-sublabel'>
                                 <p>
                                 Вы можете установить открытым отдельный элемент аккордеона изначально, добавив параметр
-                                <code>{`active: <index>`}</code> 
+                                <code>{`active: <index>`}</code>
                                 к элементу <code>Accordion</code>, например <code>active: 1</code> для отображения второго элемента (индекс отсчитывается от нуля)
                                 </p>
                             </div>
@@ -162,7 +162,7 @@ class AccordionDoc {
                     </fieldset>
                     <div className='test'>
                         <p>
-                            <Accordion 
+                            <Accordion
                                 items={this.items}
                                 active={this.active}
                                 multiple={this.multiple}
@@ -172,7 +172,7 @@ class AccordionDoc {
                         </p>
                     </div>
                 </div>
-                <button 
+                <button
                     type='button'
                     className='btn btn--is-elevated primary'
                     onclick={() => this.onClickAdd(this.items)}
@@ -192,9 +192,9 @@ class AccordionDoc {
     onClickAdd(items) {
         let el = document.querySelector('div.accordion__article.tc-open');
         el = el.querySelector('.accordion__content');
-    
+
         if (el.dataset.accordionContentIndex) {
-            items[el.dataset.accordionContentIndex].content += `Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum animi odit eos similique, 
+            items[el.dataset.accordionContentIndex].content += `Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum animi odit eos similique,
             expedita aspernatur quo cum magni ut harum omnis eligendi, voluptates fugit, beatae neque amet nihil nesciunt officiis!`
         }
     }

@@ -4,7 +4,7 @@ import Highlight from '../components/Highlight';
 let testHtmpTmpl = `m.route(root, '/home', {
 	'/home': {
 		render() {
-            return <App><HomeView/></App> 
+            return <App><HomeView/></App>
         }
 	},
 	'/icons': {
@@ -33,7 +33,7 @@ const HomeView = {
 			<p>
 				Сборник тестируемых компонентов для системы turbocontract ...
 			</p>
-			<Highlight 
+			<Highlight
 				className='language-js'
 				code={testHtmpTmpl}
 				lang='javascript'

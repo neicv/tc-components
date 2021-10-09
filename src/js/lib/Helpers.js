@@ -1,6 +1,6 @@
 export function debounce(func, wait, immediate) {
     let timeout
-  
+
     return function executedFunction() {
         const context = this
         const args = arguments

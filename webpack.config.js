@@ -1,9 +1,12 @@
 const path = require('path')
+const webpack = require('webpack')
 const HTMLPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const CopyWebpackPlugin= require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const devMode = process.env.NODE_ENV !== 'production';
+
+const devMode  = process.env.NODE_ENV !== 'production';
+const prodMode = !devMode;
 
 module.exports = {
     mode: 'development',
@@ -14,26 +17,31 @@ module.exports = {
     },
     devServer: {
         port: 3000,
-        hot: true
+        hot: devMode
     },
-    devtool: devMode ? 'source-map' : '',
+    devtool: devMode ? 'source-map' : false,
     plugins: [
         new HTMLPlugin({
             template: './src/index.html',
-            favicon: devMode ?  path.resolve(__dirname, './src/favicon/favicon.ico') : path.resolve(__dirname, './public/favicon/favicon.ico')
+            // favicon: devMode ?  path.resolve(__dirname, './src/favicon/favicon.ico') : path.resolve(__dirname, './public/favicon/favicon.ico'),
+            favicon: path.resolve(__dirname, './src/favicon/favicon.ico'),
+            minify: {
+                removeComments: prodMode,
+                collapseWhitespace: prodMode
+            }
         }),
         new CleanWebpackPlugin(),
-        new CopyWebpackPlugin({ 
-            patterns: 
-            [   
+        new CopyWebpackPlugin({
+            patterns:
+            [
                 // {
                 //     from: path.resolve(__dirname, './src/fonts'),
                 //     to: path.resolve(__dirname, './public/fonts')
                 // },
-                {
-                    from: path.resolve(__dirname, './src/favicon'),
-                    to: path.resolve(__dirname, './public/favicon')
-                },
+                // {
+                //     from: path.resolve(__dirname, './src/favicon'),
+                //     to: path.resolve(__dirname, './public/favicon')
+                // },
                 // {
                 //     from: path.resolve(__dirname, './src/assets'),
                 //     to: path.resolve(__dirname, './public/assets')
@@ -52,12 +60,15 @@ module.exports = {
             // Options similar to the same options in webpackOptions.output
             // both options are optional
             filename: devMode ? '[name].css' : '[name].[hash].css',
-            chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
+            chunkFilename: devMode ? '[id].css' : '' //'[id].[hash].css'
         }),
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+        })
     ],
     module: {
         rules: [
-            { 
+            {
                 test: /\.css$/,
                 exclude: /node_modules/,
                 use: [
@@ -71,7 +82,7 @@ module.exports = {
                             return path.relative(path.dirname(resourcePath), context) + '/'},
                     url: false,
                     // only enable hot in development
-                    hmr: process.env.NODE_ENV === 'development',
+                    hmr: devMode,
                     // if hmr does not work, this is a forceful method.
                     reloadAll: true,
                     },
@@ -81,14 +92,28 @@ module.exports = {
                 sideEffects: true,
             },
             {
+                test: /\.s[ac]ss$/i,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                        hmr: devMode,
+                        reloadAll: true
+                        }
+                    },
+                    'css-loader',
+                    'sass-loader'
+                ],
+            },
+            {
                 test: /\.(woff|woff2|eot|ttf)$/,
-                //loader: 'url-loader?limit=100000'
-                // loader: 'file-loader?limit=100000',
-                loader: 'url-loader?limit=100000',
+                loader: 'file-loader?limit=100000',
+                // loader: 'url-loader?limit=100000',
                 options: {
-                    //publicPath: 'fonts2',
-                    outputPath: 'fonts',
+                    outputPath: 'fonts/',
                     name: devMode ? '[name].[ext]' : '[contenthash].[ext]',
+                    publicPath: url => 'fonts/' + url
                 },
             },
             {

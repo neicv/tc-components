@@ -12,13 +12,13 @@ class ModalDoc {
                 <h1>Тестовая Модалка</h1>
                 <p>Открыть обычное модальное окно</p>
                 <button
-                    
+
                         className='btn btn--is-elevated primary'
                         type='button'
                         onclick={() => this.showModalAction()}
                 >
                     Open Modal
-                </button>				
+                </button>
                 {/*appended to the end of document body. */}
                 <Choose>
                     <When condition={this.showModal === true}>

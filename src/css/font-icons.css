@@ -19,7 +19,7 @@
     line-height: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-} 
+}
 
 .font-icon.facebook::before {
     content: "\E001";
@@ -550,14 +550,22 @@
     content: "\E084";
 }
 
-.font-icon.add-employee::before {
+.font-icon.circle-notcompleted::before {
     content: "\E085";
 }
 
-.font-icon.employee::before {
+.font-icon.circle-emptycompleted::before {
     content: "\E086";
 }
 
-.font-icon.personal-data::before {
+.font-icon.add-employee::before {
     content: "\E087";
+}
+
+.font-icon.employee::before {
+    content: "\E088";
+}
+
+.font-icon.personal-data::before {
+    content: "\E089";
 }

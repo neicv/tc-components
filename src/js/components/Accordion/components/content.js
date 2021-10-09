@@ -4,7 +4,7 @@ class Content {
     view({ attrs, children }) {
         const { dataIndex, dataStyle, dataContent, dataHidden } = attrs;
         return (
-            <div 
+            <div
                 className="accordion__content"
                 data-accordion-content-index={dataIndex}
                 style={dataStyle}
@@ -21,7 +21,7 @@ class Content {
 
     transitionEndHandler(event, attrs) {
         const transitionEndFn = attrs.transitionEnd;
-        
+
         if (typeof transitionEndFn === "function") {
             transitionEndFn(event);
         }

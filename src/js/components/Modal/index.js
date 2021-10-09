@@ -4,7 +4,7 @@ import Button from '../../components/Button';
 import Component from '../../lib/Component';
 
 class Modal extends Component {
-    
+
     oninit() {
         this.clickedId = null
     }
@@ -48,7 +48,7 @@ class Modal extends Component {
                     this.onremove()
                 }
             },
-            
+
             <div className={ this.getClassNames(attrs) }>
                 <div className = 'turbo-modal-header'>
                     <span className = "turbo-modal-title">
@@ -88,7 +88,7 @@ class Modal extends Component {
                                 {b.text}
                             </Button>
 						)
-                    } 
+                    }
                 </div>
                 {/* <Button
                         className={clearButton}

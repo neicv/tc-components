@@ -1,4 +1,5 @@
 import '../css/style.css'
+import '../scss/index.scss'
 import m from 'mithril';
 import HomeView from './doc/home';
 import ModalDoc from './doc/modal';
@@ -13,7 +14,7 @@ m.route.prefix = '#';
 m.route(root, '/home', {
 	'/home': {
 		render() {
-            return <App><HomeView/></App> 
+            return <App><HomeView/></App>
         }
 	},
 	'/icons': {

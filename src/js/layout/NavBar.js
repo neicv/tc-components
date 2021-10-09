@@ -22,9 +22,9 @@ class NavBar {
     view() {
         return (
             <div class="nav-bar">
-                { 
+                {
                     this.menu.map((item, index) => {
-                    
+
                         return (
                             <NavButton
                                 className={this.active === index ? 'active' : ''}
