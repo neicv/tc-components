@@ -14,7 +14,7 @@
     position: relative;
     text-align: left;
 
-    .pre {
+    & pre {
         background: $second-backgroud-color;
         color: #3c4043;
         padding: 8px;
@@ -30,7 +30,6 @@
     display: block;
     margin-top: -8px;
     text-align: right;
-    cursor: pointer;
 }
 
 .tm-infocode-icon {
@@ -42,6 +41,21 @@
     line-height: 40px;
     border-radius: 50%;
     text-align: center;
+    cursor: pointer;
+
+    & svg {
+        vertical-align: middle;
+    }
+
+    .font-icon {
+        vertical-align: middle;
+        line-height: 2;
+        font-size: 20px;
+    
+        &.success {
+            color: $global-color-success;
+        }
+    }
 }
 
 .tm-infocode-footer {

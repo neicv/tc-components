@@ -826,7 +826,7 @@ body {
 ========================================================================== */
 
 pre {
-    font: 14px / 1.5 'Roboto Mono',monospace;
+    font: 14px / 1.5 'Roboto Mono',monospace !important;
     color: #666;
     -moz-tab-size: 4;
     tab-size: 4;
