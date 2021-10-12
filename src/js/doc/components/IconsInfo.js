@@ -2,7 +2,6 @@ import m from 'mithril';
 import Component from "../../lib/Component";
 import { ContentCopyIcon } from '../../ui/iconAssets';
 
-const ICON_FILL_COLOR = '#5f6368';
 const DELAY_COPY      = 2000;
 const TEXT_IS_COPED   = 'Copied!';
 const TEXT_ABOUT_COPY = '';
@@ -21,7 +20,7 @@ class IconsInfo extends Component {
         const  { icon } = this.attrs
 
         return (
-            <div className={`${this.attrs.className || ''}`}>
+            <div className={`${this.attrs.className || ''}`} style={{overflow:'hidden'}}>
                 <figure>
                     <figcaption>
                         <h4 className="tm-infocode-title">
@@ -33,7 +32,7 @@ class IconsInfo extends Component {
                             <code>{icon.text}</code>
                         </pre>
                         <span className="tm-infocode-navbtn">
-                            <span 
+                            <span
                                 className="tm-icon tm-infocode-icon"
                                 onclick={()=> this.copyToClipBoard(icon.text, 'text')}
                             >
@@ -46,7 +45,7 @@ class IconsInfo extends Component {
                                             <i className="font-icon success"></i>
                                         </When>
                                         <Otherwise>
-                                            <ContentCopyIcon fill={ICON_FILL_COLOR}/>
+                                            <ContentCopyIcon/>
                                         </Otherwise>
                                     </Choose>
                                 </span>
@@ -65,7 +64,7 @@ class IconsInfo extends Component {
                             <code>{icon.code}</code>
                         </pre>
                         <span className="tm-infocode-navbtn">
-                            <span 
+                            <span
                                 className="tm-icon tm-infocode-icon"
                                 onclick={()=> this.copyToClipBoard(icon.code, 'code')}
                             >
@@ -78,7 +77,7 @@ class IconsInfo extends Component {
                                             <i className="font-icon success"></i>
                                         </When>
                                         <Otherwise>
-                                            <ContentCopyIcon fill={ICON_FILL_COLOR}/>
+                                            <ContentCopyIcon/>
                                         </Otherwise>
                                     </Choose>
                                 </span>

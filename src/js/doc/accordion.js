@@ -65,6 +65,38 @@ class AccordionDoc {
                 <p>Тестовый аккордеон</p>
                 <div class="tm-margin">
                     <fieldset class='tm-fieldset'  style={'width: 600px'}>
+                    <legend class="tm-legend">Входные данные</legend>
+                    <div class="tm-margin">
+                            <label>Массив элементов аккордеона [Items]</label>
+                            <div class='tm-sublabel'>
+                                <p>Содержит объекты <code>{`item`}</code> со следущими полями:</p>
+
+                                <table class="tm-table tm-table-divider">
+                                    <thead><tr>
+                                        <th align="left">Имя</th>
+                                        <th align="left">Значение</th>
+                                    </tr></thead>
+                                    <tbody>
+                                        <tr>
+                                            <td align="left"><code>classTitle:</code></td>
+                                            <td align="left">Класс заголовка (не обязательный)</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left"><code>id:</code></td>
+                                            <td align="left"> Идетификатор (ID) элемента (не обязательный)</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left"><code>title:</code></td>
+                                            <td align="left">Контент заголовка Элемента Аккордеона</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="left"><code>content:</code></td>
+                                            <td align="left">Контент самого Элемента Аккордеона</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                         <legend class="tm-legend">Настройки</legend>
                         <div class="tm-margin">
                             <label>
@@ -120,37 +152,6 @@ class AccordionDoc {
                                         onSelect={value => this.onChangeActive(value)}
                                     />
                                 </p>
-                            </div>
-                        </div>
-                        <div class="tm-margin">
-                            <label>Массив элементов аккордеона [Items]</label>
-                            <div class='tm-sublabel'>
-                                <p>Содержит объекты <code>{`item`}</code> со следущими полями:</p>
-
-                                <table class="tm-table tm-table-divider">
-                                    <thead><tr>
-                                        <th align="left">Имя</th>
-                                        <th align="left">Значение</th>
-                                    </tr></thead>
-                                    <tbody>
-                                        <tr>
-                                            <td align="left"><code>classTitle:</code></td>
-                                            <td align="left">Класс заголовка (не обязательный)</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="left"><code>id:</code></td>
-                                            <td align="left"> Идетификатор (ID) элемента (не обязательный)</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="left"><code>title:</code></td>
-                                            <td align="left">Контент заголовка Элемента Аккордеона</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="left"><code>content:</code></td>
-                                            <td align="left">Контент самого Элемента Аккордеона</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
                             </div>
                         </div>
                         <div class="tm-margin">

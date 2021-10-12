@@ -60,6 +60,7 @@ class FontIconsDoc {
                 <Choose>
                     <When condition={this.showModal}>
                         <Modal
+                            width ={400}
                             title = {
                                 <div className={`title__preview-icon font-icon ${this.icon.icon}`}>
                                 <span className='title__name'>
@@ -67,7 +68,7 @@ class FontIconsDoc {
                                 </span>
                                 </div>}
                             content={<IconsInfo icon={this.icon}/>}
-                            classFooterName ='tm-infocode-footer'
+                            //classFooter ={}
                             buttons={[
                                 {id: 'ok', text: 'Закрыть', className: 'primary'},
                             ]}

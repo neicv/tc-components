@@ -1,0 +1,65 @@
+/* Component Modal */
+@import "variables";
+
+.modal__wrapper {
+    display: inline-block;
+    max-width: 99%;
+    max-height: 100%;
+    position: relative;
+    text-align: left;
+    vertical-align: middle;
+    box-sizing: border-box;
+    box-shadow: 0px 0px 25px -10px;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.modal__header {
+    padding-right: 40px;
+    position: relative;
+    font-size: 18px;
+}
+
+.modal__body {
+    width: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+}
+
+.modal__footer {
+    border-top: 1px solid #e7e8ec;
+}
+
+.modal__body, .modal__label {
+    background-color: $global-custom-color-white;
+}
+
+.modal__header, .modal__body, .modal__footer {
+    padding: 15px 15px;
+}
+
+.modal__body > .cancel, .modal__header .cancel {
+    width: 14px;
+    height: 14px;
+    padding: 10px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 14px;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    box-sizing: content-box;
+    color: #d9d9d9;
+}
+
+.modal__header .cancel {
+    margin: auto;
+    bottom: 0;
+    right: 5px;
+}
+
+.modal__body > .cancel:hover,
+.modal__header .cancel:hover {
+    color: #FF2828;
+}

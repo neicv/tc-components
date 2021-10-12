@@ -7,6 +7,11 @@ let testHtmpTmpl = `m.route(root, '/home', {
             return <App><HomeView/></App>
         }
 	},
+	'/accordion': {
+		render() {
+            return <App><AccordionDoc/></App>
+        }
+	}
 	'/icons': {
 		render() {
             return <App><FontIconsDoc/></App>
@@ -17,9 +22,14 @@ let testHtmpTmpl = `m.route(root, '/home', {
             return <App><ModalDoc/></App>
         }
 	},
-	'/accordion': {
+	'/pagination': {
 		render() {
-            return <App><AccordionDoc/></App>
+            return <App><PaginatonDoc/></App>
+        }
+	},
+	'/timeline': {
+		render() {
+            return <App><TimeLineDoc/></App>
         }
 	}
 });`

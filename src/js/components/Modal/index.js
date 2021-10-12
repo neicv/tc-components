@@ -3,10 +3,13 @@ import Overlay from './components/overlay';
 import Button from '../../components/Button';
 import Component from '../../lib/Component';
 
+const DEFAULT_WIDTH = 600;
+
 class Modal extends Component {
 
-    oninit() {
-        this.clickedId = null
+    oninit({attrs}) {
+        this.clickedId = null;
+        this.wrapperStyleWidth = (attrs.width || DEFAULT_WIDTH) + "px";
     }
 
     // oncreate(vnode) {
@@ -15,7 +18,7 @@ class Modal extends Component {
 
     getClassNames(attrs) {
         return [
-            `turbo-modal ${ attrs.className || "" } `,
+            `modal__wrapper ${ attrs.className || "" } `,
             // `${ attrs.hovered ? "turbo-modal_hovered" : "" } `,
             `${ attrs.fullScreen ? "turbo-modal_fullscreen" : "" } `
             // `${ this.state.isOpen ? "turbo-modal_open" : "" } `
@@ -49,23 +52,16 @@ class Modal extends Component {
                 }
             },
 
-            <div className={ this.getClassNames(attrs) }>
-                <div className = 'turbo-modal-header'>
-                    <span className = "turbo-modal-title">
+            <div className={this.getClassNames(attrs)} style={{width: this.wrapperStyleWidth}}>
+                <div className = {`modal__header ${attrs.classHeader || 'bg-blue color-white'}`}>
+                    <If condition={closable}>
+                        <div class='font-icon cancel' onclick ={()=> _self.clickedId = 'cancel'}></div>
+                    </If>
+                    <span className = "modal__title">
                         {attrs.title}
                     </span>
-                    {/* <Choose>
-                        <When condition={attrs.closable}>
-                        <span className = 'turbo-modal-close'>
-                            &times;
-                        </span>
-                        </When>
-                    </Choose>               */}
-                    {
-                        closable ? <span class='turbo-modal-close' onclick ={()=> _self.clickedId = 'cancel'} >&times;</span> : ''
-                    }
                 </div>
-                <div className = "turbo-modal-body"
+                <div className = "modal__body"
                     // className={`turbo-modal ${className || ""}`}
                     // className={ this.getClassNames(attrs) }
                     // onclick={attrs.onclick}
@@ -75,12 +71,12 @@ class Modal extends Component {
                     {attrs.content}
                     {children}
                 </div>
-                <div className ={`turbo-modal-footer ${attrs.classFooterName} || '`}>
+                <div className ={`modal__footer ${attrs.classFooter || 'bg-grey text-right'}`}>
                     {
                         attrs.buttons.map(b =>
 							<Button
                                 type = 'button'
-                                className = {`btn btn--is-elevated ${b.className} || '`}
+                                className = {`btn btn--is-elevated ${b.className || ''}`}
                                 disabled = {_self.clickedId != null}
                                 onclick ={()=> _self.clickedId = b.id}
                                 title = {b.text}

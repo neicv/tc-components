@@ -5,6 +5,8 @@ import HomeView from './doc/home';
 import ModalDoc from './doc/modal';
 import AccordionDoc from './doc/accordion';
 import FontIconsDoc from './doc/fontIcons';
+import PaginationDoc from './doc/pagination';
+import TimeLineDoc from './doc/timeline';
 import App from './layout/App.js';
 
 const root = document.body;
@@ -17,6 +19,11 @@ m.route(root, '/home', {
             return <App><HomeView/></App>
         }
 	},
+	'/accordion': {
+		render() {
+            return <App><AccordionDoc/></App>
+        }
+	},
 	'/icons': {
 		render() {
             return <App><FontIconsDoc/></App>
@@ -27,9 +34,14 @@ m.route(root, '/home', {
             return <App><ModalDoc/></App>
         }
 	},
-	'/accordion': {
+	'/pagination': {
 		render() {
-            return <App><AccordionDoc/></App>
+            return <App><PaginationDoc/></App>
         }
-	}
+	},
+	'/timeline': {
+		render() {
+            return <App><TimeLineDoc/></App>
+        }
+	},
 });

@@ -1,7 +1,7 @@
 .tooltip {
     position: relative;
     // display: inline-block;
-  
+
     .tooltiptext {
         visibility: hidden;
         width: 140px;
@@ -30,7 +30,7 @@
         }
     }
 }
-  
+
 .tooltip:hover .tooltiptext.hovered,
 .tooltip .tooltiptext.active {
     visibility: visible;

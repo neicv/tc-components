@@ -26,7 +26,7 @@ class ModalDoc {
                             title='Трям Пам Пма!'
                             content='Закрыть модалку.'
                             buttons={[
-                                {id: 'ok', text: 'Ok', className: 'primary'},
+                                {id: 'ok', text: 'Ok', className: 'primary mr15'},
                                 {id: 'cancel', text: 'Cancel', className: 'error'}
                             ]}
                             backdrop={true}

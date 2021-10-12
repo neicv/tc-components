@@ -1,0 +1,24 @@
+/* Component TimeLine */
+
+@import "variables";
+
+.timeline-root {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 16px;
+    flex-grow: 1;
+}
+
+.timeline-item {
+    list-style: none;
+    display: flex;
+    position: relative;
+    min-height: 70px;
+}
+
+.timeline-oppositecontent {
+    padding: 6px 16px;
+    margin-right: auto;
+    text-align: right;
+    flex: 1;
+}

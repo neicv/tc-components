@@ -7,9 +7,11 @@ class NavBar {
         this.active = 0;
         this.menu = [
             { path: 'home', icon: 'fas fa-home', text: 'Home'},
+            { path: 'accordion', icon: 'fas fa-plus"', text: 'Accordion'},
             { path: 'icons', icon: 'fas fa-list-ol', text: 'Icons'},
             { path: 'modal', icon: 'fas fa-list-ol', text: 'Modal'},
-            { path: 'accordion', icon: 'fas fa-plus"', text: 'Accordion'}
+            { path: 'pagination', icon: 'fas fa-plus"', text: 'Pagination'},
+            { path: 'timeline', icon: 'fas fa-plus"', text: 'Timelines'}
         ]
 
         let path = m.route.get().slice(1);
