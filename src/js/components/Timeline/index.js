@@ -2,24 +2,11 @@ import m from "mithril";
 import classNames from "classnames";
 import Component from "../../lib/Component";
 
-// import Content from "./components/content";
-
 class Timeline extends Component {
     oninit() {
-        this.left   = "0";
-        this.top    = "0";
-        this.isLeft = false;
-
         let { position = 'right' } = this.attrs;
 
-        this.position = `position-${['right', 'left', 'alternate'].includes(position) ? position : 'right'}`;
-
-        // this.styleRoot = {
-        //     display: 'flex',
-        //     flexDirection: 'column',
-        //     padding: '6px 16px',
-        //     flexGrow: 1,
-        // }
+        this.position = `position-${['right', 'left', 'alternate', 'both'].includes(position) ? position : 'right'}`;
     }
 
     view({ children }) {
@@ -43,3 +30,12 @@ class Timeline extends Component {
 }
 
 export default Timeline;
+
+/*
+корекция для смещения - "слева 20% - справа остальное"
+
+.timeline-dot :  убрать align-self: baseline;
+.timeline-separator : добавить min-width: 32px;
+.missing-opposite-content:before  - изменить flex: 0.2
+
+*/

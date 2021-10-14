@@ -1,0 +1,35 @@
+/* Signing List */
+.turbo-visa * {
+    box-sizing: border-box;
+}
+
+.turbo-visa__history-item {
+    .turbo-visa__history-item {
+        display: flex;
+        flex-direction: column;
+        margin: 10px 10px 10px 0;
+        padding: 5px;
+    }
+}
+
+.history-item__title {
+    // font-weight: 700;
+    // border-bottom: 1px solid #ccc;
+    // padding-bottom: 3px;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    margin: 0;
+    font-weight: 500;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    letter-spacing: 0.0075em;
+}
+
+.history-item__content {
+    // margin: 0;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+}

@@ -135,5 +135,7 @@ export const icons = [
     'circle-emptycompleted',
     'add-employee',
     'employee',
-    'personal-data'
+    'personal-data',
+    'flag-start',
+    'flag-finish'
 ]

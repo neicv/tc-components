@@ -11,6 +11,7 @@ class NavBar {
             { path: 'icons', icon: 'fas fa-list-ol', text: 'Icons'},
             { path: 'modal', icon: 'fas fa-list-ol', text: 'Modal'},
             { path: 'pagination', icon: 'fas fa-plus"', text: 'Pagination'},
+            { path: 'signlist', icon: 'fas fa-plus"', text: 'SignList'},
             { path: 'timeline', icon: 'fas fa-plus"', text: 'Timelines'}
         ]
 

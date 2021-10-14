@@ -569,3 +569,11 @@
 .font-icon.personal-data::before {
     content: "\E089";
 }
+
+.font-icon.flag-finish::before {
+    content: "\E08A";
+}
+
+.font-icon.flag-start::before {
+    content: "\E08B";
+}

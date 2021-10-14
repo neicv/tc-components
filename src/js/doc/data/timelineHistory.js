@@ -1,6 +1,6 @@
 /* Demo DATA for Time Line Components */
 
-const history = [
+export const history = [
     {
         "title": "Разработка ТЗ",
         "date": "27.05.2021 14:27",

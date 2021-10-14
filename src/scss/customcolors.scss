@@ -9,6 +9,140 @@
     background-color: $global-custom-color-bggrey;
 }
 
+.bg-grey_hover:hover {
+    background-color: #f5f5f50c;
+}
+
+.bg-grey-dark {
+    background-color: #d7d7d7;
+}
+
+.bg-red {
+    background-color: #fe3032;
+}
+
+.bg-dark {
+    background-color: #929292;
+}
+
+.bg-yellow {
+    background-color: #fdffa8;
+}
+
+.bg-dark-yellow {
+    background-color: #ffeb3b;
+}
+
+.bg-white {
+    background-color: #ffffff;
+}
+
+.bg-transparent {
+    background-color: transparent;
+}
+
 .color-white {
     color: $global-custom-color-white;
+}
+
+.color-success {
+    color: #3DC372;
+}
+
+.color-danger {
+    color: #e44e56;
+}
+
+.color-blue,
+.color-blue:hover,
+.color-blue:visited,
+.color-blue:focus {
+    color: #0262ae;
+}
+
+.primary {
+    color: $theme-palette-primary-main;
+
+    &.light {
+        color: $theme-palette-primary-light;
+    }
+
+    &.dark {
+        color: $theme-palette-primary-dark;
+    }
+}
+
+.secondary {
+    color: $theme-palette-secondary-main;
+
+    &.light {
+        color: $theme-palette-secondary-light;
+    }
+
+    &.dark {
+        color: $theme-palette-secondary-dark;
+    }
+}
+
+.success {
+    color: $theme-palette-success-main;
+
+    &.light {
+        color: $theme-palette-success-light;
+    }
+
+    &.dark {
+        color: $theme-palette-success-dark;
+    }
+}
+
+.warning {
+    color: $theme-palette-warning-main;
+
+    &.light {
+        color: $theme-palette-warning-light;
+    }
+
+    &.dark {
+        color: $theme-palette-warning-dark;
+    }
+}
+
+.error {
+    color: $theme-palette-error-main;
+
+    &.light {
+        color: $theme-palette-error-light;
+    }
+
+    &.dark {
+        color: $theme-palette-error-dark;
+    }
+}
+
+.info {
+    color: $theme-palette-info-main;
+
+    &.light {
+        color: $theme-palette-info-light;
+    }
+
+    &.dark {
+        color: $theme-palette-info-dark;
+    }
+}
+
+.grey {
+    color: grey;
+}
+
+.inherit {
+    color: inherit;
+}
+
+.text-secondary {
+    color: rgba(0, 0, 0, 0.6);
+}
+.text-primary {
+    color: #20262d;
 }

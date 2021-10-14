@@ -15,6 +15,13 @@ module.exports = {
         filename: 'bundle.[hash].js',
         path: path.resolve(__dirname, 'public')
     },
+    resolve: {
+        extensions: ['.js'],
+        alias: {
+            '@': path.resolve(__dirname, 'src/js'),
+            '@doc': path.resolve(__dirname, 'src/js/doc')
+        }
+    },
     devServer: {
         port: 3000,
         hot: devMode

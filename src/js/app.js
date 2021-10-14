@@ -6,6 +6,7 @@ import ModalDoc from './doc/modal';
 import AccordionDoc from './doc/accordion';
 import FontIconsDoc from './doc/fontIcons';
 import PaginationDoc from './doc/pagination';
+import SignListDoc from './doc/signlist';
 import TimeLineDoc from './doc/timeline';
 import App from './layout/App.js';
 
@@ -37,6 +38,11 @@ m.route(root, '/home', {
 	'/pagination': {
 		render() {
             return <App><PaginationDoc/></App>
+        }
+	},
+	'/signlist': {
+		render() {
+            return <App><SignListDoc/></App>
         }
 	},
 	'/timeline': {
