@@ -14,7 +14,7 @@ class SignListDoc {
         return (
             <div className='test-timeline sign-list'>
                 <p><b> Sign List</b> </p>
-                <div className="spacebetween pr20">
+                <div className="sign-list-panel spacebetween">
                     <span className="fs14">Тут будет поиск...</span>
                     <label className="switcher-label-placement-start">
                         <Switch
@@ -24,7 +24,7 @@ class SignListDoc {
                         <span className='text-secondary fs12'>Подробный вид: </span>
                     </label>
                 </div>
-                <SigningListContainer data={history}/>
+                <SigningListContainer data={history} viewDetailsInfo={this.isShowDetailsList}/>
             </div>
         )
     }

@@ -45,7 +45,15 @@
     }
 
     .short-info {
-        max-width: calc(100% - 70px);
+        max-width: calc(100% - 48px);
+    }
+
+    .sign-list-panel {
+        min-width: 550px;
+        padding-right: 46px;
     }
 }
 
+.sign-list-container .timeline-content {
+    min-width: 400px;
+}

@@ -16,10 +16,17 @@ const COLOR_DISAPPROVE = 'error';
 
 class SigningListContainer extends Component {
     onitit() {
+        const { viewDetailsInfo } = this.attrs;
+        this.oldVDI = viewDetailsInfo;
     }
 
     view() {
-        const { data } = this.attrs;
+        const { data, viewDetailsInfo } = this.attrs;
+
+        if (this.oldVDI !== viewDetailsInfo) {
+            this.oldVDI = viewDetailsInfo
+            setTimeout(() => m.redraw(), 0);
+        }
 
         return (
             <div className="sign-list-container">
@@ -42,7 +49,7 @@ class SigningListContainer extends Component {
 
                             return (
                                 <TimelineItem>
-                                    <TimelineOppositeContent color="text.secondary" className="fs13">
+                                    <TimelineOppositeContent name='TimelineOppositeContent' color="text.secondary" className="fs13">
                                         {date}
                                     </TimelineOppositeContent>
                                     <TimelineSeparator>
@@ -74,7 +81,7 @@ class SigningListContainer extends Component {
                                     </TimelineSeparator>
                                     <TimelineContent>
                                         {/* {title} */}
-                                        <StatusInfo {...other} index={index} key={index}/>
+                                        <StatusInfo {...other} index={index} key={index} viewDetailsInfo={viewDetailsInfo}/>
                                     </TimelineContent>
                                 </TimelineItem>
                             )

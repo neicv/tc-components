@@ -1,29 +1,31 @@
 import m from 'mithril';
 import Component from '@/lib/Component';
-import { call } from 'file-loader';
 import SignatureSheet from './SignatureSheet';
 
-const COLOR_APPROVE         = 'success';
-const COLOR_DISAPPROVE      = 'error';
 const TEXT_BLANK            = 'Не указано';
-const TEXT_STATUS_AGREED    = 'Согласовано';
-const TEXT_STATUS_DISAGREED = 'Согласовано';
-
 const DELAY_INIT_MAX_HEIGHT = 100;
-
 
 class StatusInfo extends Component {
     oninit(vnode) {
-        this.isSigningInfoOpen = false;
-        this.initialState      = [];
-        this._element          = vnode;
-        // this._state            = [];
+        this.isSigningInfoOpen      = false;
+        this.initialState           = [];
+        this._element               = vnode;
+        const { viewDetailsInfo }   = this.attrs;
+        this.oldVDI                 = viewDetailsInfo;
+        this.isTransitionInProgress = false;
+
+        this.model = [];
     }
 
     view() {
-        const { title='', fio = '', position = '', agency = '', role = '', index, signingList = [] } = this.attrs;
+        const { title='', fio = '', position = '', agency = '', role = '', index, signingList = [], viewDetailsInfo } = this.attrs;
 
-        const shortSigningList = this.getShortSigningList(signingList);
+        if (this.oldVDI !== viewDetailsInfo) {
+            this.oldVDI            = viewDetailsInfo
+            this.isSigningInfoOpen = viewDetailsInfo;
+
+            this.refreshModel(viewDetailsInfo);
+        }
 
         return (
             <div className="signing-info turbo-visa">
@@ -41,40 +43,13 @@ class StatusInfo extends Component {
                                     <span title={fio || TEXT_BLANK} class="text-clipped v-align-middle fs12">{fio || TEXT_BLANK}</span>
                                 </div>
                             </div>
-
-                            <If condition={signingList.length !== 0 && !this.isSigningInfoOpen}>{/*!this._state[index]}>*/}
-                            <div class="v-align-middle pr0 pt10 short-info"> {/* elevation card sheet */}
-                                <div class="js-ellipsis">
-                                    <i title="Визирование" class="font-icon template-icon fs18 pr5"></i>
-                                    <span class="v-align-top fs15 text-right">Лист Визирования</span>
-                                </div>
-                                <div class="spacebetween ml20">
-                                    {/* <label class="mt10"> */}
-                                        <span class='fs12'>Статус:</span>
-                                        <span class='text-right'>
-                                            <i
-                                                title={shortSigningList.agreeStatus}
-                                                className={`font-icon ${shortSigningList.agreed ? 'circle-tick success' : 'circle-close error'} fs15 pr5`}
-                                            ></i>
-                                            <span class="v-align-text-top fs12">{shortSigningList.agreeStatus}</span>
-                                        </span>
-                                    {/* </label> */}
-
-                                </div>
-                                <If condition={shortSigningList.comments}>
-                                    <div class="fs12 ml20">
-                                        <div class='pb5'>Комментарий:</div>
-                                        <div class="fs11 text-justify">{shortSigningList.comments}</div>
-                                        <div class="fs11 text-right">{shortSigningList.fio}</div>
-                                        <div class="fs11 text-right">{shortSigningList.date}</div>
-                                    </div>
-                                </If>
-                            </div>
-                        </If>
-
                         </div>
-                        {/* Доп контент */}
-                        <div className={`timeline-accordion-content`} hidden={this.isSigningInfoOpen} oncreate={element => this.setMaxHeight(element, index)}>
+                        <div
+                            class="timeline-accordion-content"
+                            // hidden={this.isSigningInfoOpen}
+                            oncreate={element => this.setMaxHeight(element, index)}
+                            ontransitionstart={()=> this.isTransitionInProgress = true}
+                        >
                             <div class=" v-align-middle pr15">
                                 <div class="js-ellipsis">
                                     <div class="text-clipped js-ellipsis-text">
@@ -99,15 +74,14 @@ class StatusInfo extends Component {
                                     </div>
                                 </div>
                             </div>
-
-                            <Choose>
-                                <When condition={signingList.length !== 0}>
-                                    <SignatureSheet signingList={signingList}/>
-                                </When>
-                            </Choose>
                         </div>
 
-                        {/* ---------- */}
+                        <Choose>
+                            <When condition={signingList.length !== 0}>
+                                <SignatureSheet signingList={signingList} index={index} viewDetailsInfo={viewDetailsInfo}/>
+                            </When>
+                        </Choose>
+
                     </div>
                 </div>
             </div>
@@ -115,7 +89,8 @@ class StatusInfo extends Component {
     }
 
     toggleInfoPanel(event, index) {
-        let targ = event.currentTarget;
+        let next,
+            targ = event.currentTarget;
 
         if (targ.tagName !== 'DIV' && targ.nextElementSibling) {
             return;
@@ -123,81 +98,42 @@ class StatusInfo extends Component {
 
         targ = targ.nextElementSibling;
 
-        this.isSigningInfoOpen = !this.isSigningInfoOpen;
-        // this._state[index] = !this._state[index];
-
-        // if (!this.initialState.includes(index)) {
-        //     this.initialState.push(index);
-
-        //     if (this.isSigningInfoOpen) {
-        //         targ.style.maxHeight = targ.scrollHeight + "px"
-
-        //     } else {
-        //         targ.style.maxHeight = '0px';
-        //     }
-
-        //     return;
-        // }
-
         if (targ.style.maxHeight && targ.style.maxHeight !== '0px') {
-            // targ.style.maxHeight = targ.scrollHeight + "px";
-            // setTimeout(() => m.redraw(), 0);
             targ.style.maxHeight = '0px';
         } else {
             targ.style.maxHeight = targ.scrollHeight + "px";
         }
+
+        this.isSigningInfoOpen = !this.isSigningInfoOpen;
     }
 
 
     setMaxHeight(element, index) {
         let _this = this;
+
+        this.model.push(element.dom);
+
         setTimeout(() => {
             let el;
-            el = _this._element.dom.getElementsByClassName('timeline-accordion-content')[0];
+            el = element.dom;
+
             if (this.isSigningInfoOpen) {
                 el.style.maxHeight = el.scrollHeight + "px";
-                // this._state[index] = true;
             } else {
                 el.style.maxHeight = "0px"
-                // this._state[index] = false;
             }
 
         }, DELAY_INIT_MAX_HEIGHT);
     }
 
-    getShortSigningList(list) {
-        let disapproveList,
-            len,
-            shortList = {
-                comments: "",
-                agreed: false,
-                agreeStatus: "",
-                fio: "",
-                date: ""
+    refreshModel(val) {
+        this.model.forEach(el => {
+            if (val) {
+                el.style.maxHeight = el.scrollHeight + "px";
+            } else {
+                el.style.maxHeight = "0px"
             }
-
-        if (!list || list.length === 0) {
-            return shortList;
-        }
-
-        disapproveList = list.filter(el => el.agreed === false);
-
-        len = disapproveList.length;
-
-        if (len !==0) {
-            // Последний коммент из не согласованных
-            shortList.agreed      = false;
-            shortList.comments    = disapproveList[len - 1].comments || '';
-            shortList.agreeStatus = disapproveList[len - 1].agreeStatus || TEXT_STATUS_DISAGREED;
-            shortList.fio         = disapproveList[len - 1].fio || '';
-            shortList.date        = disapproveList[len - 1].date || '';
-        } else {
-            shortList.agreed      = true;
-            shortList.comments    = list[list.length - 1].comments || '';
-            shortList.agreeStatus = list[list.length - 1].agreeStatus || TEXT_STATUS_DISAGREED;
-        }
-
-        return shortList;
+        })
     }
 }
 

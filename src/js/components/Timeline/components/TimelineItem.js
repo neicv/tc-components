@@ -2,15 +2,18 @@ import m from "mithril";
 import classNames from "classnames";
 import Component from "../../../lib/Component";
 
+const TAG_NAME = 'TimelineOppositeContent';
+
 class TimelineItem extends Component {
-    view({ children }) {
+    view({ vnode, children }) {
         const { position: positionProp, className, ...other} = this.attrs;
 
+        let v = vnode
         let hasOppositeContent = false;
 
         children.forEach(element => {
             if (typeof element === 'object' && element !== null) {
-                if (element.tag && element.tag?.name === 'TimelineOppositeContent') {
+                if (element.tag && element.tag?.name === TAG_NAME || element.tag?.ComponentName === TAG_NAME) {
                     hasOppositeContent = true;
                   }
                 element.attrs = {...other, ...element.attrs, hasOppositeContent}

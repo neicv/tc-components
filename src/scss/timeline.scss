@@ -198,6 +198,14 @@
     transition: max-height 0.2s ease-out;
 
         .border-bottom {
-            max-width: calc(100% - 70px);
+            max-width: calc(100% - 48px);
         }
+}
+
+.timeline-accordion-subcontent {
+    display: flow-root;
+    // margin-top: 20px;
+    // max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
 }

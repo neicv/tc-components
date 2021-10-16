@@ -3,10 +3,20 @@ import classNames from "classnames";
 import Component from "../../../lib/Component";
 import validateColor from '../,,/../../../lib/colors'
 
-class TimelineOppositeContent extends Component {
-    view({ children }) {
-        const attrs = this.attrs;
-        const { position: positionProp, className, color, ...other} = this.attrs;
+class TimelineOppositeContent {//extends Component {
+    // constructor() {
+    //     this.tag.name = 'wewe'
+    //     // this.text = 'TimelineOppositeContent';
+    //     // console.log(attrs)
+    // }
+
+    // oninit() {
+    //     this.attrs = {...this.attrs, TimelineOppositeContent: true }
+    // }
+
+    view({ children, attrs }) {
+        // const attrs = attrs;
+        const { position: positionProp, className, color, ...other} = attrs;//this.attrs;
 
         children.forEach(element => {
             if (typeof element === 'object' && element !== null) {
@@ -29,6 +39,8 @@ class TimelineOppositeContent extends Component {
         )
     }
 }
+
+TimelineOppositeContent.ComponentName = 'TimelineOppositeContent';
 
 export default TimelineOppositeContent;
 
