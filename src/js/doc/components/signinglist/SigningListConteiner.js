@@ -22,11 +22,11 @@ class SigningListContainer extends Component {
         const { data } = this.attrs;
 
         return (
-            <div className="sign-list">
+            <div className="sign-list-container">
                 <Timeline position="both">
                     {
                         data.slice(0).reverse().map((item, index) => {
-                            const { /* title, */ date, signingList = [], ...other } = item;
+                            const { /* title, */ date, /* signingList = [], */ ...other } = item;
                             /*
                             fio, position, agency, role,
 
@@ -42,7 +42,7 @@ class SigningListContainer extends Component {
 
                             return (
                                 <TimelineItem>
-                                    <TimelineOppositeContent color="text.secondary">
+                                    <TimelineOppositeContent color="text.secondary" className="fs13">
                                         {date}
                                     </TimelineOppositeContent>
                                     <TimelineSeparator>
@@ -74,41 +74,9 @@ class SigningListContainer extends Component {
                                     </TimelineSeparator>
                                     <TimelineContent>
                                         {/* {title} */}
-                                        <StatusInfo {...other} index={index}/>
+                                        <StatusInfo {...other} index={index} key={index}/>
                                     </TimelineContent>
                                 </TimelineItem>
-                                /* <TimelineItem>
-                                <TimelineOppositeContent color="text.secondary">
-                                    10:00 am
-                                </TimelineOppositeContent>
-                                <TimelineSeparator>
-                                    <TimelineDot />
-                                    <TimelineConnector />
-                                </TimelineSeparator>
-                                <TimelineContent>Code</TimelineContent>
-                                </TimelineItem>
-                                <TimelineItem>
-                                <TimelineOppositeContent color="text.secondary">
-                                    12:00 am
-                                </TimelineOppositeContent>
-                                <TimelineSeparator>
-                                    <TimelineDot />
-                                    <TimelineConnector />
-                                </TimelineSeparator>
-                                <TimelineContent>Sleep</TimelineContent>
-                                </TimelineItem>
-                                <TimelineItem>
-                                <TimelineOppositeContent color="text.secondary">
-                                    9:00 am
-                                </TimelineOppositeContent>
-                                <TimelineSeparator>
-                                    <TimelineDot>
-                                        <span className='font-icon home'></span>
-                                    </TimelineDot>
-                                </TimelineSeparator>
-                                <TimelineContent>Repeat</TimelineContent>
-                                </TimelineItem> */
-
                             )
                         })
                     }

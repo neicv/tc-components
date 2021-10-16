@@ -161,7 +161,7 @@
 
 .sign-list {
     .timeline-opposite-content {
-        flex: 0.2;
+        flex: 0.1;
     }
     .timeline-dot {
         align-self: auto;
@@ -196,4 +196,8 @@
     // max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
+
+        .border-bottom {
+            max-width: calc(100% - 70px);
+        }
 }

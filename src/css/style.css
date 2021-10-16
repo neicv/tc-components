@@ -91,6 +91,10 @@ body {
     margin-bottom: 5px;
 }
 
+.mb10 {
+    margin-bottom: 10px;
+}
+
 .mt5 {
     margin-top: 5px;
 }
@@ -103,8 +107,16 @@ body {
     margin-top: 15px;
 }
 
+.ml10 {
+    margin-left: 10px;
+}
+
 .ml15 {
     margin-left: 15px;
+}
+
+.ml20 {
+    margin-left: 20px;
 }
 
 .p10 {
@@ -123,8 +135,32 @@ body {
     padding-right: 5px;
 }
 
+.pr10 {
+    padding-right: 10px;
+}
+
 .pr15 {
     padding-right: 15px;
+}
+
+.pr20 {
+    padding-right: 20px;
+}
+
+.pt5 {
+    padding-top: 5px;
+}
+
+.pt10 {
+    padding-top: 10px;
+}
+
+.pb5 {
+    padding-bottom: 5px;
+}
+
+.pb10 {
+    padding-bottom: 10px;
 }
 
 .font-icon-test {

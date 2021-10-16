@@ -6,6 +6,10 @@
     text-align: left !important;
 }
 
+.text-justify {
+    text-align: justify;
+}
+
 .text-bold {
     font-weight: bold;
 }
@@ -18,6 +22,11 @@
     margin: 0 -1px;
     max-width: 100%;
     vertical-align: top;
+}
+
+.border-bottom {
+    border: none;
+    border-bottom: 1px solid #ebebeb;
 }
 
 .inline-block {
@@ -58,4 +67,16 @@
 
 .fs18 {
     font-size: 18px;
+}
+
+.v-align-middle {
+    vertical-align: middle;
+}
+
+.v-align-top {
+    vertical-align: top;
+}
+
+.v-align-text-top {
+    vertical-align: text-top;
 }
