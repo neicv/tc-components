@@ -79,6 +79,10 @@ body {
     outline: none;
 } */
 
+.mr0 {
+    margin-right: 0px;
+}
+
 .mr5 {
     margin-right: 5px;
 }

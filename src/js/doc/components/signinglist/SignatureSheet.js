@@ -50,7 +50,7 @@ class SignatureSheet extends Component {
                                     <i title="Статус" class="font-icon pencil color-blue fs15 pr5 inline-block"></i>
                                     <span class='v-align-middle fs12'>Статус:</span>
                                 </div>
-                                <span class='text-right'>
+                                <span class='text-right display-initial'>
                                     <i
                                         title={shortSigningList.agreeStatus}
                                         className={`font-icon ${shortSigningList.agreed ? 'circle-tick success' : 'circle-close error'} fs15 pr5`}
@@ -143,7 +143,7 @@ class SignatureSheet extends Component {
                                     </div>
                                     <div class="v-align-middle">
                                         <div class="js-ellipsis">
-                                            <div class="text-clipped js-ellipsis-text text-right">
+                                            <div class="mr0 text-right">
                                                 <span title={date || ""} class="text-clipped v-align-middle fs11">{date || ""}</span>
                                             </div>
                                         </div>

@@ -137,5 +137,6 @@ export const icons = [
     'employee',
     'personal-data',
     'flag-start',
-    'flag-finish'
+    'flag-finish',
+    'smart-toy'
 ]

@@ -577,3 +577,7 @@
 .font-icon.flag-start::before {
     content: "\E08B";
 }
+
+.font-icon.smart-toy::before {
+    content: "\E08C";
+}

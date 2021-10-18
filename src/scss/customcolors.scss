@@ -141,8 +141,9 @@
 }
 
 .text-secondary {
-    color: rgba(0, 0, 0, 0.6);
+    color: $global-color-text-secondary;
 }
 .text-primary {
-    color: #20262d;
+    // color: #20262d;
+    color: $global-color-text-primary;
 }
