@@ -19,15 +19,17 @@ class FontIconsDoc {
         return (
             <div className='main-content'>
                 <h1 className='pl10'>Шрифт Иконок</h1>
-                <form className="p10 tm-search tm-search-default">
-                    <span tm-search-icon className="tm-icon tm-search-icon"><SearchIcon/></span>
-                    <input
-                        className="tm-search-input"
-                        type="search"
-                        placeholder="Поиск"
-                        onkeyup={event => this.search = event.target.value}>
-                    </input>
-                </form>
+                <div>
+                    <form className="p10 tm-search tm-search-default">
+                        <span tm-search-icon className="tm-icon tm-search-icon"><SearchIcon/></span>
+                        <input
+                            className="tm-search-input"
+                            type="search"
+                            placeholder="Поиск"
+                            onkeyup={event => this.search = event.target.value}>
+                        </input>
+                    </form>
+                </div>
 
                 <div content-vl27="" class="icons-container" role="listbox" aria-label="Action icons">
                     {
@@ -60,12 +62,12 @@ class FontIconsDoc {
                 <Choose>
                     <When condition={this.showModal}>
                         <Modal
-                            width ={400}
+                            width ={500}
                             title = {
                                 <div className={`title__preview-icon font-icon ${this.icon.icon}`}>
-                                <span className='title__name'>
-                                    {this.icon.text}
-                                </span>
+                                    <span className='title__name'>
+                                        {this.icon.text}
+                                    </span>
                                 </div>}
                             content={<IconsInfo icon={this.icon}/>}
                             //classFooter ={}
@@ -98,7 +100,7 @@ class FontIconsDoc {
         this.showModal = true;
     }
 
-    hex = d => Number(d).toString(16).padStart(3, '0')
+    hex = d => Number(d).toString(16).padStart(3, '0').toUpperCase();
 
     ucFirst(str) {
         if (!str) return str;

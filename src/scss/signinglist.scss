@@ -52,6 +52,23 @@
         min-width: 550px;
         padding-right: 46px;
     }
+
+
+
+    .tm-search-default {
+        .tm-search-icon {
+            color: $global-color-text-secondary;
+        }
+
+        .tm-search-input {
+            border: none;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .tm-search-input:focus {
+            width: 400px;
+        }
+    }
 }
 
 .sign-list-container .timeline-content {

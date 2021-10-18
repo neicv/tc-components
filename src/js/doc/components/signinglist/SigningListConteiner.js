@@ -15,41 +15,23 @@ const COLOR_APPROVE    = 'success';
 const COLOR_DISAPPROVE = 'error';
 
 class SigningListContainer extends Component {
-    onitit() {
-        const { viewDetailsInfo } = this.attrs;
-        this.oldVDI = viewDetailsInfo;
-    }
 
     view() {
-        const { data, viewDetailsInfo } = this.attrs;
-
-        if (this.oldVDI !== viewDetailsInfo) {
-            this.oldVDI = viewDetailsInfo
-            setTimeout(() => m.redraw(), 0);
-        }
+        const { data, viewDetailsInfo, itemTitleClass } = this.attrs;
 
         return (
             <div className="sign-list-container">
                 <Timeline position="both">
                     {
                         data.slice(0).reverse().map((item, index) => {
-                            const { /* title, */ date, /* signingList = [], */ ...other } = item;
-                            /*
-                            fio, position, agency, role,
+                            let { date, ...other } = item;
+                            other = {...other, viewDetailsInfo, itemTitleClass}
 
-                                "title": "Разработка ТЗ",
-                                "date": "27.05.2021 14:27",
-                                "fio": "Полунчуков Алексей Николаевич",
-                                "position": "Ведущий инженер-технолог",
-                                "agency": "АКЦИОНЕРНОЕ ОБЩЕСТВО \"ВОРОНЕЖСКИЙ СИНТЕТИЧЕСКИЙ КАУЧУК\"",
-                                "role": "Инициатор ТЗ",
-                            */
                             const dotColor = this.getColorStepApproved(index, data);
-                            // let infoAttrs = {...other, index}
 
                             return (
                                 <TimelineItem>
-                                    <TimelineOppositeContent name='TimelineOppositeContent' color="text.secondary" className="fs13">
+                                    <TimelineOppositeContent color="text.secondary" className="fs13">
                                         {date}
                                     </TimelineOppositeContent>
                                     <TimelineSeparator>
@@ -61,7 +43,7 @@ class SigningListContainer extends Component {
                                             </When>
                                             <When  condition={index === (data.length - 1) && data.length > 1}>
                                                 <TimelineDot variant="outlined" color="primary">
-                                                    <span className='font-icon flag-start primary'></span>
+                                                    <span className='font-icon flag-start color-primary'></span>
                                                 </TimelineDot>
                                             </When>
                                             <Otherwise>
@@ -80,8 +62,7 @@ class SigningListContainer extends Component {
                                         </If>
                                     </TimelineSeparator>
                                     <TimelineContent>
-                                        {/* {title} */}
-                                        <StatusInfo {...other} index={index} key={index} viewDetailsInfo={viewDetailsInfo}/>
+                                        <StatusInfo {...other} index={index} key={index} />
                                     </TimelineContent>
                                 </TimelineItem>
                             )

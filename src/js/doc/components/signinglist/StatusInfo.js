@@ -8,17 +8,23 @@ const DELAY_INIT_MAX_HEIGHT = 100;
 class StatusInfo extends Component {
     oninit(vnode) {
         this.isSigningInfoOpen      = false;
-        this.initialState           = [];
+        this.model                  = [];
         this._element               = vnode;
         const { viewDetailsInfo }   = this.attrs;
         this.oldVDI                 = viewDetailsInfo;
-        this.isTransitionInProgress = false;
-
-        this.model = [];
     }
 
     view() {
-        const { title='', fio = '', position = '', agency = '', role = '', index, signingList = [], viewDetailsInfo } = this.attrs;
+        const { title='',
+                fio = '',
+                position = '',
+                agency = '',
+                role = '',
+                index = 0,
+                signingList = [],
+                viewDetailsInfo,
+                itemTitleClass
+            } = this.attrs;
 
         if (this.oldVDI !== viewDetailsInfo) {
             this.oldVDI            = viewDetailsInfo
@@ -30,7 +36,7 @@ class StatusInfo extends Component {
         return (
             <div className="signing-info turbo-visa">
                 <div class="turbo-visa__history-item">
-                    <div class="history-item__title">{title}</div>
+                    <div className={`history-item__title ${itemTitleClass || ''}`}>{title}</div>
 
                     <div class="mt10 ml15 tile-list_bordered history-item__content">
                         <div
@@ -48,7 +54,6 @@ class StatusInfo extends Component {
                             class="timeline-accordion-content"
                             // hidden={this.isSigningInfoOpen}
                             oncreate={element => this.setMaxHeight(element, index)}
-                            ontransitionstart={()=> this.isTransitionInProgress = true}
                         >
                             <div class=" v-align-middle pr15">
                                 <div class="js-ellipsis">
@@ -89,8 +94,7 @@ class StatusInfo extends Component {
     }
 
     toggleInfoPanel(event, index) {
-        let next,
-            targ = event.currentTarget;
+        let targ = event.currentTarget;
 
         if (targ.tagName !== 'DIV' && targ.nextElementSibling) {
             return;
@@ -109,7 +113,6 @@ class StatusInfo extends Component {
 
 
     setMaxHeight(element, index) {
-        let _this = this;
 
         this.model.push(element.dom);
 

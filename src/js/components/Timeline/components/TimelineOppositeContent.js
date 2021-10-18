@@ -2,21 +2,13 @@ import m from "mithril";
 import classNames from "classnames";
 import Component from "../../../lib/Component";
 import validateColor from '../,,/../../../lib/colors'
+import TimelineItem from "./TimelineItem";
 
-class TimelineOppositeContent {//extends Component {
-    // constructor() {
-    //     this.tag.name = 'wewe'
-    //     // this.text = 'TimelineOppositeContent';
-    //     // console.log(attrs)
-    // }
+class TimelineOppositeContent extends Component   {//extends TimelineItem {
 
-    // oninit() {
-    //     this.attrs = {...this.attrs, TimelineOppositeContent: true }
-    // }
-
-    view({ children, attrs }) {
+    view({ children }) {
         // const attrs = attrs;
-        const { position: positionProp, className, color, ...other} = attrs;//this.attrs;
+        const { position: positionProp, className, color, ...other} = this.attrs;
 
         children.forEach(element => {
             if (typeof element === 'object' && element !== null) {
@@ -28,8 +20,8 @@ class TimelineOppositeContent {//extends Component {
 
         let classesElement = classNames(
             "timeline-opposite-content",
-            {'text-left'  : attrs?.position === 'left'},
-            {'text-right' : attrs?.position === 'right'}
+            {'text-left'  : this.attrs?.position === 'left'},
+            {'text-right' : this.attrs?.position === 'right'}
         )
 
         return (
