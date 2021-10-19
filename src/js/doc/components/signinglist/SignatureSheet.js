@@ -34,7 +34,7 @@ class SignatureSheet extends Component {
 
                     <div class="mt10 ml15 tile-list_bordered history-item__content">
                         <div
-                            className={`v-align-middle pr0 pt10 pb10 pr15 ${this.isSigningInfoOpen ? 'timeline-open' : ''}`}
+                            className={`v-align-middle pr0 pt10 pr15 ${this.isSigningInfoOpen ? 'timeline-open' : ''}`}
                             onclick={event => this.toggleInfoPanel(event)}
                         >
                             <div
@@ -43,7 +43,7 @@ class SignatureSheet extends Component {
                                 aria-expanded={this.isSigningInfoOpen}
                             >
                                 <i title="Лист согласования" class="font-icon template-icon fs18 pr5"></i>
-                                <span class="v-align-top fs15 text-right">Лист согласования</span>
+                                <span class="v-align-top fs16 text-right">Лист согласования</span>
                             </div>
                             <If condition={signingList.length !== 0}>
                                 <div

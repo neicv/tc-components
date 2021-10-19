@@ -29,7 +29,8 @@ class SigningListContainer extends Component {
                             other = {...other, viewDetailsInfo, itemTitleClass}
 
                             const signingList      = this.getSigningList(index, data);
-                            const dotColor         = this.getColorStepApproved(signingList);
+                            const dotColorTmp      = this.getColorStepApprovedFromStatus(index, data)
+                            let dotColor           = dotColorTmp || this.getColorStepApproved(signingList);
                             const shortSigningList = this.getShortSigningList(signingList);
 
                             return (
@@ -117,10 +118,52 @@ class SigningListContainer extends Component {
         )
     }
 
+    // Временныый костыль...
+    getColorStepApprovedFromStatus(index, data = []) {
+        let typeStatus,
+            result;
+        if (index ===  data.length - 1) {
+            return false;
+        }
+        // Reverse !
+        let rIndex      = data.length - 1 - index;
+        let list = data[rIndex];
+
+        if (!list || list.length === 0) {
+            return false;
+        }
+
+        if (list.hasOwnProperty('typeStatus')) {
+            typeStatus = list.typeStatus;
+
+            if (typeStatus === undefined) {
+                return false;
+            }
+
+            result = typeStatus ? COLOR_APPROVE : COLOR_DISAPPROVE;
+
+            return result;
+        }
+
+        return false;
+    }
+
     getColorStepApproved(list) {
+        // let typeStatus;
+
         if (list === false) {
             return false;
         }
+
+        // if (list.hasOwnProperty('typeStatus')) {
+        //     typeStatus = list.typeStatus;
+
+        //     if (typeStatus === undefined) {
+        //         return false;
+        //     }
+
+        //     return typeStatus ? COLOR_APPROVE : COLOR_DISAPPROVE;
+        // }
 
         return list.map(el => el.agreed).includes(false) ? COLOR_DISAPPROVE : COLOR_APPROVE;
     }

@@ -565,6 +565,7 @@ export const history = [
         "agency": "АКЦИОНЕРНОЕ ОБЩЕСТВО \"ВОРОНЕЖСКИЙ СИНТЕТИЧЕСКИЙ КАУЧУК\"",
         "role": "Инициатор ТЗ",
         "prevStatus": "Согласование ТЗ",
+        "typeStatus": false,
         "signingList": []
     },
     {
