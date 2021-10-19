@@ -1,7 +1,6 @@
 import m from 'mithril';
 import classNames from "classnames";
 import Component from '@/lib/Component';
-import SignatureSheet from './SignatureSheet';
 
 const TEXT_BLANK            = 'Не указано';
 const TEXT_ROBOT            = 'Автоматически';
@@ -23,7 +22,6 @@ class StatusInfo extends Component {
                 agency = '',
                 role = '',
                 index = 0,
-                signingList = [],
                 viewDetailsInfo,
                 itemTitleClass
             } = this.attrs;
@@ -91,13 +89,6 @@ class StatusInfo extends Component {
                                 </div>
                             </If>
                         </div>
-
-                        <Choose>
-                            <When condition={signingList.length !== 0}>
-                                <SignatureSheet signingList={signingList} index={index} viewDetailsInfo={viewDetailsInfo}/>
-                            </When>
-                        </Choose>
-
                     </div>
                 </div>
             </div>

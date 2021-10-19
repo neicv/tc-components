@@ -8,6 +8,7 @@ import TimelineSeparator from '@/components/Timeline/components/TimelineSeparato
 import TimelineDot from '@/components/Timeline/components/TimelineDot';
 import TimelineConnector from '@/components/Timeline/components/TimelineConnector';
 import TimelineContent from '@/components/Timeline/components/TimelineContent';
+import SignatureSheet from './SignatureSheet';
 
 import StatusInfo from './StatusInfo';
 
@@ -27,44 +28,87 @@ class SigningListContainer extends Component {
                             let { date, ...other } = item;
                             other = {...other, viewDetailsInfo, itemTitleClass}
 
-                            const dotColor = this.getColorStepApproved(index, data);
+                            const signingList      = this.getSigningList(index, data);
+                            const dotColor         = this.getColorStepApproved(signingList);
+                            const shortSigningList = this.getShortSigningList(signingList);
 
                             return (
-                                <TimelineItem>
-                                    <TimelineOppositeContent color="text.secondary" className="fs13">
-                                        {date}
-                                    </TimelineOppositeContent>
-                                    <TimelineSeparator>
-                                        <Choose>
-                                            <When condition={index === 0 && data.lenght !==0}>
-                                                <TimelineDot variant="outlined" color="success">
-                                                    <span className='font-icon flag-finish success'></span>
-                                                </TimelineDot>
-                                            </When>
-                                            <When  condition={index === (data.length - 1) && data.length > 1}>
-                                                <TimelineDot variant="outlined" color="primary">
-                                                    <span className='font-icon flag-start color-primary'></span>
-                                                </TimelineDot>
-                                            </When>
-                                            <Otherwise>
-                                                <Choose>
-                                                    <When condition={dotColor === false}>
-                                                        <TimelineDot />
-                                                    </When>
-                                                    <Otherwise>
-                                                        <TimelineDot color={dotColor}/>
-                                                    </Otherwise>
-                                                </Choose>
-                                            </Otherwise>
-                                        </Choose>
-                                        <If condition={index !== data.length - 1}>
-                                            <TimelineConnector />
-                                        </If>
-                                    </TimelineSeparator>
-                                    <TimelineContent>
-                                        <StatusInfo {...other} index={index} key={index} />
-                                    </TimelineContent>
-                                </TimelineItem>
+                                <>
+                                    {/* Status Item */}
+                                    <TimelineItem>
+                                        <TimelineOppositeContent color="text.secondary" className="fs13">
+                                            {date}
+                                        </TimelineOppositeContent>
+                                        <TimelineSeparator>
+                                            <Choose>
+                                                <When condition={index === 0 && data.lenght !==0}>
+                                                    <TimelineDot variant="outlined" color={dotColor}>
+                                                        <span className='font-icon flag-finish color-success'></span>
+                                                    </TimelineDot>
+                                                </When>
+                                                <When  condition={index === (data.length - 1) && data.length > 1}>
+                                                    <TimelineDot variant="outlined" color="primary">
+                                                        <span className='font-icon flag-start color-primary'></span>
+                                                    </TimelineDot>
+                                                </When>
+                                                <Otherwise>
+                                                    <Choose>
+                                                        <When condition={dotColor === false}>
+                                                            <TimelineDot />
+                                                        </When>
+                                                        <Otherwise>
+                                                            <TimelineDot color={dotColor}/>
+                                                        </Otherwise>
+                                                    </Choose>
+                                                </Otherwise>
+                                            </Choose>
+                                            <If condition={index !== data.length - 1}>
+                                                <TimelineConnector />
+                                            </If>
+                                        </TimelineSeparator>
+                                        <TimelineContent>
+                                            <StatusInfo {...other} index={index} key={index} />
+                                        </TimelineContent>
+                                    </TimelineItem>
+                                    <Choose>
+                                        <When condition={signingList && signingList.length !== 0}>
+                                            {/* SigningList */}
+                                            <TimelineItem>
+                                                <TimelineOppositeContent color="text.secondary" className="fs13">
+                                                    {shortSigningList.date}
+                                                </TimelineOppositeContent>
+                                                <TimelineSeparator>
+                                                    <Choose>
+                                                        <When condition={shortSigningList.agreed === true}>
+                                                            <TimelineDot variant="outlined" color={dotColor}>
+                                                                {/* <span className='font-icon icon-tick color-success'></span> */}
+                                                            </TimelineDot>
+                                                        </When>
+                                                        <When  condition={shortSigningList.agreed === false}>
+                                                            <TimelineDot variant="outlined" color="error">
+                                                                {/* <span className='font-icon cancel color-error'></span> */}
+                                                            </TimelineDot>
+                                                        </When>
+                                                        <Otherwise>
+                                                            <TimelineDot />
+                                                        </Otherwise>
+                                                    </Choose>
+                                                    <If condition={index !== data.length - 1}>
+                                                        <TimelineConnector />
+                                                    </If>
+                                                </TimelineSeparator>
+                                                    <TimelineContent>
+                                                        <SignatureSheet
+                                                            index={index}
+                                                            signingList={signingList}
+                                                            shortSigningList={shortSigningList}
+                                                            viewDetailsInfo={viewDetailsInfo}
+                                                        />
+                                                    </TimelineContent>
+                                            </TimelineItem>
+                                        </When>
+                                    </Choose>
+                                </>
                             )
                         })
                     }
@@ -73,20 +117,64 @@ class SigningListContainer extends Component {
         )
     }
 
-    // Передавать data ?
-    getColorStepApproved(index, data = []) {
-        if (index === 0 || index ===  data.length - 1) {
+    getColorStepApproved(list) {
+        if (list === false) {
             return false;
         }
-        // Reverse !
-        let rIndex      = data.length - 1 - index;
+
+        return list.map(el => el.agreed).includes(false) ? COLOR_DISAPPROVE : COLOR_APPROVE;
+    }
+
+    // Передавать data ?
+    getSigningList(index, data = []) {
+        if (index ===  data.length - 1) {
+            return false;
+        }
+        // Reverse ! and See to prev element SigningList
+        let rIndex      = data.length - 2 - index;
         let signingList = data[rIndex]?.signingList;
 
         if (!signingList || signingList.length === 0) {
             return false;
         }
 
-        return signingList.map(el => el.agreed).includes(false) ? COLOR_DISAPPROVE : COLOR_APPROVE;
+        return signingList;
+    }
+
+    getShortSigningList(list) {
+        let disapproveList,
+            len,
+            shortList = {
+                comments: "",
+                agreed: false,
+                agreeStatus: "",
+                fio: "",
+                date: ""
+            }
+
+        if (!list || list.length === 0) {
+            return shortList;
+        }
+
+        disapproveList = list.filter(el => el.agreed === false);
+
+        len = disapproveList.length;
+
+        if (len !==0) {
+            // Последний коммент из не согласованных
+            shortList.agreed      = false;
+            shortList.comments    = disapproveList[len - 1].comments || '';
+            shortList.agreeStatus = disapproveList[len - 1].agreeStatus || TEXT_STATUS_AGREED;
+            shortList.fio         = disapproveList[len - 1].fio || '';
+            shortList.date        = disapproveList[len - 1].date || '';
+        } else {
+            shortList.agreed      = true;
+            shortList.comments    = list[list.length - 1].comments || '';
+            shortList.agreeStatus = list[list.length - 1].agreeStatus || TEXT_STATUS_DISAGREED;
+            shortList.date        = list[list.length - 1].date || '';
+        }
+
+        return shortList;
     }
 }
 

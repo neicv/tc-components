@@ -95,7 +95,7 @@ class IconsInfo extends Component {
             return;
         }
 
-        navigator.clipboard.writeText(value);
+        navigator.clipboard.writeText(value.toLowerCase());
         this.flagsCopy[trigger] = true;
 
         setTimeout(() => {
