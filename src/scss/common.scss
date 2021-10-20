@@ -88,3 +88,18 @@
 .v-align-text-top {
     vertical-align: text-top;
 }
+
+.dashed-text, .dashed-link, .dashed-link-note {
+    border-bottom: 1px dashed;
+}
+.dashed-link, .dotted-link, .solid-link {
+    display: inline-block;
+}
+.dashed-link, .dotted-link, .solid-link, .dashed-text, .dotted-text, .solid-text {
+    line-height: normal;
+    text-decoration: none;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}

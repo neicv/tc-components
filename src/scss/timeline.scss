@@ -149,6 +149,18 @@
         color: $theme-palette-secondary-contrastText;
         background-color: $theme-palette-error-light;
     }
+
+    &.error-outlined {
+        box-shadow: none;
+        background-color: transparent;
+        border-color: $theme-palette-error-light;
+    }
+
+    &.warning-outlined {
+        box-shadow: none;
+        background-color: transparent;
+        border-color: $theme-palette-warning-light;
+    }
 }
 
 .timeline-connector {
@@ -208,4 +220,5 @@
     // max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
+    cursor: pointer;
 }

@@ -36,7 +36,7 @@ class IconsInfo extends Component {
                                 className="tm-icon tm-infocode-icon"
                                 onclick={()=> this.copyToClipBoard(icon.text, 'text')}
                             >
-                                <span class="tooltip">
+                                <span className="tooltip">
                                     <span className={`tooltiptext ${this.flagsCopy.text ? 'active' : ''}`}>
                                         {TEXT_IS_COPED}
                                     </span>
@@ -68,7 +68,7 @@ class IconsInfo extends Component {
                                 className="tm-icon tm-infocode-icon"
                                 onclick={()=> this.copyToClipBoard(icon.code, 'code')}
                             >
-                                <span class="tooltip">
+                                <span className="tooltip">
                                     <span className={`tooltiptext ${this.flagsCopy.code ? 'active' : ''}`}>
                                         {TEXT_IS_COPED}
                                     </span>
@@ -95,7 +95,7 @@ class IconsInfo extends Component {
             return;
         }
 
-        navigator.clipboard.writeText(value);
+        navigator.clipboard.writeText(value.toLowerCase());
         this.flagsCopy[trigger] = true;
 
         setTimeout(() => {

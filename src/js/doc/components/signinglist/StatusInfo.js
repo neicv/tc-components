@@ -1,7 +1,6 @@
 import m from 'mithril';
 import classNames from "classnames";
 import Component from '@/lib/Component';
-import SignatureSheet from './SignatureSheet';
 
 const TEXT_BLANK            = 'Не указано';
 const TEXT_ROBOT            = 'Автоматически';
@@ -23,7 +22,6 @@ class StatusInfo extends Component {
                 agency = '',
                 role = '',
                 index = 0,
-                signingList = [],
                 viewDetailsInfo,
                 itemTitleClass
             } = this.attrs;
@@ -44,60 +42,53 @@ class StatusInfo extends Component {
 
         return (
             <div className="signing-info turbo-visa">
-                <div class="turbo-visa__history-item">
+                <div className="turbo-visa__history-item">
                     <div className={`history-item__title ${itemTitleClass || ''}`}>{title}</div>
 
-                    <div class="mt10 ml15 tile-list_bordered history-item__content">
+                    <div className="mt10 ml15 tile-list_bordered history-item__content">
                         <div
                             className={`v-align-middle pr15 pb5 ${this.isSigningInfoOpen ? 'timeline-open' : ''}`}
                             onclick={event => this.toggleInfoPanel(event, index)}
                         >
-                            <div class="js-ellipsis timeline-accordion-title" aria-expanded={this.isSigningInfoOpen}>
-                                <div class="text-clipped js-ellipsis-text display-flex">
+                            <div className="js-ellipsis timeline-accordion-title" aria-expanded={this.isSigningInfoOpen}>
+                                <div className="text-clipped js-ellipsis-text display-flex">
                                     <i title="ФИО" className={classIconFio}></i>
-                                    <span title={fio || TEXT_ROBOT} class="text-clipped v-align-middle fs12">{fio || TEXT_ROBOT}</span>
+                                    <span title={fio || TEXT_ROBOT} className="text-clipped v-align-middle fs12">{fio || TEXT_ROBOT}</span>
                                 </div>
                             </div>
                         </div>
                         <div
-                            class="timeline-accordion-content"
-                            // hidden={this.isSigningInfoOpen}
+                            className="timeline-accordion-content"
+                            hidden={this.isSigningInfoOpen}
                             oncreate={element => this.setMaxHeight(element, index)}
                         >
-                            <div class="v-align-middle pr15 pb5">
-                                <div class="js-ellipsis">
-                                    <div class="text-clipped js-ellipsis-text display-flex">
-                                        <i title="Организация" class="font-icon case color-blue fs15 pr5 inline-block"></i>
-                                        <span title={agency || TEXT_BLANK} class="text-clipped v-align-middle fs12">{agency || TEXT_BLANK}</span>
+                            <div className="v-align-middle pr15 pb5">
+                                <div className="js-ellipsis">
+                                    <div className="text-clipped js-ellipsis-text display-flex">
+                                        <i title="Организация" className="font-icon case color-blue fs15 pr5 inline-block"></i>
+                                        <span title={agency || TEXT_BLANK} className="text-clipped v-align-middle fs12">{agency || TEXT_BLANK}</span>
                                     </div>
                                 </div>
                             </div>
                             <If condition={fio !== ''}>
-                                <div class="v-align-middle pr15 pb5">
-                                    <div class="js-ellipsis">
-                                        <div class="text-clipped js-ellipsis-text display-flex">
-                                            <i title="Должность" class="font-icon position-icon color-blue fs15 pr5"></i>
-                                            <span title={position || TEXT_BLANK} class="text-clipped v-align-middle fs12">{position || TEXT_BLANK}</span>
+                                <div className="v-align-middle pr15 pb5">
+                                    <div className="js-ellipsis">
+                                        <div className="text-clipped js-ellipsis-text display-flex">
+                                            <i title="Должность" className="font-icon position-icon color-blue fs15 pr5"></i>
+                                            <span title={position || TEXT_BLANK} className="text-clipped v-align-middle fs12">{position || TEXT_BLANK}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class={`v-align-middle pr15 pb5 ${this.isSigningInfoOpen ? 'pb10 border-bottom' : ''} `}>
-                                    <div class="js-ellipsis">
-                                        <div class="text-clipped js-ellipsis-text display-flex">
-                                            <i title="Роль" class="font-icon role-icon color-blue fs15 pr5 inline-block"></i>
-                                            <span title={role || TEXT_BLANK} class="text-clipped v-align-middle fs12">{role || TEXT_BLANK}</span>
+                                <div className={`v-align-middle pr15 pb5 ${this.isSigningInfoOpen ? 'pb10 border-bottom' : ''} `}>
+                                    <div className="js-ellipsis">
+                                        <div className="text-clipped js-ellipsis-text display-flex">
+                                            <i title="Роль" className="font-icon role-icon color-blue fs15 pr5 inline-block"></i>
+                                            <span title={role || TEXT_BLANK} className="text-clipped v-align-middle fs12">{role || TEXT_BLANK}</span>
                                         </div>
                                     </div>
                                 </div>
                             </If>
                         </div>
-
-                        <Choose>
-                            <When condition={signingList.length !== 0}>
-                                <SignatureSheet signingList={signingList} index={index} viewDetailsInfo={viewDetailsInfo}/>
-                            </When>
-                        </Choose>
-
                     </div>
                 </div>
             </div>

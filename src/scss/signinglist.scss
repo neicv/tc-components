@@ -53,8 +53,6 @@
         padding-right: 46px;
     }
 
-
-
     .tm-search-default {
         .tm-search-icon {
             color: $global-color-text-secondary;
@@ -68,6 +66,15 @@
         .tm-search-input:focus {
             width: 400px;
         }
+    }
+
+    .dashed-text {
+        border-bottom: 1px dashed;
+        border-color: $global-color-link-default;
+    }
+
+    .dashed-text:hover {
+        border: none;
     }
 }
 

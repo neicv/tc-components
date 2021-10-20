@@ -31,7 +31,7 @@ class FontIconsDoc {
                     </form>
                 </div>
 
-                <div content-vl27="" class="icons-container" role="listbox" aria-label="Action icons">
+                <div content-vl27="" className="icons-container" role="listbox" aria-label="Action icons">
                     {
                         items.map((item, index) => {
                             return (
@@ -53,7 +53,7 @@ class FontIconsDoc {
                                     >
                                         {/* {item} */}
                                     </span>
-                                    <span content-vl37="" class="icon-name">{item}</span>
+                                    <span content-vl37="" className="icon-name">{item}</span>
                                 </button>
                             )
                         })

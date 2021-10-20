@@ -30,12 +30,3 @@ class Timeline extends Component {
 }
 
 export default Timeline;
-
-/*
-корекция для смещения - "слева 20% - справа остальное"
-
-.timeline-dot :  убрать align-self: baseline;
-.timeline-separator : добавить min-width: 32px;
-.missing-opposite-content:before  - изменить flex: 0.2
-
-*/
