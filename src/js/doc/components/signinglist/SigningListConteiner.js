@@ -1,5 +1,4 @@
 import m from 'mithril';
-
 import Component from '@/lib/Component';
 import Timeline from '@/components/Timeline';
 import TimelineItem from '@/components/Timeline/components/TimelineItem';
@@ -33,12 +32,15 @@ class SigningListContainer extends Component {
                             let dotColor           = dotColorTmp || this.getColorStepApproved(signingList);
                             const shortSigningList = this.getShortSigningList(signingList);
 
+                            date = date.split(' ');
+
                             return (
                                 <>
                                     {/* Status Item */}
                                     <TimelineItem>
                                         <TimelineOppositeContent color="text.secondary" className="fs13">
-                                            {date}
+                                            <div>{date[0]}</div>
+                                            <div className='fs11'>{date[1]}</div>
                                         </TimelineOppositeContent>
                                         <TimelineSeparator>
                                             <Choose>
@@ -76,7 +78,8 @@ class SigningListContainer extends Component {
                                             {/* SigningList */}
                                             <TimelineItem>
                                                 <TimelineOppositeContent color="text.secondary" className="fs13">
-                                                    {shortSigningList.date}
+                                                    <div>{shortSigningList.date.split(' ')[0]}</div>
+                                                    <div className='fs11'>{shortSigningList.date.split(' ')[1]}</div>
                                                 </TimelineOppositeContent>
                                                 <TimelineSeparator>
                                                     <Choose>
@@ -154,16 +157,6 @@ class SigningListContainer extends Component {
         if (list === false) {
             return false;
         }
-
-        // if (list.hasOwnProperty('typeStatus')) {
-        //     typeStatus = list.typeStatus;
-
-        //     if (typeStatus === undefined) {
-        //         return false;
-        //     }
-
-        //     return typeStatus ? COLOR_APPROVE : COLOR_DISAPPROVE;
-        // }
 
         return list.map(el => el.agreed).includes(false) ? COLOR_DISAPPROVE : COLOR_APPROVE;
     }
