@@ -12,3 +12,6 @@ npm install
 ```
 npm run dev
 ```
+
+## Standarts
+[![](https://github.com/neicv/tc-components/workflows/EditorConfig/badge.svg)](https://github.com/neicv/tc-components/actions?query=workflow%3AEditorConfig)
