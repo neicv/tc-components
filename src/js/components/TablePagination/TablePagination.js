@@ -20,12 +20,12 @@
  */
 
 import "mithril";
-import Component from "_/lib/Component";
+import Component from "@/lib/Component";
 import classNames from "classnames";
-import {translate} from "_/localizations";
-import Chevron from "_/components/plugins/Chevron/chevron";
+import {translate} from "@/localizations";
+import Chevron from "@/components/Chevron/chevron";
 
-const LANG                           = "macrosGroup.pagination";
+const LANG                           = "pagination";
 const CHEVRON_DIMENSION              = 12;
 const DEFAULT_OPTIONS_ITEMS_PER_PAGE = [5, 10, 15, 25, 50, -1];
 const DEFAULT_VALUE_ITEMS_PER_PAGE   = 10;

@@ -103,7 +103,11 @@ class PaginationDoc {
 
     view() {
         return (
-            <div className='test'>TEST</div>
+            <div className='test'>
+                <p>TEST</p>
+                <p><h2>Data Table</h2></p>
+                <DataTable items={this.desserts}/>
+            </div>
         )
     }
 }

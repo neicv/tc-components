@@ -1,0 +1,10 @@
+{
+    "ru": {
+          "pagination":   {
+              "rowsPerPageMsg":       "Строк на странице:",
+              "showedMsg":            "показано: ",
+              "showedMsgFrom":        " из ",
+              "valueAll":             "Все"
+          }
+    }
+}
