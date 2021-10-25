@@ -1,7 +1,7 @@
 import m from "mithril";
 import Component from "@/lib/Component";
 import classNames from "classnames";
-import TablePagination from "@/components/TablePAgination/TablePAgination";
+import TablePagination from "@/components/TablePagination/TablePagination";
 
 class DataTable extends Component {
     oninit() {
@@ -24,38 +24,24 @@ class DataTable extends Component {
                 arrowDown: 'arrow-down'
             })
         };
-        this.filteredList = [1 , 2, 3, 4, 5]
+        this.headers = [];
+        this.filteredList  = this.items;
+        // this.paginatedList = this.paginatedList();
 
-        this.paginatedList = this.items;
-
-
-        this.headers = [
-            {
-              text: 'Dessert (100g serving)',
-              align: 'start',
-              sortable: false,
-              value: 'name',
-              width: 'half',
-              truncate: 'on'
-            },
-            { text: 'Calories', value: 'calories', width: 'small', truncate: 'on', sortable: true},
-            { text: 'Fat (g)', value: 'fat', width: 'small', truncate: 'on', sortable: true},
-            { text: 'Carbs (g)', value: 'carbs', width: 'small', truncate: 'on', sortable: true},
-            { text: 'Protein (g)', value: 'protein' , width: 'small', truncate: 'on', sortable: true},
-            { text: 'Iron (%)', value: 'iron' , width: 'small', truncate: 'on', sortable: true}
-          ]
-
-        this.attrs = {...this.attrs, headers: this.headers}
+        // this.attrs = {...this.attrs, headers: this.headers}
     }
 
     view() {
         const { height, width, loading = false, className = "", headers = []} = this.attrs;
 
+        this.headers = headers;
+        const tableCss =`tc-table tc-table-hover tc-table-small tc-table-middle tc-table-divider tc-table-responsive ${className}`
+        const paginatedList = this.paginatedList();
+
         return (
             <div className='data-table'>
                 <table
-                    class="tm-table uk-table uk-table-hover uk-table-small uk-table-middle uk-table-divider uk-table-responsive"
-                    className={loading ? '' : 'uk-table-striped'}
+                    className={`${tableCss} ${loading ? '' : 'tc-table-striped'}`}
                 >
                     <thead>
                         <tr>
@@ -95,17 +81,19 @@ class DataTable extends Component {
                         </tr>
                     </thead>
                     <If condition={loading === false}>
-                        <tfoot class="uk-text-right uk-margin uk-text-middle">
+                        <tfoot class="text-right mb20 text-middle">
                             <Choose>
-                                <When condition={this.paginatedList.length}>
+                                <When condition={paginatedList.length}>
                                     <tr class="">
                                         <td colspan={headers.length + 1}>
-                                            {/* <TablePagination
+                                            <TablePagination
                                                 // isMobiledView="isMobiledView"
-                                                itemsArrayLength={this.filteredList.length}
-                                                pagination={this.pagination}
-                                                sendPagination={this.getPaginated}
-                                            ></TablePagination> */}
+                                                total={this.filteredList.length}
+                                                pageStart={this.pagination.pageStart}
+                                                pageStop={this.pagination.pageStop}
+                                                itemsPerPage={this.pagination.itemsPerPage}
+                                                getPagination={this.getPaginated.bind(this)}
+                                            ></TablePagination>
                                         </td>
                                     </tr>
                                 </When>
@@ -119,23 +107,59 @@ class DataTable extends Component {
                             </Choose>
                         </tfoot>
                     </If>
+                    <tbody>
+                        <Choose>
+                            <When condition={loading}>
+                                <tr class="text-center">
+                                    <td colspan={headers.length + 1}>
+                                        <div tc-spinner="ratio: 2"></div>
+                                    </td>
+                                </tr>
+                            </When>
+                            <Otherwise>
+                                {
+                                    paginatedList.map((row, index) => (
+                                        <tr key={`row-${index}`}>
+                                            {
+                                                headers.map((col, indx) => (
+                                                    <td
+                                                        key={`cols-${indx}`}
+                                                        className={this.itemColClassCss(col)}
+                                                    >
+                                                        {row[col.value]}
+                                                    </td>
+                                                ))
+                                            }
+                                        </tr>
+                                    ))
+                                }
+                            </Otherwise>
+                        </Choose>
+                    </tbody>
                 </table>
-
             </div>
         )
     }
 
     headerClassCss(header) {
         return classNames(
-            {'uk-table-shrink': header.width === 'shrink'},
-            {'uk-table-expand': header.width === 'expand'},
-            {'uk-width-small': header.width === 'small'},
-            {'tm-width-smallest': header.width === 'smallest'},
-            {'uk-width-1-2': header.width === 'half'},
-            {'uk-text-nowrap': header.nowrap === 'on'},
-            {'uk-text-truncate': header.truncate === 'on'},
-            {'tm-text-sortable': this.sortedField == header.value},
-            {'tm-header-item': this.isFieldSortable(header.value)}
+            {'tc-table-shrink': header.width === 'shrink'},
+            {'tc-table-expand': header.width === 'expand'},
+            {'tc-width-small': header.width === 'small'},
+            {'tc-width-smallest': header.width === 'smallest'},
+            {'tc-width-1-2': header.width === 'half'},
+            {'tc-text-nowrap': header.nowrap === 'on'},
+            {'tc-text-truncate': header.truncate === 'on'},
+            {'tc-text-sortable': this.sortedField == header.value},
+            {'tc-header-item': this.isFieldSortable(header.value)}
+        )
+    }
+
+    itemColClassCss(col) {
+        return classNames(
+            {'tc-table-link': col.value === 'title'},
+            {'tc-text-nowrap': col.nowrap === 'on'},
+            {'tc-text-truncate': col.truncate === 'on'}
         )
     }
 
@@ -168,33 +192,40 @@ class DataTable extends Component {
     }
 
     getPaginated(val) {
-        this.pagination = val
+        this.pagination = val;
     }
 
     updateData() {
         //
     }
 
-    // get paginatedList() {
-    //     if (!this.filteredList) return []
+    paginatedList() {
+        if (!this.filteredList) {
+            return [];
+        }
 
-    //     let len = this.filteredList.length
-    //     let start
-    //     let end = 0
+        let len = this.filteredList.length,
+            start,
+            end = 0;
 
-    //     if (this.pagination.itemsPerPage != '-1') {
-    //         if (len < this.pagination.pageStart) this.resetPagination()
-    //         start = this.pagination.pageStart
-    //         end = this.pagination.pageStop
-    //         if (end === 0) end = start + parseInt(this.pagination.itemsPerPage)
-    //         if (end > len) end = len
-    //     } else {
-    //         start = 0
-    //         end = len
-    //     }
+        if (this.pagination.itemsPerPage != '-1') {
+            if (len < this.pagination.pageStart) this.resetPagination()
+            start = this.pagination.pageStart
+            end = this.pagination.pageStop
+            if (end === 0) end = start + parseInt(this.pagination.itemsPerPage)
+            if (end > len) end = len
+        } else {
+            start = 0
+            end = len
+        }
 
-    //     return this.filteredList.slice(start, end)
-    // }
+        return this.filteredList.slice(start, end)
+    }
+
+    resetPagination() {
+        this.pagination.pageStart = 0
+        this.pagination.pageStop = this.pagination.itemsPerPage
+    }
 }
 
 export default DataTable;

@@ -9,6 +9,17 @@ import PaginationDoc from './doc/pagination';
 import SignListDoc from './doc/signlist';
 import TimeLineDoc from './doc/timeline';
 import App from './layout/App.js';
+import {setContent, setLocale} from './localizations';
+// import notificationsLang from 'localizations/notifications';
+import paginationLang from './localizations/pagination.json';
+
+// Установка локализации.
+setLocale("ru");
+// Регистрация локализаций, которые необходимы во всей авторизованной части проета.
+setContent(
+	// notificationsLang,
+	paginationLang
+)
 
 const root = document.body;
 

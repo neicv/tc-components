@@ -99,6 +99,10 @@ body {
     margin-bottom: 10px;
 }
 
+.mb20 {
+    margin-bottom: 20px;
+}
+
 .mt5 {
     margin-top: 5px;
 }
@@ -539,7 +543,7 @@ body {
 .tm-search-input::placeholder {
     color: #999;
 }
-/* Icon (Adopts `uk-icon`)
+/* Icon (Adopts `tc-icon`)
 ========================================================================== */
 /*
 * Remove default focus style
@@ -715,6 +719,10 @@ body {
 }
 
 .test-timeline {
+	width: 50%;
+}
+
+.test-pagination {
 	width: 50%;
 }
 
@@ -977,4 +985,463 @@ pre code {
     background-color: #ffecec;
 }.hljs-link {
     text-decoration:underline;
+}
+
+/* ========================================================================
+    Component: Pagination
+========================================================================== */
+
+.tc-pagination-inline {
+    display: flex;
+    justify-content: right;
+    position: relative;
+    max-width: 100%;
+    vertical-align: middle;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.tc-pagination-group {
+    position: relative;
+    align-items: center;
+}
+
+.tc-pagination-select {
+    display: inline-block;
+    position: relative;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+.tc-pagination-select select {
+    align-items: flex-start;
+    flex: 1 1 auto;
+    min-width: 48px;
+    font: inherit !important;
+    font-size: 14px;
+    letter-spacing: normal;
+    max-width: 100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    padding: 0;
+    text-align: left;
+    border: none;
+    color: inherit;
+    outline: none !important;
+    scroll-behavior: smooth;
+    border-bottom: 1px solid #757575;
+    border-radius: unset;
+    -moz-appearance: none; /* Firefox */
+    -webkit-appearance: none; /* Safari and Chrome */
+    appearance: none;
+    -webkit-user-select: none;
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    user-select: none;
+    background: inherit !important;
+    background-color: inherit !important;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.tc-pagination-select select:focus {
+    outline: none;
+    border: none !important;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    border-bottom: 1px solid #757575;
+}
+
+.tc-pagination-bar {
+    position: relative;
+    display: contents;
+    width: 100%;
+}
+
+.tc-pagination-bar:before,
+.tc-pagination-bar:after {
+    content: "";
+    height: 2px;
+    top: calc(100% - 2px);
+    width: 0;
+    position: absolute;
+    background: #1e87f0;
+    transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+    -moz-transition: 0.4s ease all;
+    -webkit-transition: 0.4s ease all;
+}
+
+.tc-pagination-bar:before {
+    left: 50%;
+}
+
+.tc-pagination-bar:after {
+    right: 50%;
+}
+
+/* active state */
+select:focus ~ .tc-pagination-bar:before,
+select:focus ~ .tc-pagination-bar:after {
+    width: 50%;
+}
+
+.tc-pagination-highlight {
+    position: absolute;
+    height: 60%;
+    min-width: 48px;
+    top: 25%;
+    left: 0;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+/* active state */
+select:focus ~ .tc-pagination-highlight {
+    -webkit-animation: inputHighlighter 0.3s ease;
+    -moz-animation: inputHighlighter 0.3s ease;
+    animation: inputHighlighter 0.3s ease;
+}
+
+@-webkit-keyframes inputHighlighter {
+    from {
+        background: #1e87f0;
+    }
+    to {
+        width: 0;
+        background: transparent;
+    }
+}
+@-moz-keyframes inputHighlighter {
+    from {
+        background: #1e87f0;
+    }
+    to {
+        width: 0;
+        background: transparent;
+    }
+}
+@keyframes inputHighlighter {
+    from {
+        background: #1e87f0;
+    }
+    to {
+        width: 0;
+        background: transparent;
+    }
+}
+
+.tc-pagination-btn .font-icon:hover {
+    background-color: #f5f5f5;
+}
+
+.tc-pagination-btn[disabled="disabled"] .font-icon:hover,
+.tc-pagination-btn:disabled .font-icon:hover {
+    background-color: inherit;
+}
+
+.tc-pagination-btn .font-icon {
+    color: #333;
+    line-height: unset !important;
+    border-radius: 50%;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.tc-pagination-btn[disabled="disabled"] .font-icon,
+.tc-pagination-btn:disabled .font-icon {
+    color: #ccc;
+    cursor: default;
+    border-radius: unset;
+}
+
+.tc-pagination-btn {
+    align-items: flex-end;
+    text-align: right;
+    letter-spacing: normal;
+    max-width: 100%;
+    background: none;
+    border: none;
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.tc-pagination-btn_sel {
+    min-width: 48px;
+    padding: 0px 6px 4px 6px;
+}
+
+.tc-paginaton-arrow {
+    pointer-events: none;
+    margin: 0;
+    border: none;
+    border-radius: 0;
+    font: inherit;
+    font-weight: 400;
+    color: inherit;
+    text-transform: none;
+    padding: 0;
+    background-color: transparent;
+    display: inline-block;
+    fill: currentcolor;
+    line-height: 0;
+}
+
+.tc-pagination-arrow-up {
+    transform: translate(10px) rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    transition: transform 400ms ease !important;
+}
+
+.tc-pagination-arrow-down {
+    transform: translate(10px) rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transition: transform 400ms ease !important;
+}
+
+.tc-pagination-info {
+    position: relative;
+    right: 0;
+    width: 140px !important;
+}
+
+.tc-pagination-action {
+    display: inline-flex;
+}
+
+/* ========================================================================
+   Component: Table
+ ========================================================================== */
+/*
+ * 1. Remove most spacing between table cells.
+ * 2. Behave like a block element
+ * 3. Style
+*/
+.tc-table {
+    /* 1 */
+    border-collapse: collapse;
+    border-spacing: 0;
+    /* 2 */
+    width: 100%;
+    /* 3 */
+    margin-bottom: 20px;
+}
+/* Add margin if adjacent element */
+* + .tc-table {
+    margin-top: 20px;
+}
+/* Header cell
+========================================================================== */
+/*
+* 1. Style
+*/
+.tc-table th {
+    padding: 16px 12px;
+    text-align: left;
+    vertical-align: bottom;
+    /* 1 */
+    font-size: 0.875rem;
+    font-weight: normal;
+    color: #999;
+    text-transform: uppercase;
+}
+  /* Cell
+   ========================================================================== */
+.tc-table td {
+    padding: 16px 12px;
+    vertical-align: top;
+}
+/*
+* Remove margin from the last-child
+*/
+.tc-table td > :last-child {
+    margin-bottom: 0;
+}
+/* Footer
+========================================================================== */
+.tc-table tfoot {
+    font-size: 0.875rem;
+}
+/* Caption
+========================================================================== */
+.tc-table caption {
+    font-size: 0.875rem;
+    text-align: left;
+    color: #999;
+}
+/* Alignment modifier
+ ========================================================================== */
+.tc-table-middle,
+.tc-table-middle td {
+    vertical-align: middle !important;
+}
+/* Style modifiers
+========================================================================== */
+/*
+ * Divider
+*/
+.tc-table-divider > tr:not(:first-child),
+.tc-table-divider > :not(:first-child) > tr,
+.tc-table-divider > :first-child > tr:not(:first-child) {
+    border-top: 1px solid #e5e5e5;
+}
+/*
+* Striped
+*/
+.tc-table-striped > tr:nth-of-type(odd),
+.tc-table-striped tbody tr:nth-of-type(odd) {
+    background: #f8f8f8;
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+  }
+/*
+* Hover
+*/
+  .tc-table-hover > tr:hover,
+  .tc-table-hover tbody tr:hover {
+    background: #ffd;
+  }
+/* Active state
+ ========================================================================== */
+.tc-table > tr.tc-active,
+.tc-table tbody tr.tc-active {
+    background: #ffd;
+}
+/* Size modifier
+========================================================================== */
+.tc-table-small th,
+.tc-table-small td {
+    padding: 10px 12px;
+}
+.tc-table-large th,
+.tc-table-large td {
+    padding: 22px 12px;
+}
+/* Justify modifier
+========================================================================== */
+.tc-table-justify th:first-child,
+.tc-table-justify td:first-child {
+    padding-left: 0;
+}
+    .tc-table-justify th:last-child,
+    .tc-table-justify td:last-child {
+        padding-right: 0;
+}
+  /* Cell size modifier
+   ========================================================================== */
+.tc-table-shrink {
+    width: 1px;
+}
+.tc-table-expand {
+    min-width: 150px;
+}
+/* Cell link modifier
+ ========================================================================== */
+/*
+* Does not work with `tc-table-justify` at the moment
+*/
+.tc-table-link {
+    padding: 0 !important;
+}
+.tc-table-link > a {
+        display: block;
+        padding: 16px 12px;
+}
+.tc-table-small .tc-table-link > a {
+    padding: 10px 12px;
+}
+/* Responsive table
+========================================================================== */
+/* Phone landscape and smaller */
+@media (max-width: 959px) {
+    .tc-table-responsive,
+    .tc-table-responsive tbody,
+    .tc-table-responsive th,
+    .tc-table-responsive td,
+    .tc-table-responsive tr {
+    display: block;
+    }
+    .tc-table-responsive thead {
+        display: none;
+    }
+    .tc-table-responsive th,
+    .tc-table-responsive td {
+        width: auto !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        white-space: normal !important;
+    }
+    .tc-table-responsive th:not(:first-child):not(.tc-table-link),
+    .tc-table-responsive td:not(:first-child):not(.tc-table-link),
+    .tc-table-responsive .tc-table-link:not(:first-child) > a {
+        padding-top: 5px !important;
+    }
+    .tc-table-responsive th:not(:last-child):not(.tc-table-link),
+    .tc-table-responsive td:not(:last-child):not(.tc-table-link),
+    .tc-table-responsive .tc-table-link:not(:last-child) > a {
+        padding-bottom: 5px !important;
+    }
+    .tc-table-justify.tc-table-responsive th,
+    .tc-table-justify.tc-table-responsive td {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+.tc-table tbody tr {
+    transition: background-color 0.1s linear;
+}
+
+
+
+/* Wrap modifiers
+ ========================================================================== */
+/*
+ * Prevent text from wrapping onto multiple lines
+ */
+ .tc-text-nowrap {
+    white-space: nowrap;
+}
+  /*
+   * 1. Make sure a max-width is set after which truncation can occur
+   * 2. Prevent text from wrapping onto multiple lines, and truncate with an ellipsis
+   * 3. Fix for table cells
+   */
+.tc-text-truncate {
+    /* 1 */
+    max-width: 100%;
+    /* 2 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+  /* 2 */
+th.tc-text-truncate,
+td.tc-text-truncate {
+    max-width: 0;
+}
+.tc-text-break {
+    /* 1 */
+    overflow-wrap: break-word;
+    /* 2 */
+    word-wrap: break-word;
+}
+/* 3 */
+th.tc-text-break,
+td.tc-text-break {
+    word-break: break-all;
+}
+
+
+.tc-width-smallest {
+    width: 80px;
+}
+
+.tc-width-small {
+    width: 150px;
+}
+
+.tc-width-2-5 {
+    width: 40%;
 }

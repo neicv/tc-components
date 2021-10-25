@@ -88,25 +88,27 @@ class PaginationDoc {
 
         this.headers = [
             {
-            text: 'Dessert (100g serving)',
-            align: 'start',
-            sortable: false,
-            value: 'name',
+              text: 'Dessert (100g serving)',
+              align: 'start',
+              sortable: false,
+              value: 'name',
+              width: 'small',
+              truncate: 'off'
             },
-            { text: 'Calories', value: 'calories' },
-            { text: 'Fat (g)', value: 'fat' },
-            { text: 'Carbs (g)', value: 'carbs' },
-            { text: 'Protein (g)', value: 'protein' },
-            { text: 'Iron (%)', value: 'iron' },
+            { text: 'Calories', value: 'calories', width: 'smallest', sortable: true},
+            { text: 'Fat (g)', value: 'fat',  sortable: true},
+            { text: 'Carbs (g)', value: 'carbs',  sortable: true},
+            { text: 'Protein (g)', value: 'protein' , sortable: true},
+            { text: 'Iron (%)', value: 'iron' , truncate: 'off', sortable: true}
         ]
     }
 
     view() {
         return (
-            <div className='test'>
+            <div className='test-pagination'>
                 <p>TEST</p>
                 <p><h2>Data Table</h2></p>
-                <DataTable items={this.desserts}/>
+                <DataTable items={this.desserts} headers={this.headers} className="fs14 text-secondary"/>
             </div>
         )
     }

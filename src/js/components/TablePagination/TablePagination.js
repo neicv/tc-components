@@ -19,7 +19,7 @@
  * -     />
  */
 
-import "mithril";
+import m from "mithril";
 import Component from "@/lib/Component";
 import classNames from "classnames";
 import {translate} from "@/localizations";
@@ -75,7 +75,7 @@ class TablePagination extends Component {
         return (
             <div
                 id="templates-table-pagination"
-                className={`tc-pagination mt10 fs 13 text-right ${this.attrs.className || ''}`}
+                className={`tc-pagination mt10 fs14 text-right text-secondary ${this.attrs.className || ''}`}
             >
                 <div class="tc-pagination-inline">
                     {children}
@@ -220,7 +220,7 @@ class TablePagination extends Component {
         const getPagination = this.attrs.getPagination;
 
         if (typeof getPagination === "function") {
-            getPagination({ pagination: this.pagination });
+            getPagination({ ...this.pagination });
         }
     }
 
