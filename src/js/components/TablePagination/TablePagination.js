@@ -65,8 +65,9 @@ class TablePagination extends Component {
         if (total !== this.oldTotal) {
             this.total      = total;
             this.oldTotal   = total;
-            this.pageNumber = 0
-            this.changePage(0)
+            this.pageNumber = 0;
+            this.setPageCount();
+            this.changePage(0);
         }
 
         const mibileClass = isMobileView ? DEFAULT_MOBILE_CSS : DEFAULT_DESCTOP_CSS;

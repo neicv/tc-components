@@ -1,41 +1,48 @@
 import m from "mithril";
 import Component from "@/lib/Component";
 import classNames from "classnames";
+import Chevron from "@/components/Chevron/chevron";
 import TablePagination from "@/components/TablePagination/TablePagination";
+
+const CHEVRON_DIMENSION = 12;
 
 class DataTable extends Component {
     oninit() {
-        this.items = this.attrs.items || [];
+        const { items = [], onlyShowOrderedArrow = true, css = {}} = this.attrs;
+        this.items       = items;
+        this.headers     = [];
         this.sortedField = '';
+        this.search      = '';
         this.pagination  = {
             pageStart: 0,
             pageStop: 0,
             itemsPerPage: 5
         };
-        this.sortedDir = 'desc';
+        this.sortedDir   = '';
         this.sortedField = '';
-        this.arrowAnimation = '';
+        this.arrowAnimation = 'arrow-up';
         this.css = {
-            type: Object,
-            default: () => ({
-                table: '',
-                arrowsWrapper: 'arrows-wrapper',
-                arrowUp: 'arrow-up',
-                arrowDown: 'arrow-down'
-            })
+            table: '',
+            arrowsWrapper: 'arrows-wrapper',
+            arrowUp: 'arrow-up',
+            arrowDown: 'arrow-down'
         };
-        this.headers = [];
-        this.filteredList  = this.items;
-        // this.paginatedList = this.paginatedList();
 
-        // this.attrs = {...this.attrs, headers: this.headers}
+        this.css          = {... this.css, ...css };
+        this.filteredList = this.getFilteredList();
+        this.onlyShowOrderedArrow = onlyShowOrderedArrow;
+    }
+
+    onbeforeupdate() {
+        this.filteredList = this.getFilteredList();
     }
 
     view() {
-        const { height, width, loading = false, className = "", headers = []} = this.attrs;
+        const { items = [], loading = false, className = "", headers = []} = this.attrs;
 
-        this.headers = headers;
-        const tableCss =`tc-table tc-table-hover tc-table-small tc-table-middle tc-table-divider tc-table-responsive ${className}`
+        this.items     = items;
+        this.headers   = headers;
+        const tableCss =`tc-table tc-table-hover tc-table-small tc-table-middle tc-table-divider tc-table-responsive ${className}`;
         const paginatedList = this.paginatedList();
 
         return (
@@ -45,35 +52,39 @@ class DataTable extends Component {
                 >
                     <thead>
                         <tr>
-                            {/* <th class="uk-table-shrink"></th>
-                            <th class="uk-table-shrink">Preserve</th>
-                            <th class="uk-table-expand">Expand + Link</th>
-                            <th class="uk-width-small">Truncate</th>
-                            <th class="uk-table-shrink uk-text-nowrap">Shrink + Nowrap</th> */}
                             {
                                 headers.map((header, index) => (
                                     <th
                                         key={`header-${index}`}
                                         className={this.headerClassCss(header)}
-                                        // :uk-tooltip="'title: ' + (header.name || '') + '; delay: 500; pos: top'"
-                                        onclick={this.orderBy(header.value)}
+                                        onclick={()=> this.orderBy(header.value)}
                                     >
                                         {/* Заголовки столбцов и сортировка */}
-                                        <div class="uk-inline">
+                                        <div class="tc-inline">
                                             {header.text}
-                                            {/* <span v-if="header.sortable" :class="arrowsWrapper(header.value, css.arrowsWrapper)">
-                                                <span
-                                                    v-if="!showOrderArrow(header, '')"
-                                                    class="tm-form-icon tm-icon-hide"
-                                                    uk-icon="icon: arrow-up"
-                                                />
-                                                <span
-                                                    v-if="showOrderArrow(header, '')"
-                                                    class="tm-form-icon"
-                                                    :class="arrowAnimation"
-                                                    uk-icon="icon: arrow-up"
-                                                />
-                                            </span> */}
+                                            <If condition={header.sortable}>
+                                                <span className={this.arrowsWrapper(header.value, this.css.arrowsWrapper)}>
+                                                    <Choose>
+                                                        <When condition={this.showOrderArrow(header, '') === false}>
+                                                            <span className="tc-form-icon tc-icon-hide">
+                                                                <Chevron
+                                                                    className={`${this.arrowAnimation}`}
+                                                                    fill="#777"
+                                                                    width={CHEVRON_DIMENSION}
+                                                                />
+                                                            </span>
+                                                        </When>
+                                                        <Otherwise>
+                                                            <span className="tc-form-icon">
+                                                                <Chevron
+                                                                    className={`${this.arrowAnimation}`}
+                                                                    width={CHEVRON_DIMENSION}
+                                                                />
+                                                            </span>
+                                                        </Otherwise>
+                                                    </Choose>
+                                                </span>
+                                            </If>
                                         </div>
                                     </th>
                                 ))
@@ -98,7 +109,7 @@ class DataTable extends Component {
                                     </tr>
                                 </When>
                                 <Otherwise>
-                                    <tr class="uk-text-center">
+                                    <tr class="tc-text-center">
                                         <td colspan={headers.length + 1}>
                                             Ничего не найдено.
                                         </td>
@@ -123,7 +134,7 @@ class DataTable extends Component {
                                             {
                                                 headers.map((col, indx) => (
                                                     <td
-                                                        key={`cols-${indx}`}
+                                                        key={`col-${indx}`}
                                                         className={this.itemColClassCss(col)}
                                                     >
                                                         {row[col.value]}
@@ -148,8 +159,9 @@ class DataTable extends Component {
             {'tc-width-small': header.width === 'small'},
             {'tc-width-smallest': header.width === 'smallest'},
             {'tc-width-1-2': header.width === 'half'},
-            {'tc-text-nowrap': header.nowrap === 'on'},
-            {'tc-text-truncate': header.truncate === 'on'},
+            {'text-left': header.alignHeader === 'left' || header.align === 'start'},
+            {'text-center': header.alignHeader !== 'left' && header.alignHeader !== 'right'},
+            {'text-right': header.alignHeader === 'right'},
             {'tc-text-sortable': this.sortedField == header.value},
             {'tc-header-item': this.isFieldSortable(header.value)}
         )
@@ -159,29 +171,31 @@ class DataTable extends Component {
         return classNames(
             {'tc-table-link': col.value === 'title'},
             {'tc-text-nowrap': col.nowrap === 'on'},
-            {'tc-text-truncate': col.truncate === 'on'}
+            {'tc-text-truncate': col.truncate === 'on'},
+            {'text-right': col.alignContent === 'right'},
+            {'text-left': col.alignContent === 'left' || col.align === 'start'},
+            {'text-center': col.alignContent !== 'left' && col.allignContent !== 'right'}
         )
     }
 
     orderBy(field) {
         if (this.isFieldSortable(field)) {
             if (this.sortedField === field) {
-                // this.sortedDir = this.sortedDir === 'asc' ? 'desc' : 'asc'
                 if (this.sortedDir === 'desc') {
-                    this.sortedDir = ''
-                    this.sortedField = ''
-                    this.arrowAnimation = this.css.arrowDown
+                    this.sortedDir = '';
+                    this.sortedField = '';
+                    this.arrowAnimation = this.css.arrowUp;
                 }
                 if (this.sortedDir === 'asc') {
-                    this.sortedDir = 'desc'
-                    this.arrowAnimation = this.css.arrowUp
+                    this.sortedDir = 'desc';
+                    this.arrowAnimation = this.css.arrowDown;
                 }
             } else {
-                this.sortedDir = 'asc'
-                this.sortedField = field
+                this.sortedDir = 'asc';
+                this.sortedField = field;
             }
 
-            this.updateData()
+            this.updateData();
         }
     }
 
@@ -196,7 +210,11 @@ class DataTable extends Component {
     }
 
     updateData() {
-        //
+        const params = {
+            sortField: this.sortedField,
+            sort: this.sortedDir
+        }
+        document.dispatchEvent(new CustomEvent('on-update', params));
     }
 
     paginatedList() {
@@ -209,22 +227,101 @@ class DataTable extends Component {
             end = 0;
 
         if (this.pagination.itemsPerPage != '-1') {
-            if (len < this.pagination.pageStart) this.resetPagination()
-            start = this.pagination.pageStart
-            end = this.pagination.pageStop
-            if (end === 0) end = start + parseInt(this.pagination.itemsPerPage)
-            if (end > len) end = len
+            if (len < this.pagination.pageStart) this.resetPagination();
+            start = this.pagination.pageStart;
+            end = this.pagination.pageStop;
+            if (end === 0) end = start + parseInt(this.pagination.itemsPerPage);
+            if (end > len) end = len;
         } else {
-            start = 0
-            end = len
+            start = 0;
+            end   = len;
         }
 
-        return this.filteredList.slice(start, end)
+        return this.filteredList.slice(start, end);
     }
 
     resetPagination() {
-        this.pagination.pageStart = 0
-        this.pagination.pageStop = this.pagination.itemsPerPage
+        this.pagination.pageStart = 0;
+        this.pagination.pageStop  = this.pagination.itemsPerPage;
+    }
+
+    getFilteredList() {
+        // Search Filter
+        let search = this.search.toLowerCase(),
+            result;
+
+        // переделать на сваойства
+        result = search
+            ? this.items.filter(item => {
+                  let res =
+                      (item.name && item.name.toLowerCase().includes(search)) ||
+                      (item.note && item.note.toLowerCase().includes(search)) ||
+                      // item.number - Type = String! Not a Number!
+                      (typeof item.number === 'number'
+                          ? item.number
+                                .toString()
+                                .toLowerCase()
+                                .includes(search)
+                          : item.number.toLowerCase().includes(search))
+                  return res
+              })
+            : [...this.items];
+
+        // Sorting
+        if (this.sortedField != '' && this.sortedDir != '') {
+            const params = {
+                sortField: this.sortedField,
+                sort: this.sortedDir
+            }
+
+            result = this.sortList(result, params);
+        }
+        return result;
+    }
+
+    sortList(items, params) {
+        if (!items) return
+        if (params.sortField != '' && params.sort != '') {
+            const sortBy = params.sortField == 'title' ? 'name' : params.sortField
+            const itemsSorted = items.sort((a, b) => {
+                const sortA = a[sortBy]
+                const sortB = b[sortBy]
+
+                if (params.sort == 'desc') {
+                    if (sortA < sortB) return 1
+                    if (sortA > sortB) return -1
+                    return 0
+                } else {
+                    if (sortA < sortB) return -1
+                    if (sortA > sortB) return 1
+                    return 0
+                }
+            })
+
+            return itemsSorted;
+        }
+    }
+
+    headerItemClass(item, className = []) {
+        const classes = className.join(' ')
+        return item && item.sortable ? classes : `${classes} no-sortable`;
+    }
+
+    showOrderArrow(item, sortDir) {
+        if (this.onlyShowOrderedArrow) {
+
+            return this.sortedField === item.value && this.sortedDir !== sortDir;
+        }
+
+        return this.sortedField !== item.value || (this.sortedField === item.value && this.sortedDir === sortDir);
+    }
+
+    arrowsWrapper(field, className) {
+        if (this.sortedField === field && this.sortedDir) {
+
+            return `${className} centralized`;
+        }
+        return className;
     }
 }
 

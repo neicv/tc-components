@@ -63,16 +63,17 @@ class SignListDoc {
         if (value === '') {
             return items;
         }
+        const val = value.toLowerCase();
 
         return items.filter(item => {
             let res =
-                (item.fio && item.fio.toLowerCase().includes(value.toLowerCase())) ||
-                (item.position && item.position.toLowerCase().includes(value.toLowerCase())) ||
-                (item.agency && item.agency.toLowerCase().includes(value.toLowerCase())) ||
-                (item.role && item.role.toLowerCase().includes(value.toLowerCase())) ||
-                (item.title && item.title.toLowerCase().includes(value.toLowerCase())) ||
+                (item.fio && item.fio.toLowerCase().includes(val)) ||
+                (item.position && item.position.toLowerCase().includes(val)) ||
+                (item.agency && item.agency.toLowerCase().includes(val)) ||
+                (item.role && item.role.toLowerCase().includes(val)) ||
+                (item.title && item.title.toLowerCase().includes(val)) ||
 
-                (item.signingList && this.subItemsSearch(item.signingList, value))
+                (item.signingList && this.subItemsSearch(item.signingList, val))
 
                 // item.number - Type = String! Not a Number!
                 // (typeof item.number === 'number'
@@ -91,11 +92,11 @@ class SignListDoc {
         }
         let result = items.filter(item => {
             let res =
-                (item.fio && item.fio.toLowerCase().includes(value.toLowerCase())) ||
-                (item.position && item.position.toLowerCase().includes(value.toLowerCase())) ||
-                (item.agency && item.agency.toLowerCase().includes(value.toLowerCase())) ||
-                (item.role && item.role.toLowerCase().includes(value.toLowerCase())) ||
-                (item.title && item.title.toLowerCase().includes(value.toLowerCase()))
+                (item.fio && item.fio.toLowerCase().includes(value)) ||
+                (item.position && item.position.toLowerCase().includes(value)) ||
+                (item.agency && item.agency.toLowerCase().includes(value)) ||
+                (item.role && item.role.toLowerCase().includes(value)) ||
+                (item.title && item.title.toLowerCase().includes(value))
 
             return res;
         })

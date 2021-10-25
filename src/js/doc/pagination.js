@@ -1,5 +1,6 @@
 import m from 'mithril';
-import DataTable from '../components/DataTable';
+import DataTable from '@/components/DataTable';
+import Switch from '@/components/Switch';
 
 class PaginationDoc {
     oninit() {
@@ -90,27 +91,64 @@ class PaginationDoc {
             {
               text: 'Dessert (100g serving)',
               align: 'start',
-              sortable: false,
+              sortable: true,
               value: 'name',
-              width: 'small',
-              truncate: 'off'
+              width: 'expand',
+              truncate: 'off',
+              alignHeader: 'left',
             },
-            { text: 'Calories', value: 'calories', width: 'smallest', sortable: true},
-            { text: 'Fat (g)', value: 'fat',  sortable: true},
-            { text: 'Carbs (g)', value: 'carbs',  sortable: true},
+            { text: 'Calories', value: 'calories', sortable: true},
+            { text: 'Fat (g)', value: 'fat', width: 'smallest', sortable: true},
+            { text: 'Carbs (g)', value: 'carbs', width: 'smallest', sortable: true},
             { text: 'Protein (g)', value: 'protein' , sortable: true},
-            { text: 'Iron (%)', value: 'iron' , truncate: 'off', sortable: true}
+            { text: 'Iron (%)', value: 'iron' , width: 'smallest', truncate: 'off', sortable: true}
         ]
+
+        this.isRndData = false;
+        this.items     = this.desserts;
+    }
+
+    onbeforeupdate() {
+        this.items = this.isRndData ? [...this.desserts, ...this.generateData()] : this.desserts;
     }
 
     view() {
         return (
             <div className='test-pagination'>
                 <p>TEST</p>
-                <p><h2>Data Table</h2></p>
-                <DataTable items={this.desserts} headers={this.headers} className="fs14 text-secondary"/>
+                <div className="spacebetween">
+                    <p><h2>Data Table</h2></p>
+                    <label className="switcher-label-placement-start">
+                        <Switch
+                            value={this.isRndData}
+                            onchange={value=> this.changeData(value)}
+                        />
+                        <span className={`${this.isRndData ? 'text-primary' : 'text-secondary'} fs12`}>+5000 item</span>
+                    </label>
+                </div>
+                <DataTable items={this.items} headers={this.headers} className="fs14 text-secondary"/>
             </div>
         )
+    }
+
+    generateData() {
+        let randomData = [];
+        for (let i = 1; i <= 5000; i++) {
+            randomData.push({
+                name: this.desserts[Math.floor(Math.random() * this.desserts.length)].name,
+                calories: (Math.random() * 1000).toFixed(),
+                fat: (Math.random() * 100).toFixed(1),
+                carbs: (Math.random() * 100).toFixed(),
+                protein: (Math.random() * 10).toFixed(1),
+                iron: (Math.random() * 20).toFixed() + '%',
+            });
+        }
+        return randomData;
+    }
+
+    changeData(val) {
+        this.isRndData = val;
+        setTimeout(() => m.redraw(), 0);
     }
 }
 

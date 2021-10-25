@@ -723,7 +723,12 @@ body {
 }
 
 .test-pagination {
-	width: 50%;
+	width: 60%;
+}
+
+.test-pagination .spacebetween {
+    display: flex;
+    justify-content: space-between ;
 }
 
 /* ========================================================================
@@ -1444,4 +1449,114 @@ td.tc-text-break {
 
 .tc-width-2-5 {
     width: 40%;
+}
+
+.tc-width-1-2 {
+    width: 50%;
+}
+
+/* Inline
+ ========================================================================== */
+/*
+ * 1. Container fits its content
+ * 2. Create position context
+ * 3. Prevent content overflow
+ * 4. Behave like most inline-block elements
+ * 5. Force hardware acceleration without creating a new stacking context
+ *    to fix 1px glitch when combined with overlays and transitions in Webkit
+ * 6. Clip child elements
+ */
+ [class*='tc-inline'] {
+    /* 1 */
+    display: inline-block;
+    /* 2 */
+    position: relative;
+    /* 3 */
+    max-width: 100%;
+    /* 4 */
+    vertical-align: middle;
+    /* 5 */
+    -webkit-backface-visibility: hidden;
+}
+  .tc-inline-clip {
+    /* 6 */
+    overflow: hidden;
+}
+
+/*
+    tc-table (Data Table, Pagination)
+*/
+
+.tc-table {
+    cursor: default;
+}
+
+.tc-table .tc-header-item {
+    cursor: pointer;
+    transition: color 0.15s ease-in-out;
+}
+
+.tc-table .tc-header-item:hover {
+    color: #444;
+}
+
+.tc-table .tc-header-item.no-sortable {
+    cursor: default;
+}
+
+.tc-table .tc-header-item.no-sortable:hover {
+    color: #337ab7;
+}
+
+.tc-table .tc-header-item .arrows-wrapper {
+    display: inline-flex;
+    flex-direction: column;
+    margin-left: 8px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tc-table .tc-header-item .arrows-wrapper.centralized {
+    justify-content: center;
+}
+
+.tc-table .arrow {
+    transition: color 0.15s ease-in-out;
+}
+
+.tc-table .tc-text-sortable {
+    color: #444;
+}
+
+.tc-table .tc-form-icon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    /* left: 0; */
+    width: 20px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+th:hover .tc-icon-hide:not(.arrow-down) {
+    opacity: 0.6;
+    color:rgba(0, 0, 0, 0.5);
+    transition: 0.5s ease-in-out;
+}
+
+.tc-table .arrow-up {
+    transform: translate(10px) rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    transition: transform 400ms ease !important;
+}
+
+.tc-table .arrow-down {
+    transform: translate(10px) rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    transition: transform 400ms ease !important;
+}
+
+.tc-icon-hide {
+    opacity: 0;
 }
