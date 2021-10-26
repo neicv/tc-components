@@ -3,14 +3,15 @@ import Component from "@/lib/Component";
 import classNames from "classnames";
 import Chevron from "@/components/Chevron/chevron";
 import TablePagination from "@/components/TablePagination/TablePagination";
+import SearchLine from "@/components/SearchLine/SearchLine";
 
 const CHEVRON_DIMENSION = 12;
 
 class DataTable extends Component {
     oninit() {
-        const { items = [], onlyShowOrderedArrow = true, css = {}} = this.attrs;
+        const { headers = [], items = [], onlyShowOrderedArrow = true, css = {}} = this.attrs;
         this.items       = items;
-        this.headers     = [];
+        this.headers     = headers;
         this.sortedField = '';
         this.search      = '';
         this.pagination  = {
@@ -29,16 +30,16 @@ class DataTable extends Component {
         };
 
         this.css          = {... this.css, ...css };
-        this.filteredList = this.getFilteredList();
+        this.filteredList = this.getFilteredList(this.headers);
         this.onlyShowOrderedArrow = onlyShowOrderedArrow;
     }
 
     onbeforeupdate() {
-        this.filteredList = this.getFilteredList();
+        this.filteredList = this.getFilteredList(this.headers);
     }
 
     view() {
-        const { items = [], loading = false, className = "", headers = []} = this.attrs;
+        const { items = [], loading = false, className = "", headers = [], search = true} = this.attrs;
 
         this.items     = items;
         this.headers   = headers;
@@ -47,107 +48,110 @@ class DataTable extends Component {
 
         return (
             <div className='data-table'>
-                <table
-                    className={`${tableCss} ${loading ? '' : 'tc-table-striped'}`}
-                >
-                    <thead>
-                        <tr>
-                            {
-                                headers.map((header, index) => (
-                                    <th
-                                        key={`header-${index}`}
-                                        className={this.headerClassCss(header)}
-                                        onclick={()=> this.orderBy(header.value)}
-                                    >
-                                        {/* Заголовки столбцов и сортировка */}
-                                        <div class="tc-inline">
-                                            {header.text}
-                                            <If condition={header.sortable}>
-                                                <span className={this.arrowsWrapper(header.value, this.css.arrowsWrapper)}>
-                                                    <Choose>
-                                                        <When condition={this.showOrderArrow(header, '') === false}>
-                                                            <span className="tc-form-icon tc-icon-hide">
-                                                                <Chevron
-                                                                    className={`${this.arrowAnimation}`}
-                                                                    fill="#777"
-                                                                    width={CHEVRON_DIMENSION}
-                                                                />
-                                                            </span>
-                                                        </When>
-                                                        <Otherwise>
-                                                            <span className="tc-form-icon">
-                                                                <Chevron
-                                                                    className={`${this.arrowAnimation}`}
-                                                                    width={CHEVRON_DIMENSION}
-                                                                />
-                                                            </span>
-                                                        </Otherwise>
-                                                    </Choose>
-                                                </span>
-                                            </If>
-                                        </div>
-                                    </th>
-                                ))
-                            }
-                        </tr>
-                    </thead>
-                    <If condition={loading === false}>
-                        <tfoot class="text-right mb20 text-middle">
+                <SearchLine search={this.onSearch.bind(this)} />
+                <div>
+                    <table
+                        className={`${tableCss} ${loading ? '' : 'tc-table-striped'}`}
+                    >
+                        <thead>
+                            <tr>
+                                {
+                                    headers.map((header, index) => (
+                                        <th
+                                            key={`header-${index}`}
+                                            className={this.headerClassCss(header)}
+                                            onclick={()=> this.orderBy(header.value)}
+                                        >
+                                            {/* Заголовки столбцов и сортировка */}
+                                            <div class="tc-inline">
+                                                {header.text}
+                                                <If condition={header.sortable}>
+                                                    <span className={this.arrowsWrapper(header.value, this.css.arrowsWrapper)}>
+                                                        <Choose>
+                                                            <When condition={this.showOrderArrow(header, '') === false}>
+                                                                <span className="tc-form-icon tc-icon-hide">
+                                                                    <Chevron
+                                                                        className={`${this.arrowAnimation}`}
+                                                                        fill="#777"
+                                                                        width={CHEVRON_DIMENSION}
+                                                                    />
+                                                                </span>
+                                                            </When>
+                                                            <Otherwise>
+                                                                <span className="tc-form-icon">
+                                                                    <Chevron
+                                                                        className={`${this.arrowAnimation}`}
+                                                                        width={CHEVRON_DIMENSION}
+                                                                    />
+                                                                </span>
+                                                            </Otherwise>
+                                                        </Choose>
+                                                    </span>
+                                                </If>
+                                            </div>
+                                        </th>
+                                    ))
+                                }
+                            </tr>
+                        </thead>
+                        <If condition={loading === false}>
+                            <tfoot class="text-right mb20 text-middle">
+                                <Choose>
+                                    <When condition={paginatedList.length}>
+                                        <tr class="">
+                                            <td colspan={headers.length + 1}>
+                                                <TablePagination
+                                                    // isMobiledView="isMobiledView"
+                                                    total={this.filteredList.length}
+                                                    pageStart={this.pagination.pageStart}
+                                                    pageStop={this.pagination.pageStop}
+                                                    itemsPerPage={this.pagination.itemsPerPage}
+                                                    getPagination={this.getPaginated.bind(this)}
+                                                ></TablePagination>
+                                            </td>
+                                        </tr>
+                                    </When>
+                                    <Otherwise>
+                                        <tr class="tc-text-center">
+                                            <td colspan={headers.length + 1}>
+                                                Ничего не найдено.
+                                            </td>
+                                        </tr>
+                                    </Otherwise>
+                                </Choose>
+                            </tfoot>
+                        </If>
+                        <tbody>
                             <Choose>
-                                <When condition={paginatedList.length}>
-                                    <tr class="">
+                                <When condition={loading}>
+                                    <tr class="text-center">
                                         <td colspan={headers.length + 1}>
-                                            <TablePagination
-                                                // isMobiledView="isMobiledView"
-                                                total={this.filteredList.length}
-                                                pageStart={this.pagination.pageStart}
-                                                pageStop={this.pagination.pageStop}
-                                                itemsPerPage={this.pagination.itemsPerPage}
-                                                getPagination={this.getPaginated.bind(this)}
-                                            ></TablePagination>
+                                            <div tc-spinner="ratio: 2"></div>
                                         </td>
                                     </tr>
                                 </When>
                                 <Otherwise>
-                                    <tr class="tc-text-center">
-                                        <td colspan={headers.length + 1}>
-                                            Ничего не найдено.
-                                        </td>
-                                    </tr>
+                                    {
+                                        paginatedList.map((row, index) => (
+                                            <tr key={`row-${index}`}>
+                                                {
+                                                    headers.map((col, indx) => (
+                                                        <td
+                                                            key={`col-${indx}`}
+                                                            className={this.itemColClassCss(col)}
+                                                        >
+                                                            {row[col.value]}
+                                                        </td>
+                                                    ))
+                                                }
+                                            </tr>
+                                        ))
+                                    }
                                 </Otherwise>
                             </Choose>
-                        </tfoot>
-                    </If>
-                    <tbody>
-                        <Choose>
-                            <When condition={loading}>
-                                <tr class="text-center">
-                                    <td colspan={headers.length + 1}>
-                                        <div tc-spinner="ratio: 2"></div>
-                                    </td>
-                                </tr>
-                            </When>
-                            <Otherwise>
-                                {
-                                    paginatedList.map((row, index) => (
-                                        <tr key={`row-${index}`}>
-                                            {
-                                                headers.map((col, indx) => (
-                                                    <td
-                                                        key={`col-${indx}`}
-                                                        className={this.itemColClassCss(col)}
-                                                    >
-                                                        {row[col.value]}
-                                                    </td>
-                                                ))
-                                            }
-                                        </tr>
-                                    ))
-                                }
-                            </Otherwise>
-                        </Choose>
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         )
     }
@@ -245,7 +249,7 @@ class DataTable extends Component {
         this.pagination.pageStop  = this.pagination.itemsPerPage;
     }
 
-    getFilteredList() {
+    getFilteredList(headers = []) {
         // Search Filter
         let search = this.search.toLowerCase(),
             result;
@@ -253,18 +257,24 @@ class DataTable extends Component {
         // переделать на сваойства
         result = search
             ? this.items.filter(item => {
-                  let res =
-                      (item.name && item.name.toLowerCase().includes(search)) ||
-                      (item.note && item.note.toLowerCase().includes(search)) ||
-                      // item.number - Type = String! Not a Number!
-                      (typeof item.number === 'number'
-                          ? item.number
+                let res,
+                    field;
+
+                headers.forEach(header => {
+                    if (header.hasOwnProperty('searchable') && header.searchable === false) {
+                        return;
+                    }
+
+                    field = header.value;
+                    res = res || item.hasOwnProperty(field) && item[field] && (typeof item[field] === 'number'
+                        ? item[field]
                                 .toString()
                                 .toLowerCase()
                                 .includes(search)
-                          : item.number.toLowerCase().includes(search))
-                  return res
-              })
+                        : item[field].toLowerCase().includes(search))
+                })
+                return res;
+            })
             : [...this.items];
 
         // Sorting
@@ -322,6 +332,10 @@ class DataTable extends Component {
             return `${className} centralized`;
         }
         return className;
+    }
+
+    onSearch(val) {
+        this.search = val;
     }
 }
 

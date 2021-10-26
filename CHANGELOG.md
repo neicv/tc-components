@@ -1,3 +1,7 @@
+# 0.19.2 / 2021-10-26
+
+ - Complete Data Table Test
+
 # 0.19.1 / 2021-10-25
 
 -   add Table Pagination - Data Table Test
