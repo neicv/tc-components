@@ -54,7 +54,7 @@ class SignatureSheet extends Component {
                                         <span className='text-right display-initial'>
                                             <i
                                                 title={shortSigningList.agreeStatus}
-                                                className={`font-icon ${shortSigningList.agreed ? 'circle-tick success' : 'circle-close error'} fs15 pr5`}
+                                                className={`font-icon ${shortSigningList.agreed ? 'circle-tick color-success' : 'circle-close color-error'} fs15 pr5`}
                                             ></i>
                                             <span className="v-align-text-top fs12">{shortSigningList.agreeStatus}</span>
                                         </span>
@@ -137,7 +137,7 @@ class SignatureSheet extends Component {
                                                 <span className='text-right'>
                                                     <i
                                                         title={agreeStatus}
-                                                        className={`font-icon ${agreed ? 'circle-tick success' : 'circle-close error'} fs15 pr5`}
+                                                        className={`font-icon ${agreed ? 'circle-tick color-success' : 'circle-close color-error'} fs15 pr5`}
                                                     ></i>
                                                     <span className="v-align-text-top fs12">{agreeStatus}</span>
                                                 </span>

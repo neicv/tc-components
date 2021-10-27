@@ -105,15 +105,13 @@ class PaginationDoc {
         ]
 
         this.isRndData = false;
-        this.items     = this.desserts;
+        // this.items     = this.desserts;
         this.rndData   = this.generateData();
     }
 
-    onbeforeupdate() {
-        this.items = this.isRndData ? [...this.desserts, ...this.rndData] : this.desserts;
-    }
-
     view() {
+        const items = this.isRndData ? [...this.desserts, ...this.rndData] : this.desserts;
+
         return (
             <div className='test-pagination'>
                 <p>TEST</p>
@@ -127,7 +125,7 @@ class PaginationDoc {
                         <span className={`${this.isRndData ? 'text-primary' : 'text-secondary'} fs12`}>+5000 items</span>
                     </label>
                 </div>
-                <DataTable items={this.items} headers={this.headers} className="fs14 text-secondary"/>
+                <DataTable items={items} headers={this.headers} className="fs14 text-secondary"/>
             </div>
         )
     }

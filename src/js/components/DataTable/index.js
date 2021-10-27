@@ -10,45 +10,47 @@ const CHEVRON_DIMENSION = 12;
 class DataTable extends Component {
     oninit() {
         const { headers = [], items = [], onlyShowOrderedArrow = true, css = {}} = this.attrs;
-        this.items       = items;
-        this.headers     = headers;
-        this.sortedField = '';
-        this.search      = '';
-        this.pagination  = {
+
+        this.items          = items;
+        this.headers        = headers;
+        this.pagination     = {
             pageStart: 0,
             pageStop: 0,
             itemsPerPage: 5
         };
-        this.sortedDir   = '';
-        this.sortedField = '';
-        this.arrowAnimation = 'arrow-up';
-        this.css = {
+        this.css            = {
             table: '',
             arrowsWrapper: 'arrows-wrapper',
             arrowUp: 'arrow-up',
             arrowDown: 'arrow-down'
         };
+        this.css             = {... this.css, ...css };
 
-        this.css          = {... this.css, ...css };
-        this.filteredList = this.getFilteredList(this.headers);
+        this.resetToDefault();
+        this.filteredList    = this.getFilteredList(this.headers);
+        this.oldIemsLength  = items.length;
         this.onlyShowOrderedArrow = onlyShowOrderedArrow;
-    }
-
-    onbeforeupdate() {
-        this.filteredList = this.getFilteredList(this.headers);
     }
 
     view() {
         const { items = [], loading = false, className = "", headers = [], search = true} = this.attrs;
 
-        this.items     = items;
-        this.headers   = headers;
-        const tableCss =`tc-table tc-table-hover tc-table-small tc-table-middle tc-table-divider tc-table-responsive ${className}`;
+        this.items        = items;
+        this.headers      = headers;
+        const tableCss    =`tc-table tc-table-hover tc-table-small tc-table-middle tc-table-divider tc-table-responsive ${className}`;
+        this.filteredList = this.getFilteredList(this.headers);
+
+        if (this.oldIemsLength !== items.length) {
+            this.oldIemsLength = this.filteredList.length;
+            this.resetToDefault();
+        }
         const paginatedList = this.paginatedList();
 
         return (
             <div className='data-table'>
-                <SearchLine search={this.onSearch.bind(this)} />
+                <If condition={search}>
+                    <SearchLine search={this.onSearch.bind(this)} />
+                </If>
                 <div>
                     <table
                         className={`${tableCss} ${loading ? '' : 'tc-table-striped'}`}
@@ -180,6 +182,13 @@ class DataTable extends Component {
             {'text-left': col.alignContent === 'left' || col.align === 'start'},
             {'text-center': col.alignContent !== 'left' && col.allignContent !== 'right'}
         )
+    }
+
+    resetToDefault() {
+        this.search        = '';
+        this.sortedDir      = '';
+        this.sortedField    = '';
+        this.arrowAnimation = 'arrow-up';
     }
 
     orderBy(field) {
