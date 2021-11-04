@@ -43,20 +43,32 @@ class StatusInfo extends Component {
         return (
             <div className="signing-info turbo-visa">
                 <div className="turbo-visa__history-item">
-                    <div className={`history-item__title ${itemTitleClass || ''}`}>{title}</div>
+                    <div
+                        className={`history-item__title pr15 ${itemTitleClass || ''} ${this.isSigningInfoOpen ? 'timeline-open' : ''}`}
+                        onclick={event => this.toggleInfoPanel(event, index)}
+                        >
+                        <div className="js-ellipsis timeline-accordion-title" aria-expanded={this.isSigningInfoOpen}>{title}</div>
+
+                    </div>
 
                     <div className="mt10 ml15 tile-list_bordered history-item__content">
-                        <div
+                        {/* <div
                             className={`v-align-middle pr15 pb5 ${this.isSigningInfoOpen ? 'timeline-open' : ''}`}
                             onclick={event => this.toggleInfoPanel(event, index)}
-                        >
-                            <div className="js-ellipsis timeline-accordion-title" aria-expanded={this.isSigningInfoOpen}>
+                        > */}
+                            {/* <div className="js-ellipsis timeline-accordion-title" aria-expanded={this.isSigningInfoOpen}> */}
+                            <div className="js-ellipsis pb5">
+                                <div className="text-clipped js-ellipsis-text display-flex">
+                                    <span title="Инициатор смены статуса" className="text-clipped v-align-middle fs12">Инициатор смены статуса:</span>
+                                </div>
+                            </div>
+                            <div className="js-ellipsis pb5">
                                 <div className="text-clipped js-ellipsis-text display-flex">
                                     <i title="ФИО" className={classIconFio}></i>
                                     <span title={fio || TEXT_ROBOT} className="text-clipped v-align-middle fs12">{fio || TEXT_ROBOT}</span>
                                 </div>
                             </div>
-                        </div>
+                        {/* </div> */}
                         <div
                             className="timeline-accordion-content"
                             hidden={this.isSigningInfoOpen}
@@ -103,6 +115,11 @@ class StatusInfo extends Component {
         }
 
         targ = targ.nextElementSibling;
+        targ = targ.querySelector('.timeline-accordion-content');
+
+        if (targ === null) {
+            return;
+        }
 
         if (targ.style.maxHeight && targ.style.maxHeight !== '0px') {
             targ.style.maxHeight = '0px';

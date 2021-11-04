@@ -28,6 +28,7 @@ class SigningListContainer extends Component {
                             other = {...other, viewDetailsInfo, itemTitleClass}
 
                             const signingList      = this.getSigningList(index, data);
+                            const previosInfo      = this.getPreviousInfo(index, data);
                             const dotColorTmp      = this.getColorStepApprovedFromStatus(index, data)
                             let dotColor           = dotColorTmp || this.getColorStepApproved(signingList);
                             const shortSigningList = this.getShortSigningList(signingList);
@@ -107,6 +108,7 @@ class SigningListContainer extends Component {
                                                             signingList={signingList}
                                                             shortSigningList={shortSigningList}
                                                             viewDetailsInfo={viewDetailsInfo}
+                                                            previosInfo={previosInfo}
                                                         />
                                                     </TimelineContent>
                                             </TimelineItem>
@@ -202,15 +204,27 @@ class SigningListContainer extends Component {
             shortList.comments    = disapproveList[len - 1].comments || '';
             shortList.agreeStatus = disapproveList[len - 1].agreeStatus || TEXT_STATUS_AGREED;
             shortList.fio         = disapproveList[len - 1].fio || '';
-            shortList.date        = disapproveList[len - 1].date || '';
+            // shortList.date        = disapproveList[len - 1].date || '';
         } else {
             shortList.agreed      = true;
             shortList.comments    = list[list.length - 1].comments || '';
             shortList.agreeStatus = list[list.length - 1].agreeStatus || TEXT_STATUS_DISAGREED;
-            shortList.date        = list[list.length - 1].date || '';
+            // shortList.date        = list[list.length - 1].date || '';
         }
 
+        shortList.date        = list[list.length - 1].date || '';
+
         return shortList;
+    }
+
+    getPreviousInfo(index, data = []) {
+        if (index ===  data.length - 1) {
+            return false;
+        }
+        // Reverse ! and See to prev element
+        let rIndex = data.length - 2 - index;
+
+        return  { date: data[rIndex]?.date || '', title: data[rIndex]?.title || ''}
     }
 }
 

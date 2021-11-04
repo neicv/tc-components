@@ -1,6 +1,7 @@
 import m from 'mithril';
 import SigningListContainer from "./components/signinglist/SigningListConteiner"
 import Switch from '@/components/Switch';
+import SearchLine from "@/components/SearchLine/SearchLine";
 import { SearchIcon } from '@/ui/iconAssets';
 
 import HISTORY, { history } from '@doc/data/timelineHistory'
@@ -31,7 +32,7 @@ class SignListDoc {
                 </div>
 
                 <div className="sign-list-panel spacebetween">
-                    <span className="fs14">
+                    {/* <span className="fs14">
                         <form className="p10 tm-search tm-search-default">
                             <span tm-search-icon className="tm-icon tm-search-icon"><SearchIcon/></span>
                             <input
@@ -41,7 +42,9 @@ class SignListDoc {
                                 onkeyup={event => this.search = event.target.value}>
                             </input>
                         </form>
-                    </span>
+                    </span> */}
+                    <SearchLine search={this.onSearch.bind(this)} />
+
                     <label className="switcher-label-placement-start">
                         <Switch
                             value={this.isShowDetailsList}
@@ -50,6 +53,7 @@ class SignListDoc {
                         <span className={`${this.isShowDetailsList ? 'text-primary' : 'text-secondary'} fs12`}>Подробный вид: </span>
                     </label>
                 </div>
+                <br />
                 <SigningListContainer
                     data={items}
                     viewDetailsInfo={this.isShowDetailsList}
@@ -102,6 +106,10 @@ class SignListDoc {
         })
 
         return result.length === 0 ? false : true;
+    }
+
+    onSearch(val) {
+        this.search = val;
     }
 }
 

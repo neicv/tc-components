@@ -1,6 +1,6 @@
 import m from "mithril";
 import classNames from "classnames";
-import Component from "../../../lib/Component";
+import Component from "@/lib/Component";
 
 class TimelineSeparator extends Component {
     view({children}) {
