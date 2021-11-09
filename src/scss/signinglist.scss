@@ -147,18 +147,22 @@
         padding: 10px 16px;
 
         &.aprove {
-            // background-color: #62c367!important;
-            // border-color: #62c367!important;
-            background-color: $theme-palette-success-light !important;
+            // background-color: $theme-palette-success-light !important;
             border-color: $theme-palette-success-light !important;
-            color: white;
+
+            border-radius: 4px;
+            border: solid 1px  $theme-palette-success-light;
+            border-bottom-left-radius: 0px;
+            -webkit-bottom-top-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            -webkit-bottom-top-right-radius: 0px;
+
+            // color: white;
         }
 
         &.disaprove {
             background-color: $theme-palette-error-light !important;
             border-color: $theme-palette-error-light !important;
-            // background-color: #d8946c!important;
-            // border-color: #d8946c!important;
             color: white;
         }
     }
@@ -171,6 +175,10 @@
     .v-card>.v-card__progress+:not(.v-btn), .v-card>:first-child {
         border-top-left-radius: inherit;
         border-top-right-radius: inherit;
+    }
+
+    .hidden {
+        display: none!important;
     }
 }
 

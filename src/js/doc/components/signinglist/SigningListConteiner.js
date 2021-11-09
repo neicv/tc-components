@@ -17,15 +17,19 @@ const COLOR_DISAPPROVE = 'error';
 class SigningListContainer extends Component {
 
     view() {
-        const { data, viewDetailsInfo, itemTitleClass } = this.attrs;
+        const { data, viewDetailsInfo, itemTitleClass, searchRegEx } = this.attrs;
 
         return (
             <div className="sign-list-container">
                 <Timeline position="both">
                     {
                         data.slice(0).reverse().map((item, index) => {
+                            // if (item.isRender === false) {
+                            //     return;
+                            // }
+
                             let { date, ...other } = item;
-                            other = {...other, viewDetailsInfo, itemTitleClass}
+                            other = {...other, viewDetailsInfo, itemTitleClass, searchRegEx}
 
                             const signingList      = this.getSigningList(index, data);
                             const previosInfo      = this.getPreviousInfo(index, data);
@@ -38,44 +42,49 @@ class SigningListContainer extends Component {
                             return (
                                 <>
                                     {/* Status Item */}
-                                    <TimelineItem>
-                                        <TimelineOppositeContent color="text.secondary" className="fs13">
-                                            <div>{date[0]}</div>
-                                            <div className='fs11'>{date[1]}</div>
-                                        </TimelineOppositeContent>
-                                        <TimelineSeparator>
-                                            <Choose>
-                                                <When condition={index === 0 && data.lenght !==0}>
-                                                    <TimelineDot variant="outlined" color={dotColor}>
-                                                        <span className='font-icon flag-finish color-success'></span>
-                                                    </TimelineDot>
-                                                </When>
-                                                <When  condition={index === (data.length - 1) && data.length > 1}>
-                                                    <TimelineDot variant="outlined" color="primary">
-                                                        <span className='font-icon flag-start color-primary'></span>
-                                                    </TimelineDot>
-                                                </When>
-                                                <Otherwise>
+                                    <Choose>
+                                        <When condition={item.isRender}>
+                                            <TimelineItem>
+                                                <TimelineOppositeContent color="text.secondary" className="fs13">
+                                                    <div>{date[0]}</div>
+                                                    <div className='fs11'>{date[1]}</div>
+                                                </TimelineOppositeContent>
+                                                <TimelineSeparator>
                                                     <Choose>
-                                                        <When condition={dotColor === false}>
-                                                            <TimelineDot />
+                                                        <When condition={index === 0 && data.lenght !==0}>
+                                                            <TimelineDot variant="outlined" color={dotColor}>
+                                                                <span className='font-icon flag-finish color-success'></span>
+                                                            </TimelineDot>
+                                                        </When>
+                                                        <When  condition={index === (data.length - 1) && data.length > 1}>
+                                                            <TimelineDot variant="outlined" color="primary">
+                                                                <span className='font-icon flag-start color-primary'></span>
+                                                            </TimelineDot>
                                                         </When>
                                                         <Otherwise>
-                                                            <TimelineDot color={dotColor}/>
+                                                            <Choose>
+                                                                <When condition={dotColor === false}>
+                                                                    <TimelineDot />
+                                                                </When>
+                                                                <Otherwise>
+                                                                    <TimelineDot color={dotColor}/>
+                                                                </Otherwise>
+                                                            </Choose>
                                                         </Otherwise>
                                                     </Choose>
-                                                </Otherwise>
-                                            </Choose>
-                                            <If condition={index !== data.length - 1}>
-                                                <TimelineConnector />
-                                            </If>
-                                        </TimelineSeparator>
-                                        <TimelineContent>
-                                            <StatusInfo {...other} index={index} key={index} />
-                                        </TimelineContent>
-                                    </TimelineItem>
+                                                    <If condition={index !== data.length - 1}>
+                                                        <TimelineConnector />
+                                                    </If>
+                                                </TimelineSeparator>
+                                                <TimelineContent>
+                                                    <StatusInfo {...other} index={index} key={index} />
+                                                </TimelineContent>
+                                            </TimelineItem>
+                                        </When>
+                                    </Choose>
                                     <Choose>
-                                        <When condition={signingList && signingList.length !== 0}>
+                                        <When condition={signingList && signingList.length && signingList.filter(el => el.isRender).length}>
+                                        {/* && shortSigningList.isRender */}
                                             {/* SigningList */}
                                             <TimelineItem>
                                                 <TimelineOppositeContent color="text.secondary" className="fs13">
@@ -109,6 +118,7 @@ class SigningListContainer extends Component {
                                                             shortSigningList={shortSigningList}
                                                             viewDetailsInfo={viewDetailsInfo}
                                                             previosInfo={previosInfo}
+                                                            searchRegEx={searchRegEx}
                                                         />
                                                     </TimelineContent>
                                             </TimelineItem>
@@ -187,7 +197,8 @@ class SigningListContainer extends Component {
                 agreed: false,
                 agreeStatus: "",
                 fio: "",
-                date: ""
+                date: "",
+                isRender: true
             }
 
         if (!list || list.length === 0) {
@@ -204,15 +215,18 @@ class SigningListContainer extends Component {
             shortList.comments    = disapproveList[len - 1].comments || '';
             shortList.agreeStatus = disapproveList[len - 1].agreeStatus || TEXT_STATUS_AGREED;
             shortList.fio         = disapproveList[len - 1].fio || '';
+            shortList.isRender    = disapproveList[len - 1].isRender === undefined ? true : disapproveList[len - 1].isRender;
             // shortList.date        = disapproveList[len - 1].date || '';
         } else {
             shortList.agreed      = true;
             shortList.comments    = list[list.length - 1].comments || '';
             shortList.agreeStatus = list[list.length - 1].agreeStatus || TEXT_STATUS_DISAGREED;
+            shortList.isRender    = list[list.length - 1].isRender === undefined ? true : list[list.length - 1].isRender;
             // shortList.date        = list[list.length - 1].date || '';
         }
 
         shortList.date        = list[list.length - 1].date || '';
+
 
         return shortList;
     }
