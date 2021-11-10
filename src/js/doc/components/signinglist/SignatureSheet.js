@@ -50,9 +50,7 @@ class SignatureSheet extends Component {
                         <If condition={shortSigningList}>
                             <div
                                 className="timeline-accordion-subcontent ml10"
-                                //pt10 short-info ml15 pr15
                                 oncreate={element => this.setMaxHeightContent(element, NAME_SUBINFO, true)}
-                                // hidden={!this.isSigningInfoOpen}
                             >
                                 <div class="v-card v-sheet theme--light full-info">
                                     <div className={`v-card__title ${shortSigningList.agreed ? 'aprove' : 'disaprove'}`}>
@@ -64,7 +62,6 @@ class SignatureSheet extends Component {
                                                 <span className="fs12">{shortSigningList.agreeStatus}</span>
                                                 <i
                                                     title={shortSigningList.agreeStatus}
-                                                    // className={`font-icon ${shortSigningList.agreed ? 'circle-tick color-success' : 'circle-close color-error'} fs15 pl10`}
                                                     className={`font-icon ${shortSigningList.agreed ? 'circle-tick color-success' : 'circle-close color-white'} fs15 pl10`}
                                                 ></i>
                                             </span>
@@ -125,17 +122,13 @@ class SignatureSheet extends Component {
                                             <div className={`v-card__title ${agreed ? 'aprove' : 'disaprove'}`}>
                                                 <div className="spacebetween">
                                                     <div className="text-clipped js-ellipsis-text display-inline-flex">
-                                                        {/* <i title="Статус" className="font-icon pencil color-blue fs15 pr5 inline-block"></i> */}
-                                                        {/* <span className='v-align-middle fs12'>Статус:</span> */}
                                                         <span className='v-align-middle fs12'>{date.split(' ')[0]}:{date.split(' ')[1]}</span>
                                                     </div>
                                                     <span className='text-right display-inline-flex'>
                                                         <span className="fs12">{agreeStatus}</span>
                                                         <i
                                                             title={agreeStatus}
-                                                            // className={`font-icon ${agreed ? 'circle-tick color-success' : 'circle-close color-error'} fs15 pl10`}
                                                             className={`font-icon ${agreed ? 'circle-tick color-success' : 'circle-close color-white'} fs15 pl10`}
-                                                            // className={`font-icon ${agreed ? 'circle-tick color-white' : 'circle-close color-white'} fs15 pl10`}
                                                         ></i>
 
                                                     </span>

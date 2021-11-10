@@ -24,10 +24,6 @@ class SigningListContainer extends Component {
                 <Timeline position="both">
                     {
                         data.slice(0).reverse().map((item, index) => {
-                            // if (item.isRender === false) {
-                            //     return;
-                            // }
-
                             let { date, ...other } = item;
                             other = {...other, viewDetailsInfo, itemTitleClass, searchRegEx}
 
@@ -84,7 +80,6 @@ class SigningListContainer extends Component {
                                     </Choose>
                                     <Choose>
                                         <When condition={signingList && signingList.length && signingList.filter(el => el.isRender).length}>
-                                        {/* && shortSigningList.isRender */}
                                             {/* SigningList */}
                                             <TimelineItem>
                                                 <TimelineOppositeContent color="text.secondary" className="fs13">
@@ -94,14 +89,10 @@ class SigningListContainer extends Component {
                                                 <TimelineSeparator>
                                                     <Choose>
                                                         <When condition={shortSigningList.agreed === true}>
-                                                            <TimelineDot variant="outlined" color={dotColor}>
-                                                                {/* <span className='font-icon icon-tick color-success'></span> */}
-                                                            </TimelineDot>
+                                                            <TimelineDot variant="outlined" color={dotColor} />
                                                         </When>
                                                         <When  condition={shortSigningList.agreed === false}>
-                                                            <TimelineDot variant="outlined" color="error">
-                                                                {/* <span className='font-icon cancel color-error'></span> */}
-                                                            </TimelineDot>
+                                                            <TimelineDot variant="outlined" color="error" />
                                                         </When>
                                                         <Otherwise>
                                                             <TimelineDot />

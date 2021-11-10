@@ -60,23 +60,18 @@ class StatusInfo extends Component {
                     </div>
 
                     <div className="mt10 ml15 tile-list_bordered history-item__content">
-                        {/* <div
-                            className={`v-align-middle pr15 pb5 ${this.isSigningInfoOpen ? 'timeline-open' : ''}`}
-                            onclick={event => this.toggleInfoPanel(event, index)}
-                        > */}
-                            {/* <div className="js-ellipsis timeline-accordion-title" aria-expanded={this.isSigningInfoOpen}> */}
-                            <div className="js-ellipsis pb5">
-                                <div className="text-clipped js-ellipsis-text display-flex">
-                                    <span title="Инициатор смены статуса" className="text-clipped v-align-middle fs12">Инициатор смены статуса:</span>
-                                </div>
+                        <div className="js-ellipsis pb5">
+                            <div className="text-clipped js-ellipsis-text display-flex">
+                                <span title="Инициатор смены статуса" className="text-clipped v-align-middle fs12">Инициатор смены статуса:</span>
                             </div>
-                            <div className="js-ellipsis pb5">
-                                <div className="text-clipped js-ellipsis-text display-flex">
-                                    <i title="ФИО" className={classIconFio}></i>
-                                    <span title={fio || TEXT_ROBOT} className="text-clipped v-align-middle fs12">{this.setHighLight(fio || TEXT_ROBOT)}</span>
-                                </div>
+                        </div>
+                        <div className="js-ellipsis pb5">
+                            <div className="text-clipped js-ellipsis-text display-flex">
+                                <i title="ФИО" className={classIconFio}></i>
+                                <span title={fio || TEXT_ROBOT} className="text-clipped v-align-middle fs12">{this.setHighLight(fio || TEXT_ROBOT)}</span>
                             </div>
-                        {/* </div> */}
+                        </div>
+
                         <div
                             className="timeline-accordion-content"
                             hidden={this.isSigningInfoOpen}

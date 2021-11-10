@@ -5,7 +5,9 @@ import SearchLine from "@/components/SearchLine/SearchLine";
 
 import HISTORY, { history } from '@doc/data/timelineHistory'
 
-const CSS_CLASS_TITLE_CLASS = 'pl10 pr10 pb5 pt5 bg-grey';
+const CSS_CLASS_TITLE_CLASS      = 'pl10 pr10 pb5 pt5 bg-grey';
+const FILTER_SEARCH_LIST         = ['fio', 'position', 'agency', 'role', 'title'];
+const FILTER_SEARCH_SIGNING_LIST = ['fio', 'position', 'agency', 'role', 'comments'];
 
 class SignListDoc {
     oninit() {
@@ -96,29 +98,12 @@ class SignListDoc {
 
             let tmpSigningList = item.signingList ? this.subItemsSearch(item.signingList, val) : false;
 
-            items[index].isRender =
-                (item.fio && item.fio ? item.fio.toLowerCase().includes(value) : false) ||
-                (item.position &&  item.position ? item.position.toLowerCase().includes(value) : false) ||
-                (item.agency && item.agency ? item.agency.toLowerCase().includes(value) : false) ||
-                (item.role && item.role ? item.role.toLowerCase().includes(value) : false) ||
-                (item.title && item.title ? item.title.toLowerCase().includes(val) : false) ||
-                (tmpSigningList && tmpSigningList.status === true)
-                // (item.signingList && this.subItemsSearch(item.signingList, val, items[index].signingList))
-
-                // item.number - Type = String! Not a Number!
-                // (typeof item.number === 'number'
-                //     ? item.number
-                //         .toString()
-                //         .toLowerCase()
-                //         .includes(this.search.toLowerCase())
-                //     : item.number.toLowerCase().includes(this.search.toLowerCase()))
-
-            // items[index].isRender = res;
+            items[index].isRender = this._getFilter(item, value, FILTER_SEARCH_LIST)
+                                || (tmpSigningList && tmpSigningList.status === true)
 
             if (tmpSigningList && tmpSigningList?.items.length) {
                 items[index].signingList = tmpSigningList.items;
             }
-            // return res;
         })
 
         return items;
@@ -127,36 +112,48 @@ class SignListDoc {
     subItemsSearch(items = [], value = '') {
         if (value === '') {
             return false;
-            // items.forEach((item, index) => {
-            //     items[index].isRender = true;
-            // })
-
-            // return;
         }
 
-        // let result =
         let status = false;
 
         items.forEach((item, index) => {
-            let res =
-                (item.fio && item.fio ? item.fio.toLowerCase().includes(value) : false) ||
-                (item.position &&  item.position ? item.position.toLowerCase().includes(value) : false) ||
-                (item.agency && item.agency ? item.agency.toLowerCase().includes(value) : false) ||
-                (item.role && item.role ? item.role.toLowerCase().includes(value) : false) ||
-                (item.comments && item.comments ? item.comments.toLowerCase().includes(value) : false)
+            let res = this._getFilter(item, value, FILTER_SEARCH_SIGNING_LIST);
 
             items[index].isRender = res;
 
             status = status || res;
-            // return res;
         })
 
-        // return result.length === 0 ? false : true;
         return { items, status };
     }
 
     onSearch(val) {
         this.search = val;
+    }
+
+    _getFilter(item, value, filterSet = []){
+        let res = false,
+            tmp;
+
+        if (item === undefined || value === undefined) {
+            return res;
+        }
+
+        filterSet.forEach(element => {
+            if (item.hasOwnProperty(element)) {
+                tmp = item[element];
+
+                if (typeof tmp === 'number') {
+                    tmp = item[element].toString();
+                }
+                if (typeof tmp === 'string') {
+                    tmp = tmp.toLowerCase().includes(value);
+                    res = res || tmp;
+                }
+            }
+        });
+
+        return res;
     }
 
 
