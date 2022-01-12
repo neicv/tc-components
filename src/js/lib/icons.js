@@ -138,5 +138,41 @@ export const icons = [
     'personal-data',
     'flag-start',
     'flag-finish',
-    'smart-toy'
+    'smart-toy',
+    'filter-remove'
+]
+
+export const editorIcons = [
+    'ol',
+    'ul',
+    'picture',
+    'table',
+    'value',
+    'close',
+    'file-header',
+    'file-content',
+    'save',
+    'generic',
+    'align-bottom-left',
+    'align-left',
+    'align-top-left',
+    'align-bottom-center',
+    'align-center',
+    'align-top-center',
+    'align-bottom-right',
+    'align-right',
+    'align-top-right',
+    'icon-text-font',
+    'icon-fill-color',
+    'align-both',
+    'align-top-both',
+    'align-bottom-both',
+    'font-registry-icon',
+    'font-superscript-icon',
+    'font-subscript-icon',
+    'resize-icon',
+    'cut-icon',
+    'proportion-icon',
+    'external-link',
+    'placeholder-icon'
 ]

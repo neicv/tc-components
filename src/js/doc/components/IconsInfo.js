@@ -1,6 +1,6 @@
 import m from 'mithril';
-import Component from "../../lib/Component";
-import { ContentCopyIcon } from '../../ui/iconAssets';
+import Component from "@/lib/Component";
+import { ContentCopyIcon } from '@/ui/iconAssets';
 
 const DELAY_COPY      = 2000;
 const TEXT_IS_COPED   = 'Copied!';

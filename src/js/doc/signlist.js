@@ -4,6 +4,7 @@ import Switch from '@/components/Switch';
 import SearchLine from "@/components/SearchLine/SearchLine";
 
 import HISTORY, { history } from '@doc/data/timelineHistory'
+// import HISTORY, { history } from './signinglist/data/timelineHistory'
 
 const CSS_CLASS_TITLE_CLASS      = 'pl10 pr10 pb5 pt5 bg-grey';
 const FILTER_SEARCH_LIST         = ['fio', 'position', 'agency', 'role', 'title'];
