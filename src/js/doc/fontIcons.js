@@ -3,7 +3,8 @@ import m from 'mithril';
 import Modal from '../components/Modal';
 import IconsInfo from './components/IconsInfo';
 import { SearchIcon } from '../ui/iconAssets';
-import ICONS, { icons } from '../lib/icons'
+import IconsListBox from './components/IconsListBox'
+import ICONS, { icons, editorIcons } from '../lib/icons'
 
 class FontIconsDoc {
     onitit() {
@@ -13,7 +14,8 @@ class FontIconsDoc {
     }
 
     view({attrs}) {
-        const items = this.searchIcon(icons, this.search);
+        const items            = this.searchIcon(icons, this.search);
+        const itemsEditorIcons = this.searchIcon(editorIcons, this.search);
         // const { icon } = attrs
 
         return (
@@ -30,35 +32,9 @@ class FontIconsDoc {
                         </input>
                     </form>
                 </div>
-
-                <div content-vl27="" className="icons-container" role="listbox" aria-label="Action icons">
-                    {
-                        items.map((item, index) => {
-                            return (
-                                <button
-                                    content-vl27=""
-                                    aria-haspopup="dialog"
-                                    icon-item=""
-                                    // role="option"
-                                    host-vl37=""
-                                    aria-label={`${item} Icon`}
-                                    aria-selected="false"
-                                    className='icon-container'
-                                    onclick={() => this.onIconClick(index)}
-                                >
-                                    <span
-                                        content-vl37=""
-                                        className={`icon-asset font-icon ${item}`}
-                                        title={item}
-                                    >
-                                        {/* {item} */}
-                                    </span>
-                                    <span content-vl37="" className="icon-name">{item}</span>
-                                </button>
-                            )
-                        })
-                    }
-                </div>
+                <IconsListBox items={items} type='font' onIconClick={this.onIconClick.bind(this)}/>
+                <p>Editor Icons<hr/></p>
+                <IconsListBox items={itemsEditorIcons} type='editor' onIconClick={this.onIconClick.bind(this)}/>
                 <Choose>
                     <When condition={this.showModal}>
                         <Modal

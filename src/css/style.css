@@ -139,6 +139,14 @@ body {
     padding-left: 10px;
 }
 
+.pl15 {
+    padding-left: 15px;
+}
+
+.pl20 {
+    padding-left: 20px;
+}
+
 .pl20 {
     padding-left: 20px;
 }
@@ -167,12 +175,28 @@ body {
     padding-top: 10px;
 }
 
+.pt15 {
+    padding-top: 15px;
+}
+
+.pt20 {
+    padding-top: 20px;
+}
+
 .pb5 {
     padding-bottom: 5px;
 }
 
 .pb10 {
     padding-bottom: 10px;
+}
+
+.pb15 {
+    padding-bottom: 15px;
+}
+
+.pb20 {
+    padding-bottom: 20px;
 }
 
 .font-icon-test {

@@ -1,21 +1,39 @@
 import m from 'mithril';
 import SigningListContainer from "./components/signinglist/SigningListConteiner"
 import Switch from '@/components/Switch';
-import { SearchIcon } from '@/ui/iconAssets';
+import SearchLine from "@/components/SearchLine/SearchLine";
 
 import HISTORY, { history } from '@doc/data/timelineHistory'
+// import HISTORY, { history } from './signinglist/data/timelineHistory'
 
-const CSS_CLASS_TITLE_CLASS = 'pl10 pr10 pb5 pt5 bg-grey';
+const CSS_CLASS_TITLE_CLASS      = 'pl10 pr10 pb5 pt5 bg-grey';
+const FILTER_SEARCH_LIST         = ['fio', 'position', 'agency', 'role', 'title'];
+const FILTER_SEARCH_SIGNING_LIST = ['fio', 'position', 'agency', 'role', 'comments'];
 
 class SignListDoc {
     oninit() {
         this.search            = '';
         this.isShowDetailsList = false;
         this.itemTitleClass    = false;
+        this.searchRegEx       = [];
+        this.oldSearch         = '';
+
+        this.history = this.clearSearch(history);
     }
 
     view() {
-        const items = this.searchHistory(history, this.search);
+        let items = this.searchHistory(this.history, this.search);
+        if (this.oldSearch !== this.search) {
+            if (this.search) {
+                this.searchRegEx = this.stringToRegExp(this.search);
+
+            } else {
+                items = this.clearSearch(items);
+                this.searchRegEx = [];
+            }
+            this.oldSearch = this.search;
+            // setTimeout(() => m.redraw(), 0);
+        }
 
         return (
             <div className='test-timeline sign-list'>
@@ -31,17 +49,8 @@ class SignListDoc {
                 </div>
 
                 <div className="sign-list-panel spacebetween">
-                    <span className="fs14">
-                        <form className="p10 tm-search tm-search-default">
-                            <span tm-search-icon className="tm-icon tm-search-icon"><SearchIcon/></span>
-                            <input
-                                className="tm-search-input"
-                                type="search"
-                                placeholder="Поиск"
-                                onkeyup={event => this.search = event.target.value}>
-                            </input>
-                        </form>
-                    </span>
+                    <SearchLine search={this.onSearch.bind(this)} />
+
                     <label className="switcher-label-placement-start">
                         <Switch
                             value={this.isShowDetailsList}
@@ -50,58 +59,112 @@ class SignListDoc {
                         <span className={`${this.isShowDetailsList ? 'text-primary' : 'text-secondary'} fs12`}>Подробный вид: </span>
                     </label>
                 </div>
+                <br />
                 <SigningListContainer
                     data={items}
                     viewDetailsInfo={this.isShowDetailsList}
                     itemTitleClass={this.itemTitleClass ? CSS_CLASS_TITLE_CLASS : ''}
+                    searchRegEx={this.searchRegEx}
                 />
             </div>
         )
     }
 
+
+    clearSearch(items = []) {
+        if (items.length) {
+            items.forEach((item, index) => {
+                item.isRender = true;
+
+                if (item.signingList && item.signingList.length) {
+                    item.signingList.forEach(subitem => {
+                        subitem.isRender = true;
+                    })
+                }
+            })
+        }
+
+        return items;
+    }
+
     searchHistory(items = [], value = '') {
         if (value === '') {
+
             return items;
         }
+
         const val = value.toLowerCase();
 
-        return items.filter(item => {
-            let res =
-                (item.fio && item.fio.toLowerCase().includes(val)) ||
-                (item.position && item.position.toLowerCase().includes(val)) ||
-                (item.agency && item.agency.toLowerCase().includes(val)) ||
-                (item.role && item.role.toLowerCase().includes(val)) ||
-                (item.title && item.title.toLowerCase().includes(val)) ||
+        items.forEach((item, index) => {
 
-                (item.signingList && this.subItemsSearch(item.signingList, val))
+            let tmpSigningList = item.signingList ? this.subItemsSearch(item.signingList, val) : false;
 
-                // item.number - Type = String! Not a Number!
-                // (typeof item.number === 'number'
-                //     ? item.number
-                //         .toString()
-                //         .toLowerCase()
-                //         .includes(this.search.toLowerCase())
-                //     : item.number.toLowerCase().includes(this.search.toLowerCase()))
-            return res;
+            items[index].isRender = this._getFilter(item, value, FILTER_SEARCH_LIST)
+                                || (tmpSigningList && tmpSigningList.status === true)
+
+            if (tmpSigningList && tmpSigningList?.items.length) {
+                items[index].signingList = tmpSigningList.items;
+            }
         })
+
+        return items;
     }
 
     subItemsSearch(items = [], value = '') {
         if (value === '') {
-            return items;
+            return false;
         }
-        let result = items.filter(item => {
-            let res =
-                (item.fio && item.fio.toLowerCase().includes(value)) ||
-                (item.position && item.position.toLowerCase().includes(value)) ||
-                (item.agency && item.agency.toLowerCase().includes(value)) ||
-                (item.role && item.role.toLowerCase().includes(value)) ||
-                (item.title && item.title.toLowerCase().includes(value))
 
-            return res;
+        let status = false;
+
+        items.forEach((item, index) => {
+            let res = this._getFilter(item, value, FILTER_SEARCH_SIGNING_LIST);
+
+            items[index].isRender = res;
+
+            status = status || res;
         })
 
-        return result.length === 0 ? false : true;
+        return { items, status };
+    }
+
+    onSearch(val) {
+        this.search = val;
+    }
+
+    _getFilter(item, value, filterSet = []){
+        let res = false,
+            tmp;
+
+        if (item === undefined || value === undefined) {
+            return res;
+        }
+
+        filterSet.forEach(element => {
+            if (item.hasOwnProperty(element)) {
+                tmp = item[element];
+
+                if (typeof tmp === 'number') {
+                    tmp = item[element].toString();
+                }
+                if (typeof tmp === 'string') {
+                    tmp = tmp.toLowerCase().includes(value);
+                    res = res || tmp;
+                }
+            }
+        });
+
+        return res;
+    }
+
+
+    stringToRegExp(str) {
+        // escapeStringRegExp
+        let matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g,
+            text = '';
+
+        text = new RegExp(str.replace(matchOperatorsRe, '\\$&'), 'i')
+        return [text];
     }
 }
 

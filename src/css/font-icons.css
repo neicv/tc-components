@@ -581,3 +581,167 @@
 .font-icon.smart-toy::before {
     content: "\E08C";
 }
+
+.font-icon.filter-remove::before {
+    content: "\E08D";
+}
+
+/* ------------------------------------------------
+ * Icons for TurboEditor/
+ ------------------------------------------------*/
+ @font-face {
+    font-family: "turboeditor";
+    src: url("../fonts/turboeditor.eot");
+    src: url("../fonts/turboeditor.eot?#iefix'")
+         format('embedded-opentype'),
+         url("../fonts/turboeditor.woff") format("woff"),
+         url("../fonts/turboeditor.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+.editor-icon {
+    font-size: 17px;
+    vertical-align: middle;
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    text-transform: none;
+    line-height: 100%;
+    font-family: "turboeditor";
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.editor-icon.ol::before {
+    content: "\E001";
+}
+
+.editor-icon.ul::before {
+    content: "\E002";
+}
+
+.editor-icon.picture::before {
+    content: "\E003";
+}
+
+.editor-icon.table::before {
+    content: "\E004";
+}
+
+.editor-icon.value::before {
+    content: "\E005";
+}
+
+.editor-icon.close::before {
+    font-weight: bold;
+    content: "\E006";
+}
+
+.editor-icon.file-header::before {
+    content: "\E007";
+}
+
+.editor-icon.file-content::before {
+    content: "\E008";
+}
+
+.editor-icon.save::before {
+    content: "\E009";
+}
+
+.editor-icon.generic::before {
+    content: "\E00A";
+}
+
+.editor-icon.align-bottom-left::before {
+    content: "\E00B";
+}
+
+.editor-icon.align-left::before {
+    content: "\E00C";
+}
+
+.editor-icon.align-top-left::before {
+    content: "\E00D";
+}
+
+.editor-icon.align-bottom-center::before {
+    content: "\E00E";
+}
+
+.editor-icon.align-center::before {
+    content: "\E00F";
+}
+
+.editor-icon.align-top-center::before {
+    content: "\E010";
+}
+
+.editor-icon.align-bottom-right::before {
+    content: "\E011";
+}
+
+.editor-icon.align-right::before {
+    content: "\E012";
+}
+
+.editor-icon.align-top-right::before {
+    content: "\E013";
+}
+
+.editor-icon.icon-text-font::before {
+    content: "\E014";
+}
+
+.editor-icon.icon-fill-color::before {
+    content: "\E015";
+}
+
+.editor-icon.align-both::before {
+    content: "\E016";
+}
+
+.editor-icon.align-top-both::before {
+    content: "\E017";
+}
+
+.editor-icon.align-bottom-both::before {
+    content: "\E018";
+}
+
+.editor-icon.font-registry-icon::before {
+    content: "\E019";
+}
+
+.editor-icon.font-superscript-icon::before {
+    content: "\E01A";
+}
+
+.editor-icon.font-subscript-icon::before {
+    content: "\E01B";
+}
+
+.editor-icon.resize-icon::before {
+    content: "\E01C";
+}
+
+.editor-icon.cut-icon::before {
+    content: "\E01D";
+}
+
+.editor-icon.proportion-icon::before {
+    content: "\E01E";
+}
+
+.editor-icon.external-link::before {
+    content: "\E01F";
+}
+
+.editor-icon.placeholder-icon::before {
+    content: "\E020";
+}
+

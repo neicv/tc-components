@@ -1,5 +1,6 @@
 import m from 'mithril';
 import Component from '@/lib/Component';
+import {setHighLight} from "@/lib/highLight";
 
 const TEXT_BLANK    = 'Не указано';
 const NAME_SUBINFO  = 'subinfo';
@@ -9,143 +10,186 @@ const DELAY_INIT_MAX_HEIGHT = 100;
 
 class SignatureSheet extends Component {
     oninit(vnode) {
-        this.model                = {};
-        this.oldVDI               = viewDetailsInfo;
-        this._element             = vnode;
-        const { viewDetailsInfo } = this.attrs;
-        this.isSigningInfoOpen    = viewDetailsInfo || false;
+        this.model              = {};
+        this.oldVDI             = viewDetailsInfo;
+        this._element           = vnode;
+        const {
+            viewDetailsInfo,
+            searchRegEx
+        }                      = this.attrs;
+        this.isSigningInfoOpen = viewDetailsInfo || false;
+        this.searchRegEx       = searchRegEx || [];
     }
 
     view() {
-        const { signingList, viewDetailsInfo, shortSigningList, index , itemTitleClass} = this.attrs;
+        const { signingList = false, viewDetailsInfo, shortSigningList = [], index , previosInfo = '', itemTitleClass, searchRegEx = []} = this.attrs;
+
+        this.searchRegEx = searchRegEx;
 
         if (this.oldVDI !== viewDetailsInfo) {
             this.oldVDI = viewDetailsInfo
             this.refreshModel(viewDetailsInfo)
         }
 
+        const previosDate   = previosInfo.date;
+        const previosStatus = previosInfo.title;
+
         return (
             <div className="sign-sheet turbo-visa">
+                <If condition={signingList.length !== 0}>
                 <div className="turbo-visa__history-item">
-                    <div className={`history-item__title ${itemTitleClass || ''}`}>Визированиe</div>
+                    <div
+                        className={`history-item__title pr15 ${itemTitleClass || ''} ${this.isSigningInfoOpen ? 'timeline-open' : ''}`}
+                        onclick={event => this.toggleInfoPanel(event)}
+                    >
+                        <span className="timeline-accordion-title">Визированиe <span className="fs14">(в статусе {previosStatus})</span>
+                        </span>
+                    </div>
 
-                    <div className="mt10 ml15 tile-list_bordered history-item__content">
-                        <div
-                            className={`v-align-middle pr0 pt10 pr15 ${this.isSigningInfoOpen ? 'timeline-open' : ''}`}
-                            onclick={event => this.toggleInfoPanel(event)}
-                        >
+                    <div className={`mt10 tile-list_bordered history-item__content`}>
+                        <If condition={shortSigningList}>
                             <div
-                                className="js-ellipsis timeline-accordion-title"
-                                aria-expanded={this.isSigningInfoOpen}
+                                className="timeline-accordion-subcontent ml10"
+                                oncreate={element => this.setMaxHeightContent(element, NAME_SUBINFO, true)}
                             >
-                                <i title="Лист согласования" className="font-icon template-icon fs18 pr5"></i>
-                                <span className="v-align-top fs16 text-right">Лист согласования</span>
-                            </div>
-                            <If condition={signingList.length !== 0}>
-                                <div
-                                    className="timeline-accordion-subcontent pt10 short-info"
-                                    oncreate={element => this.setMaxHeightContent(element, NAME_SUBINFO, true)}
-                                >
-                                    <div className="spacebetween pb5">
-                                        <div className="text-clipped js-ellipsis-text display-flex">
-                                            <i title="Статус" className="font-icon pencil color-blue fs15 pr5 inline-block"></i>
-                                            <span className='v-align-middle fs12'>Статус:</span>
-                                        </div>
-                                        <span className='text-right display-initial'>
-                                            <i
-                                                title={shortSigningList.agreeStatus}
-                                                className={`font-icon ${shortSigningList.agreed ? 'circle-tick color-success' : 'circle-close color-error'} fs15 pr5`}
-                                            ></i>
-                                            <span className="v-align-text-top fs12">{shortSigningList.agreeStatus}</span>
-                                        </span>
-                                    </div>
-                                    <If condition={shortSigningList.comments}>
-                                        <div className="fs12">
-                                            <div className="text-clipped js-ellipsis-text display-flex pb5">
-                                                <i title="Комментарий" className="font-icon icon-chat color-blue fs15 pr5 inline-block"></i>
-                                                <span title="Комментарий" className="text-clipped v-align-middle fs12">Комментарий:</span>
+                                <div class="v-card v-sheet theme--light full-info">
+                                    <div className={`v-card__title ${shortSigningList.agreed ? 'aprove' : 'disaprove'}`}>
+                                        <div className="spacebetween">
+                                            <div className="text-clipped js-ellipsis-text display-inline-flex">
+                                                <span className='v-align-middle fs12'>{shortSigningList.date.split(' ')[0]}:{shortSigningList.date.split(' ')[1]}</span>
                                             </div>
-                                            <div className="ml20 fs12 text-justify pb5">&nbsp;&nbsp;&nbsp;&nbsp;{shortSigningList.comments}</div>
-                                            <div className="fs11 text-right">{shortSigningList.fio}</div>
-                                            <div className="fs11 text-right">{shortSigningList.date}</div>
+                                            <span className='text-right display-inline-flex'>
+                                                <span className="fs12">{shortSigningList.agreeStatus}</span>
+                                                <i
+                                                    title={shortSigningList.agreeStatus}
+                                                    className={`font-icon ${shortSigningList.agreed ? 'circle-tick color-success' : 'circle-close color-white'} fs15 pl10`}
+                                                ></i>
+                                            </span>
                                         </div>
-                                    </If>
+                                    </div>
+
+                                    <div className="v-card__body pb5 pt15 pr15 pl15">
+                                        <Choose>
+                                            <When condition={shortSigningList.comments}>
+                                                <div className="js-ellipsis pb5" >
+                                                    <div className="display-inline-flex">
+                                                        <span className="v-align-middle fs12">Имеются разногласия в согласовании:</span>
+                                                    </div>
+                                                </div>
+                                                <div className="v-align-middle pb5">
+                                                    <div className="js-ellipsis">
+                                                        <div className="text-clipped js-ellipsis-text display-inline-flex">
+                                                            <i title="Комментарий" className="font-icon icon-chat color-blue fs15 pr5 inline-block"></i>
+                                                            <span title="Комментарий" className="text-clipped v-align-middle fs12 text-bold">Комментарий:</span>
+                                                        </div>
+                                                        <div className="fs11 text-justify">{this.setHighLight(shortSigningList.comments)}</div>
+                                                        <div className="fs11 text-right text-bold">{this.setHighLight(shortSigningList.fio)}</div>
+                                                    </div>
+                                                </div>
+                                            </When>
+                                            <Otherwise>
+                                                <div className="js-ellipsis" >
+                                                    <div className="display-inline-flex">
+                                                        <span className="v-align-middle fs12">Согласовано всеми участниками.</span>
+                                                    </div>
+                                                </div>
+                                            </Otherwise>
+                                        </Choose>
+                                    </div>
                                 </div>
-                            </If>
-                        </div>
+                            </div>
+                        </If>
 
                         <div
-                            className="timeline-accordion-content short-info"
+                            className="timeline-accordion-content ml10"
                             hidden={this.isSigningInfoOpen}
                             oncreate={element => this.setMaxHeightContent(element, NAME_INFO)}
                             ontransitionend={() => this.isSigningInfoOpen = !this.isSigningInfoOpen}
                         >
                             {
                                 signingList.slice(0).reverse().map((item, index) => {
-                                    const {date, fio, position, agency, role, comments, agreed, agreeStatus} = item;
+                                    const {date = '', fio = TEXT_BLANK, position = TEXT_BLANK, agency = TEXT_BLANK, role = TEXT_BLANK, comments, agreed, agreeStatus} = item;
+
+                                    const {isRender = true} = item;
+
+                                    if (isRender === false) {
+                                        return;
+                                    }
 
                                     return (
-                                        <div className="pb5 pt5 pr15">
-                                            <div className="js-ellipsis" >
-                                                <div className="text-clipped js-ellipsis-text">
-                                                    <i title="ФИО" className="font-icon user color-blue fs15 pr5 text-bold inline-block"></i>
-                                                    <span title={fio || TEXT_BLANK} className="text-clipped v-align-middle fs12">{fio || TEXT_BLANK}</span>
+                                        <div class="v-card v-sheet theme--light full-info">
+
+                                            <div className={`v-card__title ${agreed ? 'aprove' : 'disaprove'}`}>
+                                                <div className="spacebetween">
+                                                    <div className="text-clipped js-ellipsis-text display-inline-flex">
+                                                        <span className='v-align-middle fs12'>{date.split(' ')[0]}:{date.split(' ')[1]}</span>
+                                                    </div>
+                                                    <span className='text-right display-inline-flex'>
+                                                        <span className="fs12">{agreeStatus}</span>
+                                                        <i
+                                                            title={agreeStatus}
+                                                            className={`font-icon ${agreed ? 'circle-tick color-success' : 'circle-close color-white'} fs15 pl10`}
+                                                        ></i>
+
+                                                    </span>
                                                 </div>
                                             </div>
 
-                                            <div className="v-align-middle">
-                                                <div className="js-ellipsis">
-                                                    <div className="text-clipped js-ellipsis-text">
-                                                        <i title="Организация" className="font-icon case color-blue fs15 pr5 inline-block"></i>
-                                                        <span title={agency || TEXT_BLANK} className="text-clipped v-align-middle fs12">{agency || TEXT_BLANK}</span>
+                                            <div className="v-card__body pb5 pt15 pr15 pl15">
+                                                <div className="js-ellipsis" >
+                                                    <div className="text-clipped js-ellipsis-text display-inline-flex">
+                                                        <i title="ФИО" className="font-icon user color-blue fs15 pr5 text-bold inline-block"></i>
+                                                        <span title={fio} className="text-clipped v-align-middle fs12 text-bold">{this.setHighLight(fio)}</span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div className="v-align-middle">
-                                                <div className="js-ellipsis">
-                                                    <div className="text-clipped js-ellipsis-text">
-                                                        <i title="Должность" className="font-icon position-icon color-blue fs15 pr5"></i>
-                                                        <span title={position || TEXT_BLANK} className="text-clipped v-align-middle fs12">{position || TEXT_BLANK}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="v-align-middle">
-                                                <div className="js-ellipsis">
-                                                    <div className="text-clipped js-ellipsis-text">
-                                                        <i title="Роль" className="font-icon role-icon color-blue fs15 pr5 inline-block"></i>
-                                                        <span title={role || TEXT_BLANK} className="text-clipped v-align-middle fs12">{role || TEXT_BLANK}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
 
-                                            <If condition={comments}>
                                                 <div className="v-align-middle">
                                                     <div className="js-ellipsis">
-                                                        <div className="text-clipped js-ellipsis-text">
-                                                            <i title="Комментарий" className="font-icon icon-chat color-blue fs15 pr5 inline-block"></i>
-                                                            <span title="Комментарий" className="text-clipped v-align-middle fs12">Комментарий:</span>
+                                                        <div className="text-clipped js-ellipsis-text display-inline-flex">
+                                                            <i title="Организация" className="font-icon case color-blue fs15 pr5 inline-block"></i>
+                                                            <span title={agency} className="text-clipped v-align-middle fs12">{this.setHighLight(agency)}</span>
                                                         </div>
-                                                        <div className="ml20 fs11 text-justify">&nbsp;&nbsp;&nbsp;&nbsp;{comments}</div>
                                                     </div>
                                                 </div>
-                                            </If>
-                                            <div className="spacebetween">
-                                                <div className="text-clipped js-ellipsis-text">
-                                                    <i title="Статус" className="font-icon pencil color-blue fs15 pr5 inline-block"></i>
-                                                    <span className='v-align-middle fs12'>Статус:</span>
+                                                <div className="v-align-middle">
+                                                    <div className="js-ellipsis">
+                                                        <div className="text-clipped js-ellipsis-text display-inline-flex">
+                                                            <i title="Должность" className="font-icon position-icon color-blue fs15 pr5"></i>
+                                                            <span title={position} className="text-clipped v-align-middle fs12">{this.setHighLight(position)}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <span className='text-right'>
-                                                    <i
-                                                        title={agreeStatus}
-                                                        className={`font-icon ${agreed ? 'circle-tick color-success' : 'circle-close color-error'} fs15 pr5`}
-                                                    ></i>
-                                                    <span className="v-align-text-top fs12">{agreeStatus}</span>
-                                                </span>
-                                            </div>
-                                            <div className="v-align-middle">
-                                                <div className="js-ellipsis">
-                                                    <div className="mr0 text-right">
-                                                        <span title={date || ""} className="text-clipped v-align-middle fs11">{date || ""}</span>
+                                                <div className="v-align-middle pb5">
+                                                    <div className="js-ellipsis">
+                                                        <div className="text-clipped js-ellipsis-text display-inline-flex">
+                                                            <i title="Роль" className="font-icon role-icon color-blue fs15 pr5 inline-block"></i>
+                                                            <span title={role} className="text-clipped v-align-middle fs12">{this.setHighLight(role)}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <If condition={comments}>
+                                                    <div className="v-align-middle pb5">
+                                                        <div className="js-ellipsis">
+                                                            <div className="text-clipped js-ellipsis-text display-inline-flex">
+                                                                <i title="Комментарий" className="font-icon icon-chat color-blue fs15 pr5 inline-block"></i>
+                                                                <span title="Комментарий" className="text-clipped v-align-middle fs12 text-bold">Комментарий:</span>
+                                                            </div>
+                                                            {/* <div className="ml20 fs11 text-justify">&nbsp;&nbsp;&nbsp;&nbsp;{comments}</div> */}
+                                                            <div className="fs11 text-justify">{this.setHighLight(comments)}</div>
+                                                        </div>
+                                                    </div>
+                                                </If>
+
+                                                <div className="v-card__footer">
+                                                    <div className="v-align-middle spacebetween">
+                                                        <span className=" js-ellipsis display-inline-flex">
+                                                            <i title="Статус" className="font-icon time color-blue fs15 pr5 inline-block"></i>
+                                                            <span className='text-clipped fs12'>Временной интервал:</span>
+                                                        </span>
+                                                        <span className="js-ellipsis display-inline-flex">
+                                                            <span title={date || ""} className="mr0 text-right fs12">{previosDate} - {date || ""}</span>
+                                                        </span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -156,23 +200,27 @@ class SignatureSheet extends Component {
                         </div>
                     </div>
                 </div>
+                </If>
             </div>
         )
     }
 
     toggleInfoPanel(event) {
-        let next,
-            targ = event.currentTarget;
+        let targ = event.currentTarget,
+            el1, el2;
 
         if (targ.tagName !== 'DIV' && targ.nextElementSibling) {
             return;
         }
 
-        this.setTargetMAxHeight(targ.children[1]);
-        this.setTargetMAxHeight(targ.nextElementSibling);
+        targ = targ.nextElementSibling;
+        el1  = targ.querySelector('.timeline-accordion-subcontent');
+        el2  = targ.querySelector('.timeline-accordion-content');
+        el1 && this.setTargetMaxHeight(el1);
+        el2 && this.setTargetMaxHeight(el2);
     }
 
-    setTargetMAxHeight(targ) {
+    setTargetMaxHeight(targ) {
         if (targ === undefined) {
             return;
         }
@@ -224,6 +272,15 @@ class SignatureSheet extends Component {
                 }
             })
         }
+    }
+
+    setHighLight(text) {
+        let highLightText = text;
+
+        highLightText = setHighLight(highLightText, this.searchRegEx);
+        highLightText = m.trust(highLightText);
+
+        return highLightText;
     }
 }
 

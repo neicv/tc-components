@@ -2,6 +2,8 @@ import m from "mithril";
 import Component from "@/lib/Component";
 import { SearchIcon } from '@/ui/iconAssets';
 
+const SEARCH_ICON_COLOR = '#777';
+
 class SearchLine extends Component {
     oninit() {
         this.search      = '';
@@ -21,12 +23,12 @@ class SearchLine extends Component {
                             type="search"
                             oninput={e => this.onSearch(e.target.value)}
                             onkeyup={e => this.onKeyUp(e)}
-                            oncreate={element => this.elemetInput = element}
+                            oncreate={element => {this.elemetInput = element}}
                             required
                         />
                         <If condition={this.search === '' && icon}>
                             <span className="tc-form-icon tc-form-icon-flip">
-                                <SearchIcon color='#777' />
+                                <SearchIcon color={SEARCH_ICON_COLOR} />
                             </span>
                         </If>
                         <If condition={this.search}>
@@ -50,8 +52,10 @@ class SearchLine extends Component {
         if (e.key === 'Escape') {
             e.preventDefault();
             this.clearSearch();
-            this.elemetInput && this.elemetInput.dom.blur();
-            return;
+
+            if (this.elemetInput) {
+                this.elemetInput.dom.blur();
+            }
         }
     }
 

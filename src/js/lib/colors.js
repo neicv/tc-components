@@ -8,11 +8,10 @@ const colors = [
     'inherit',
     'text.secondary',
     'text.primary'
-
 ]
 
-const validateColor = (color, default_value = 'inherit') => {
-    let result = colors.includes(color) ? color : default_value;
+const validateColor = (color, defaultValue = 'inherit') => {
+    let result = colors.includes(color) ? color : defaultValue;
     result = result.replace('.', '-')
 
     return result;

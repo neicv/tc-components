@@ -91,7 +91,7 @@
     border-width: 2px;
     padding: 4px;
     border-radius: 50%;
-    box-shadow: $global-theme-shadows;
+    // box-shadow: $global-theme-shadows;
     margin: 11.5px 0;
 
     /* Styles applied to the root element if `color="grey"` and `variant="filled"`. */
@@ -167,7 +167,20 @@
     width: 2px;
     background-color: $theme-palette-grey-400;
     flex-grow: 1;
+    &::before {
+        display: inline-block;
+        position: relative;
+        content: '';
+        padding: 2px;
+        left: -2px;
+        top: -10px;
+        border-top: 2px solid #bdbdbd;
+        border-right: 2px solid #bdbdbd;
+        transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+    }
 }
+
 
 /* TEST */
 
@@ -220,5 +233,5 @@
     // max-height: 0;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
-    cursor: pointer;
+    // cursor: pointer;
 }
