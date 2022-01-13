@@ -2,3 +2,5 @@ package-lock.json
 info
 node_modules/
 piblic/
+dist/
+font_generator/fonts/
