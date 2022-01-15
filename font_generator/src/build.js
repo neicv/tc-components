@@ -28,19 +28,20 @@ const filter = [
 ]
 
 let cssFile,
+    tmpName,
     config = {},
     pathToDist = path.join(__dirname, "../..");
 
 console.log('pathToDist: ', pathToDist);
 
 // прицепить существующие шрифты
-cssFile = readFileSync(TURBO_FONT_CSS_DEFAULT_FOLDER, TURBO_FONT_CSS_DEFAULT_FILENAME);
+// cssFile = readFileSync(TURBO_FONT_CSS_DEFAULT_FOLDER, TURBO_FONT_CSS_DEFAULT_FILENAME);
 
-if (cssFile) {
-    console.log('Processing file: ', TURBO_FONT_CSS_DEFAULT_FILENAME);
+// if (cssFile) {
+//     console.log('Processing file: ', TURBO_FONT_CSS_DEFAULT_FILENAME);
 
-    setConfigObj(cssFile, filter, config);
-}
+//     setConfigObj(cssFile, filter, config);
+// }
 
 // прицепить сгенерированные шрифты
 cssFile = readFileSync(GENERATED_FONT_CSS_DEFAULT_FOLDER, GENERATED_FONT_CSS_DEFAULT_FILENAME);
@@ -59,20 +60,31 @@ fs.writeFileSync(path.join(pathToDist, GENERATED_FONT_CSS_DEFAULT_FOLDER, EXPORT
 
 function setConfigObj( file = '', data = [], config ) {
     for(let result of data) {
-        const { name, fontName } = result.groups;
+        let { name, fontName } = result.groups;
 
         if (name) {
-            let regExpValue = new RegExp(`\\.${name}\\.(?<value>[-\\w]+):`, "g");
+            tmpName = checkNameFont(name, filter);
 
-            let items = file.matchAll(regExpValue);
+            if (tmpName !== name) {
+                fontName = fontName || name;
+                name = tmpName;
+            }
+
+            let regExpValue = new RegExp(`\\.${name}\\.(?<value>[-\\w]+):.+\\s+content:\\s"\\\\(?<code>[\\w]+)`, "g");
+            let items       = file.matchAll(regExpValue);
+
             config[name] = {};
-            config[name].icons = [];
+            config[name].icons = {
+                name: [],
+                code: []
+            };
             config[name].name = fontName || name;
 
             for(let item of items) {
-                let { value } = item.groups;
+                let { value, code } = item.groups;
                 if (value) {
-                    config[name].icons.push(value);
+                    config[name].icons.name.push(value);
+                    config[name].icons.code.push(code);
                 }
             }
         }
@@ -102,4 +114,18 @@ function readFileSync(folder = '', filename = '') {
 
         return false;
     }
+}
+
+function checkNameFont(value, list) {
+
+    for (let variant of list) {
+        const { name, fontName } = variant.groups;
+
+        if (value === fontName) {
+            value = name;
+            break;
+        }
+    }
+
+    return value;
 }

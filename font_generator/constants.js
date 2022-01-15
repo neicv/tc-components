@@ -1,8 +1,8 @@
 const TURBO_FONT_CSS_DEFAULT_FOLDER       = 'src/css';
 const TURBO_FONT_CSS_DEFAULT_FILENAME     = 'font-icons.css';
 const GENERATED_FONT_CSS_DEFAULT_FOLDER   = 'dist';
-const GENERATED_FONT_CSS_DEFAULT_FILENAME = 'fonts-gen.css';
-const EXPORTED_CONFIG_DEFAULT_FILENAME    = 'fonts-gen-config.json'
+const GENERATED_FONT_CSS_DEFAULT_FILENAME = 'font-icons.css';
+const EXPORTED_CONFIG_DEFAULT_FILENAME    = 'icons.config.json'
 
 module.exports = {
     TURBO_FONT_CSS_DEFAULT_FOLDER,

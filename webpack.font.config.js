@@ -31,7 +31,7 @@ module.exports = {
   plugins: [
     new MiniCssExtractPlugin({
       // filename: 'app.bundle.[contenthash].css'
-      filename: 'fonts-gen.css'
+      filename: 'font-icons.css'
     })
   ],
   devServer: {
