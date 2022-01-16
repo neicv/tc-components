@@ -16,7 +16,7 @@ let copyInstructions = [
 		label: 'Copy config file',
 		source: './dist/',
 		destination: './src/js/config/',
-        test: /\.config\.json/,
+        test: /\.config\.js/,
         onlyFiles: true
 	},
     {

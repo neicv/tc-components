@@ -1,5 +1,5 @@
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
 const basename = path.basename(__filename)
 const env = process.env.NODE_ENV || 'development'
 const regExp = /font-family:\s*\"(?<name>[-\w]+)\";/g
@@ -30,6 +30,7 @@ const filter = [
 let cssFile,
     tmpName,
     config = {},
+    configFile = '',
     pathToDist = path.join(__dirname, "../..");
 
 console.log('pathToDist: ', pathToDist);
@@ -44,7 +45,7 @@ console.log('pathToDist: ', pathToDist);
 // }
 
 // прицепить сгенерированные шрифты
-cssFile = readFileSync(GENERATED_FONT_CSS_DEFAULT_FOLDER, GENERATED_FONT_CSS_DEFAULT_FILENAME);
+cssFile = readFileSync(pathToDist, GENERATED_FONT_CSS_DEFAULT_FOLDER, GENERATED_FONT_CSS_DEFAULT_FILENAME);
 
 if (cssFile) {
     console.log('Processing file: ', GENERATED_FONT_CSS_DEFAULT_FILENAME);
@@ -55,7 +56,8 @@ if (cssFile) {
 console.log(config)
 
 // Записать конфиг в файл
-fs.writeFileSync(path.join(pathToDist, GENERATED_FONT_CSS_DEFAULT_FOLDER, EXPORTED_CONFIG_DEFAULT_FILENAME), JSON.stringify(config, null, 4));
+configFile = 'export const icons = ' + JSON.stringify(config, null, 4) + '\n';
+fs.writeFileSync(path.join(pathToDist, GENERATED_FONT_CSS_DEFAULT_FOLDER, EXPORTED_CONFIG_DEFAULT_FILENAME), configFile);
 
 
 function setConfigObj( file = '', data = [], config ) {
@@ -91,8 +93,9 @@ function setConfigObj( file = '', data = [], config ) {
     }
 }
 
-function readFileSync(folder = '', filename = '') {
+function readFileSync(pathToDist = '', folder = '', filename = '') {
     try {
+        console.log('\n ---- \n ReadFileSync: \n', pathToDist, folder, filename)
         let stat = fs.statSync(path.join(pathToDist, folder, filename));
 
         return fs.readFileSync(path.join(pathToDist, folder, filename),
