@@ -3,8 +3,8 @@ import m from 'mithril';
 import Modal from '../components/Modal';
 import IconsInfo from './components/IconsInfo';
 import { SearchIcon } from '../ui/iconAssets';
-import IconsListBox from './components/IconsListBox'
-import ICONS, { icons, editorIcons } from '../lib/icons'
+import IconsListBox from './components/IconsListBox';
+import ICONS, { icons, editorIcons } from '../lib/icons';
 
 class FontIconsDoc {
     onitit() {

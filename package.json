@@ -11,8 +11,10 @@
     "editorconfig": "editorconfig-checker",
     "dev": "cross-env NODE_ENV=development webpack-dev-server --mode development",
     "build": "cross-env NODE_ENV=production webpack --mode production",
-    "makefont": "rimraf ./dist && webpack --mode production --config ./webpack.font.config.js && node ./font_generator/src/build.js && npm run copyfont",
-    "copyfont": "node ./font_generator/src/copy.js"
+    "makefont": "rimraf ./dist && webpack --mode production --config ./webpack.font.config.js && npm run generate && npm run copyfont && npm run url",
+    "generate": "node ./font_generator/src/build.js",
+    "copyfont": "node ./font_generator/src/copy.js",
+    "url": "node ./font_generator/src/cssUrlCorrection.js"
   },
   "keywords": [
     "js",
@@ -58,6 +60,7 @@
   },
   "dependencies": {
     "classnames": "^2.3.1",
+    "commonjs-variables-for-esmodules": "^1.1.0",
     "highlight.js": "^11.2.0",
     "mithril": "^2.0.0",
     "normalize.css": "^8.0.1"

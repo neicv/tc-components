@@ -1,8 +1,8 @@
 @font-face {
 	font-family: "turboeditor";
-	src: url("/turboeditor/turboeditor.eot?#iefix") format("embedded-opentype"),
-url("/turboeditor/turboeditor.woff") format("woff"),
-url("/turboeditor/turboeditor.ttf") format("truetype");
+	src: url("../fonts/turboeditor.eot?#iefix") format("embedded-opentype"),
+url("../fonts/turboeditor.woff") format("woff"),
+url("../fonts/turboeditor.ttf") format("truetype");
 }
 
 .editor-icon {
@@ -130,11 +130,10 @@ url("/turboeditor/turboeditor.ttf") format("truetype");
 
 @font-face {
 	font-family: "font-one";
-	src: url("/font-one/font-one.eot?#iefix") format("embedded-opentype"),
-url("/font-one/font-one.woff") format("woff"),
-url("/font-one/font-one.woff2") format("woff2"),
-url("/font-one/font-one.ttf") format("truetype"),
-url("/font-one/font-one.svg#font-one") format("svg");
+	src: url("../fonts/font-one.eot?#iefix") format("embedded-opentype"),
+url("../fonts/font-one.woff") format("woff"),
+url("../fonts/font-one.woff2") format("woff2"),
+url("../fonts/font-one.ttf") format("truetype");
 }
 
 .font-one {
@@ -196,11 +195,10 @@ url("/font-one/font-one.svg#font-one") format("svg");
 
 @font-face {
 	font-family: "font-two";
-	src: url("/font-two/font-two.eot?#iefix") format("embedded-opentype"),
-url("/font-two/font-two.woff") format("woff"),
-url("/font-two/font-two.woff2") format("woff2"),
-url("/font-two/font-two.ttf") format("truetype"),
-url("/font-two/font-two.svg#font-two") format("svg");
+	src: url("../fonts/font-two.eot?#iefix") format("embedded-opentype"),
+url("../fonts/font-two.woff") format("woff"),
+url("../fonts/font-two.woff2") format("woff2"),
+url("../fonts/font-two.ttf") format("truetype");
 }
 
 .font-two {
@@ -262,9 +260,9 @@ url("/font-two/font-two.svg#font-two") format("svg");
 
 @font-face {
 	font-family: "Turbocontract";
-	src: url("/Turbocontract/Turbocontract.eot?#iefix") format("embedded-opentype"),
-url("/Turbocontract/Turbocontract.woff") format("woff"),
-url("/Turbocontract/Turbocontract.ttf") format("truetype");
+	src: url("../fonts/Turbocontract.eot?#iefix") format("embedded-opentype"),
+url("../fonts/Turbocontract.woff") format("woff"),
+url("../fonts/Turbocontract.ttf") format("truetype");
 }
 
 .font-icon {
