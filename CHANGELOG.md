@@ -1,3 +1,8 @@
+# 0.20.1 / 2022-01-17
+
+ - Add Font Generator
+ - Change Icons Viewer
+
 # 0.19.2 / 2021-10-26
 
  - Complete Data Table Test

@@ -3,16 +3,16 @@ import Component from "@/lib/Component";
 
 class IconsListBox extends Component {
     view() {
-        const  { items } = this.attrs
+        const  { items, size } = this.attrs
 
         return (
             <div>
-                {this.renderItems(items)}
+                {this.renderItems(items, size)}
             </div>
         )
     }
 
-    renderItems(items) {
+    renderItems(items, size) {
         if (items) {
             let elm = [];
 
@@ -42,7 +42,7 @@ class IconsListBox extends Component {
                                         onclick={() => this.onIconClick(item, font)}
                                     >
                                         <span
-                                            // style='font-size: 15px;'
+                                            style={`font-size: ${size}px;`}
                                             content-vl37=""
                                             className={`icon-asset ${font} ${item.name}`}
                                             title={item.name}
@@ -78,33 +78,3 @@ class IconsListBox extends Component {
 }
 
 export default IconsListBox;
-
-            // <div content-vl27="" className="icons-container" role="listbox" aria-label="Action icons">
-            //     {
-
-            //         items.map((item, index) => {
-            //             return (
-            //                 <button
-            //                     content-vl27=""
-            //                     aria-haspopup="dialog"
-            //                     icon-item=""
-            //                     // role="option"
-            //                     host-vl37=""
-            //                     aria-label={`${item} Icon`}
-            //                     aria-selected="false"
-            //                     className='icon-container'
-            //                     onclick={() => this.onIconClick(index)}
-            //                 >
-            //                     <span
-            //                         content-vl37=""
-            //                         className={`icon-asset ${prefix} ${item}`}
-            //                         title={item}
-            //                     >
-            //                         {/* {item} */}
-            //                     </span>
-            //                     <span content-vl37="" className="icon-name">{item}</span>
-            //                 </button>
-            //             )
-            //         })
-            //     }
-            // </div>

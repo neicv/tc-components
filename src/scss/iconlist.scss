@@ -1,0 +1,15 @@
+.icon-list {
+    .icon-list-panel {
+        min-width: 550px;
+        padding-right: 64px;
+
+        .tc-search-line  {
+            min-width: 80%;
+        }
+    }
+    .spacebetween {
+        display: flex;
+        justify-content: space-between ;
+        align-items: center;
+    }
+}

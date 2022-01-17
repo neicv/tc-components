@@ -5,25 +5,41 @@ import IconsInfo from './components/IconsList/IconsInfo';
 import { SearchIcon } from '@/ui/iconAssets';
 import IconsListBox from './components/IconsList/IconsListBox';
 import SearchLine from "@/components/SearchLine/SearchLine";
+import Select from "@/components/TablePagination/components/select";
 import { icons } from '@/config/font-icons.config';
 
 class FontIconsDoc {
-    onitit() {
+    oninit() {
         this.search = '';
         this.showModal = false;
         this.icon = { icon: '', text: '', code: '', font: ''}
+        this.fonSizeOptions  = [18, 24, 36, 40, 48];
+        this.defaultFontSize = 40;
+        this.fontSize = this.defaultFontSize;
     }
 
     view() {
         const items = this.searchIcon(icons, this.search);
 
         return (
-            <div className='main-content'>
+            <div className='main-content icon-list'>
                 <h1 className='pl10'>Шрифт Иконок</h1>
 
-                <SearchLine search={this.onSearch.bind(this)} />
+                <div className="icon-list-panel spacebetween">
+                    <SearchLine search={this.onSearch.bind(this)} />
+                    <span className='mt10 mb10 mr10'>
+                        Font Size:
+                        <span className='pl20'>
+                            <Select
+                                itemsPerPageOptions={this.fonSizeOptions}
+                                selectedValue={this.defaultFontSize}
+                                sendValue={this.sendValue.bind(this)}
+                            />
+                        </span>
+                    </span>
 
-                <IconsListBox items={items} onIconClick={this.onIconClick.bind(this)}/>
+                </div>
+                <IconsListBox items={items} onIconClick={this.onIconClick.bind(this)} size={this.fontSize} />
 
                 <Choose>
                     <When condition={this.showModal}>
@@ -81,6 +97,10 @@ class FontIconsDoc {
 
     onSearch(val) {
         this.search = val;
+    }
+
+    sendValue(val) {
+        this.fontSize = val;
     }
 
     hex = d => Number(d).toString(16).padStart(3, '0').toUpperCase();
