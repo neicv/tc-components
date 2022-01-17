@@ -72,21 +72,17 @@ function setConfigObj( file = '', data = [], config ) {
                 name = tmpName;
             }
 
-            let regExpValue = new RegExp(`\\.${name}\\.(?<value>[-\\w]+):.+\\s+content:\\s"\\\\(?<code>[\\w]+)`, "g");
-            let items       = file.matchAll(regExpValue);
+            let regExpValue    = new RegExp(`\\.${name}\\.(?<value>[-\\w]+):.+\\s+content:\\s"\\\\(?<code>[\\w]+)`, "g");
+            let items          = file.matchAll(regExpValue);
 
-            config[name] = {};
-            config[name].icons = {
-                name: [],
-                code: []
-            };
-            config[name].name = fontName || name;
+            config[name]       = {};
+            config[name].icons = [];
+            config[name].name  = fontName || name;
 
             for(let item of items) {
                 let { value, code } = item.groups;
                 if (value) {
-                    config[name].icons.name.push(value);
-                    config[name].icons.code.push(code);
+                    config[name].icons.push({name: value, code});
                 }
             }
         }
