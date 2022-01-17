@@ -20,6 +20,7 @@ npm run dev
 Font Generator generates fonts from your SVG icons and allows you to use icons in this project.
 
 `Font Generator` uses the [`webfonts-loader`](https://github.com/jeerbl/webfonts-loader) plugin to create fonts in any format. It also generates CSS files so that you can use your icons directly in your HTML, using CSS classes.
+
 See additonal information on [`webfonts-loader`](https://github.com/jeerbl/webfonts-loader)
 
 ### The font configuration file
@@ -39,7 +40,7 @@ module.exports = {
     'types': ['eot', 'woff', 'woff2', 'ttf'],
     'fileName': 'font-one/[fontname].[ext]',
     'cssFontsUrl': '../fonts/'
-    // 'startCodepoint': 0xD101
+    'startCodepoint': 0xD101
   };
 ```
 
@@ -51,6 +52,40 @@ The autoloader will then generate:
 
 * CSS with the base and class prefix
 * Font files for the SVG icons
+
+
+#### Steps for prepare generation fonts
+
+* `Step 1`: in root directory `font_generator` make dir `fonts` (or use it if exist)
+* `Step 2`: in this `fonts` directory create subfolder for each font you make
+* `Step 3`: copy your icons set to subfolders
+```
+font_generator
+│
+└───fonts
+    └───font-one
+    │   │   icon-01.svg
+    │   │   icon-02.svg
+    │   │   ...
+    │
+    └───font-two
+        │   icon-01.svg
+        │   icon-02.svg
+        │   ...
+```
+* `Step 4`: execute font generate `npm run makefont`
+* `Step 5`: All generated Fonts you can see in in root project directory `.\src\fonts`
+
+##### `Generated files`, CSS and Config
+
+* `font-icons.css`: fonts CSS file placed in `.src\css`
+* `font-icons.config.js`: fonts Config file placed in `.src\js\config`
+
+### Generates fonts from your SVG
+
+```
+npm run makefont
+```
 
 
 ## Standarts
