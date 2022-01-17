@@ -1,5 +1,5 @@
 import m from "mithril";
-import Component from "../../lib/Component";
+import Component from "@/lib/Component";
 
 class RadioButtonGroup extends Component {
     view() {

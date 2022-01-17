@@ -23,10 +23,9 @@ import m from "mithril";
 import Component from "@/lib/Component";
 import classNames from "classnames";
 import {translate} from "@/localizations";
-import Chevron from "@/components/Chevron/chevron";
+import Select from "./components/select";
 
 const LANG                           = "pagination";
-const CHEVRON_DIMENSION              = 12;
 const DEFAULT_OPTIONS_ITEMS_PER_PAGE = [5, 10, 15, 25, 50, -1];
 const DEFAULT_VALUE_ITEMS_PER_PAGE   = 10;
 const DEFAULT_VALUE_ITEMS_PAGE_START = 0;
@@ -36,8 +35,6 @@ const DEFAULT_DESCTOP_CSS            = 'mr15';
 class TablePagination extends Component {
     oninit() {
         this.isInit                  = false;
-        this.arrowFocused            = false;
-        this.arrowAnimation          = 'tc-pagination-arrow-down';
         this.pagination              = { pageStart: '', pageStop: '', itemsPerPage: '' };
         this.pageNumber              = 0;
         this.pageCount               = 0;
@@ -50,7 +47,6 @@ class TablePagination extends Component {
         this.pagination.pageStop     = this.attrs.pageStop || 0;
         this.pagination.itemsPerPage = this.attrs.itemsPerPage || DEFAULT_VALUE_ITEMS_PER_PAGE;
 
-        this.selectedValue           = this.pagination.itemsPerPage;
         this.showedMsg               = this.attrs.showedMsg || translate(`${LANG}.showedMsg`);
         this.showedMsgFrom           = this.attrs.showedMsgFrom || translate(`${LANG}.showedMsgFrom`);
 
@@ -71,7 +67,6 @@ class TablePagination extends Component {
         }
 
         const mibileClass = isMobileView ? DEFAULT_MOBILE_CSS : DEFAULT_DESCTOP_CSS;
-        const valueAll    = translate(`${LANG}.valueAll`);
 
         return (
             <div
@@ -84,36 +79,11 @@ class TablePagination extends Component {
                         {translate(`${LANG}.rowsPerPageMsg`)}
                     </span>
                     <span className={`tc-pagination-group ${mibileClass}`}>
-                        <div class="tc-pagination-select">
-                            <select
-                                id="pagination-element-selector"
-                                name="paginationElementSelector"
-                                value={this.selectedValue}
-                                autocomplete="off"
-                                onblur={() => this.rotateArrowDown()}
-                                onclick={() => this.rotateArrowClick()}
-                                onchange={event => this.sendValue(event)}
-                            >
-
-                                {this.itemsPerPageOptions.map((item) => (
-                                    <option value={item}>{`${item === -1 ? valueAll : item}`}</option>
-                                ))}
-                            </select>
-                            <span className="tc-pagination-highlight"></span>
-                            <span className="tc-pagination-bar"></span>
-                            <button
-                                className="tc-pagination-btn tc-pagination-btn_sel"
-                                type="button"
-                                tabindex="-1"
-                                onclick={event => event.preventDefault()}
-                            >
-                                <span></span>
-                                <Chevron
-                                    className={`tc-paginaton-arrow ${this.arrowAnimation}`}
-                                    width={CHEVRON_DIMENSION}
-                                />
-                            </button>
-                        </div>
+                        <Select
+                            itemsPerPageOptions={this.itemsPerPageOptions}
+                            selectedValue={this.pagination.itemsPerPage || 1}
+                            sendValue={this.sendValue.bind(this)}
+                        />
                     </span>
 
                     <span className={`tс-pagination-info ${mibileClass}`}>
@@ -140,15 +110,12 @@ class TablePagination extends Component {
         )
     }
 
-    sendValue(event) {
-        let el = event.target
-
-        this.pagination.itemsPerPage = +el.value;
-        this.selectedValue           = +el.value;
+    sendValue(val) {
+        this.pagination.itemsPerPage = +val;
 
         this.setPageCount();
 
-        this.pagination.pageStop     = this.pagination.pageStart + this.pagination.itemsPerPage;
+        this.pagination.pageStop = this.pagination.pageStart + this.pagination.itemsPerPage;
         this.pageNumber = 0;
         this.changePage(0);
     }
@@ -223,20 +190,6 @@ class TablePagination extends Component {
         if (typeof getPagination === "function") {
             getPagination({ ...this.pagination });
         }
-    }
-
-    rotateArrowDown() {
-        this.arrowFocused   = false;
-        this.arrowAnimation = 'tc-pagination-arrow-down';
-    }
-
-    rotateArrowClick() {
-        if (this.arrowFocused) {
-            this.arrowAnimation = 'tc-pagination-arrow-down';
-        } else {
-            this.arrowAnimation = 'tc-pagination-arrow-up';
-        }
-        this.arrowFocused = !this.arrowFocused;
     }
 }
 

@@ -3,7 +3,7 @@ const TURBO_FONT_CSS_DEFAULT_FILENAME     = 'font-icons.css';
 const TURBO_FONT_CSS_REPLACER_FOLDER      = '../fonts/';
 const GENERATED_FONT_CSS_DEFAULT_FOLDER   = 'dist';
 const GENERATED_FONT_CSS_DEFAULT_FILENAME = 'font-icons.css';
-const EXPORTED_CONFIG_DEFAULT_FILENAME    = 'icons.config.js';
+const EXPORTED_CONFIG_DEFAULT_FILENAME    = 'font-icons.config.js';
 
 module.exports = {
     TURBO_FONT_CSS_DEFAULT_FOLDER,
