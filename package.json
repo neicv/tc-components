@@ -14,7 +14,7 @@
     "makefont": "rimraf ./dist && webpack --mode production --config ./webpack.font.config.js && npm run generate && npm run copyfont && npm run url",
     "generate": "node ./font_generator/src/build.js",
     "copyfont": "node ./font_generator/src/copy.js",
-    "url": "node ./font_generator/src/cssUrlCorrection.js"
+    "url": "node ./font_generator/src/cssCorrection.js"
   },
   "keywords": [
     "js",

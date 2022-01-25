@@ -5,11 +5,11 @@ const env = process.env.NODE_ENV || 'development'
 const regExp = /font-family:\s*\"(?<name>[-\w]+)\";/g
 
 const {
-    TURBO_FONT_CSS_DEFAULT_FOLDER,
-    TURBO_FONT_CSS_DEFAULT_FILENAME,
+    DESIGANTE_NEW_ICONS_ENABLE,
     GENERATED_FONT_CSS_DEFAULT_FOLDER,
     GENERATED_FONT_CSS_DEFAULT_FILENAME,
-    EXPORTED_CONFIG_DEFAULT_FILENAME
+    EXPORTED_CONFIG_DEFAULT_FILENAME,
+    DESIGANTE_NEW_ICONS_PREFIX
 } = require('../constants');
 
 const filter = [
@@ -32,6 +32,9 @@ let cssFile,
     config = {},
     configFile = '',
     pathToDist = path.join(__dirname, "../..");
+
+const isDesignateNewIcons     = DESIGANTE_NEW_ICONS_ENABLE || false;
+const designateNewIconsPrefix = DESIGANTE_NEW_ICONS_PREFIX || '';
 
 console.log('pathToDist: ', pathToDist);
 
@@ -81,8 +84,16 @@ function setConfigObj( file = '', data = [], config ) {
 
             for(let item of items) {
                 let { value, code } = item.groups;
+                let isNew = false;
+
                 if (value) {
-                    config[name].icons.push({name: value, code});
+                    if (isDesignateNewIcons && designateNewIconsPrefix && value.includes(designateNewIconsPrefix)) {
+
+                        isNew = true;
+                        value = value.replace(designateNewIconsPrefix, '');
+                    }
+
+                    config[name].icons.push({name: value, code, isNew});
                 }
             }
         }

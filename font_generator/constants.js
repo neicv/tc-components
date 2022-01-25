@@ -1,3 +1,6 @@
+// Выделить новые иконки (не убирать из названия '__new')
+const DESIGANTE_NEW_ICONS_ENABLE          = true;
+const DESIGANTE_NEW_ICONS_PREFIX          = '__new';
 const TURBO_FONT_CSS_DEFAULT_FOLDER       = 'src/css';
 const TURBO_FONT_CSS_DEFAULT_FILENAME     = 'font-icons.css';
 const TURBO_FONT_CSS_REPLACER_FOLDER      = '../fonts/';
@@ -6,6 +9,8 @@ const GENERATED_FONT_CSS_DEFAULT_FILENAME = 'font-icons.css';
 const EXPORTED_CONFIG_DEFAULT_FILENAME    = 'font-icons.config.js';
 
 module.exports = {
+    DESIGANTE_NEW_ICONS_ENABLE,
+    DESIGANTE_NEW_ICONS_PREFIX,
     TURBO_FONT_CSS_DEFAULT_FOLDER,
     TURBO_FONT_CSS_DEFAULT_FILENAME,
     GENERATED_FONT_CSS_DEFAULT_FOLDER,

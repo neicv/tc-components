@@ -3,16 +3,16 @@ import Component from "@/lib/Component";
 
 class IconsListBox extends Component {
     view() {
-        const  { items, size } = this.attrs
+        const  { items, size, showNew = false} = this.attrs;
 
         return (
             <div>
-                {this.renderItems(items, size)}
+                {this.renderItems(items, size, showNew)}
             </div>
         )
     }
 
-    renderItems(items, size) {
+    renderItems(items, size, showNew = false) {
         if (items) {
             let elm = [];
 
@@ -30,6 +30,7 @@ class IconsListBox extends Component {
                     <div content-vl27="" className="icons-container" role="listbox" aria-label="Action icons">
                         {
                             items[font].icons.map((item, index) => {
+                                const classCard = `icon-container ${item.isNew && showNew ? 'icon__new' : '' }`;
                                 return (
                                     <button
                                         content-vl27=""
@@ -38,7 +39,7 @@ class IconsListBox extends Component {
                                         host-vl37=""
                                         aria-label={`${item.name} Icon`}
                                         aria-selected="false"
-                                        className='icon-container'
+                                        className={classCard}
                                         onclick={() => this.onIconClick(item, font)}
                                     >
                                         <span
@@ -48,7 +49,7 @@ class IconsListBox extends Component {
                                             title={item.name}
                                         >
                                         </span>
-                                        <span content-vl37="" className="icon-name">{item.name}</span>
+                                        <span content-vl37="" className="icon-name mat-caption">{this.toReadableName(item.name)}</span>
                                     </button>
                                 )
                             })
@@ -74,6 +75,19 @@ class IconsListBox extends Component {
         if (!str) return str;
 
         return str[0].toUpperCase() + str.slice(1);
+    }
+
+    toReadableName(str) {
+        if (!str) return str;
+
+        let outStr = '',
+            words  = str.split('-') || [];
+
+        words.forEach(element => {
+            outStr += this.ucFirst(element) + ' ';
+        });
+
+        return outStr.trim();
     }
 }
 

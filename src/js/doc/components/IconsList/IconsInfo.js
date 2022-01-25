@@ -29,7 +29,7 @@ class IconsInfo extends Component {
                     </figcaption>
                     <div className='tm-infocode-content'>
                         <pre>
-                            <code>{icon.text}</code>
+                            <code>{icon.text.toLowerCase()}</code>
                         </pre>
                         <span className="tm-infocode-navbtn">
                             <span

@@ -6,6 +6,7 @@ import { SearchIcon } from '@/ui/iconAssets';
 import IconsListBox from './components/IconsList/IconsListBox';
 import SearchLine from "@/components/SearchLine/SearchLine";
 import Select from "@/components/TablePagination/components/select";
+import Switch from '@/components/Switch';
 import { icons } from '@/config/font-icons.config';
 
 class FontIconsDoc {
@@ -15,7 +16,8 @@ class FontIconsDoc {
         this.icon = { icon: '', text: '', code: '', font: ''}
         this.fonSizeOptions  = [18, 24, 36, 40, 48];
         this.defaultFontSize = 40;
-        this.fontSize = this.defaultFontSize;
+        this.fontSize        = this.defaultFontSize;
+        this.showNewIcons    = false;
     }
 
     view() {
@@ -27,28 +29,50 @@ class FontIconsDoc {
 
                 <div className="icon-list-panel spacebetween">
                     <SearchLine search={this.onSearch.bind(this)} />
-                    <span className='mt10 mb10 mr10'>
-                        Font Size:
-                        <span className='pl20'>
-                            <Select
-                                itemsPerPageOptions={this.fonSizeOptions}
-                                selectedValue={this.defaultFontSize}
-                                sendValue={this.sendValue.bind(this)}
-                            />
-                        </span>
-                    </span>
+
+                    <div style={`display: block`}>
+                        <div style={`display: grid`} className='mt10 mb10 mr10'>
+                            <label className="switcher-label-placement-start">
+                                <Switch
+                                    value={this.showNewIcons}
+                                    onchange={value => this.showNewIcons = value}
+                                />
+                                <span className={`${this.showNewIcons ? 'text-primary' : 'text-secondary'} fs12`}>Новые: </span>
+                            </label>
+                        </div>
+                        <div className='mt10 mb10 mr10'>
+                        <label>Font Size:</label>
+                            <span className='pl20'>
+                                <Select
+                                    itemsPerPageOptions={this.fonSizeOptions}
+                                    selectedValue={this.defaultFontSize}
+                                    sendValue={this.sendValue.bind(this)}
+                                />
+                            </span>
+                        </div>
+                    </div>
 
                 </div>
-                <IconsListBox items={items} onIconClick={this.onIconClick.bind(this)} size={this.fontSize} />
+                <IconsListBox
+                    items={items}
+                    onIconClick={this.onIconClick.bind(this)}
+                    size={this.fontSize}
+                    showNew={this.showNewIcons}
+                />
 
                 <Choose>
                     <When condition={this.showModal}>
                         <Modal
                             width ={500}
                             title = {
-                                <div className={`title__preview-icon ${this.icon.font} ${this.icon.icon}`}>
+                                <div className="title__preview">
+                                    <span className={`title__preview-icon ${this.icon.font} ${this.icon.icon}`}>
+                                    </span>
                                     <span className='title__name'>
                                         {this.icon.text}
+                                    </span>
+                                    <span>
+                                        {this.hexToDecFormatString(this.icon.code)}
                                     </span>
                                 </div>}
                             content={<IconsInfo icon={this.icon}/>}
@@ -104,6 +128,8 @@ class FontIconsDoc {
     }
 
     hex = d => Number(d).toString(16).padStart(3, '0').toUpperCase();
+
+    hexToDecFormatString = d => ' (int: ' + parseInt(d.slice(1), 16) + ')';
 
     ucFirst(str) {
         if (!str) return str;

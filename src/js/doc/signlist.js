@@ -38,8 +38,8 @@ class SignListDoc {
         return (
             <div className='test-timeline sign-list'>
                 <div className="sign-list-panel spacebetween">
-                <p><b> Sign List</b> </p>
-                <label className="switcher-label-placement-start">
+                    <p><b> Sign List</b> </p>
+                    <label className="switcher-label-placement-start">
                         <Switch
                             value={this.itemTitleClass}
                             onchange={value => this.itemTitleClass = value}

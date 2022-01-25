@@ -1,3 +1,7 @@
+# 0.20.2 / 2022-01-25
+
+ - Add Custom Options in Icons Viewer: see New Icons
+
 # 0.20.1 / 2022-01-17
 
  - Add Font Generator
