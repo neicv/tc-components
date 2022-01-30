@@ -2,9 +2,10 @@ import '../css/style.css'
 import '../scss/index.scss'
 import m from 'mithril';
 import HomeView from './doc/home';
-import ModalDoc from './doc/modal';
 import AccordionDoc from './doc/accordion';
+import EditListDoc from './doc/editlist';
 import FontIconsDoc from './doc/fontIcons';
+import ModalDoc from './doc/modal';
 import PaginationDoc from './doc/pagination';
 import SignListDoc from './doc/signlist';
 import TimeLineDoc from './doc/timeline';
@@ -39,6 +40,11 @@ m.route(root, '/home', {
 	'/icons': {
 		render() {
             return <App><FontIconsDoc/></App>
+        }
+	},
+	'/editlist': {
+		render() {
+            return <App><EditListDoc/></App>
         }
 	},
 	'/modal': {

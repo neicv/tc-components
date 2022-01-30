@@ -1601,3 +1601,59 @@ th:hover .tc-icon-hide:not(.arrow-down) {
 .tc-icon-hide {
     opacity: 0;
 }
+
+
+.toolbar-nav__item > span,
+.toolbar-nav__item .toolbar__trigger > a,
+.toolbar__editor,
+.toolbar__triggers-left-panel {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.toolbar .turboeditor-toolbar__inner,
+.inline-editor .turboeditor-toolbar__inner {
+    background: none;
+    padding: 0 60px 0 0;
+    border-radius: 0;
+}
+
+.turboeditor-toolbar__inner {
+    position: relative;
+    /* padding: 6px 46px 6px 8px; */
+    background: #2c2c2c;
+    border-radius: 4px;
+}
+
+.toolbar .turboeditor-toolbar__item,
+.inline-editor .turboeditor-toolbar__item {
+    margin: 0 6px 0 0;
+}
+
+.turboeditor-toolbar__item {
+    margin: 0 2px 0 0;
+    float: left;
+    position: relative;
+}
+
+.toolbar .turboeditor-toolbar__close button,
+.inline-editor .turboeditor-toolbar__close button,
+.toolbar .turboeditor-toolbar__item button,
+.inline-editor .turboeditor-toolbar__item button {
+    width: 28px;
+    height: 28px;
+    color: inherit;
+    transition: background-color 0.3s;
+}
+
+.turboeditor-toolbar__close button,
+.turboeditor-toolbar__item button {
+    display: block;
+    width: 28px;
+    height: 30px;
+    background: none;
+    outline: none;
+    cursor: pointer;
+    color: #fff;
+    transition: color 0.3s;
+}
