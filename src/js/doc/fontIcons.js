@@ -2,7 +2,6 @@ import '../../css/font-icons.css'
 import m from 'mithril';
 import Modal from '@/components/Modal';
 import IconsInfo from './components/IconsList/IconsInfo';
-import { SearchIcon } from '@/ui/iconAssets';
 import IconsListBox from './components/IconsList/IconsListBox';
 import SearchLine from "@/components/SearchLine/SearchLine";
 import Select from "@/components/TablePagination/components/select";

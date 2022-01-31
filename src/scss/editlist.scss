@@ -6,3 +6,83 @@
     hyphens: auto;
     -ms-hyphens: auto;
 }
+
+/*
+*   Обёртка для вложенного нумерованного списка
+*/
+
+.b-content-wrapper ol ol > li {
+    display: block;
+}
+
+.b-content-wrapper ol.turbo-ol-level1 {
+    list-style: none;
+    counter-reset: l1;
+}
+
+.b-content-wrapper ol.turbo-ol-level2 {
+    list-style: none;
+    counter-reset: l2;
+}
+
+.b-content-wrapper ol.turbo-ol-level3 {
+    list-style: none;
+    counter-reset: l3;
+}
+
+.b-content-wrapper ol.turbo-ol-level4 {
+    list-style: none;
+    counter-reset: l4;
+}
+
+.b-content-wrapper ol.turbo-ol-level5 {
+    list-style: none;
+    counter-reset: l5;
+}
+
+.b-content-wrapper ol.turbo-ol-level1>li:before {
+    counter-increment: l1;
+    content: counter(l1) ". ";
+    margin-left: -16px;
+}
+
+.b-content-wrapper ol.turbo-ol-level2>li:before {
+    counter-increment: l2;
+    content: counter(l1) "." counter(l2) ". ";
+    margin-left: -21px;
+}
+
+.b-content-wrapper ol.turbo-ol-level3>li:before {
+    counter-increment: l3;
+    content: counter(l1) "." counter(l2) "." counter(l3) ". ";
+    margin-left: -21px;
+}
+
+.b-content-wrapper ol.turbo-ol-level4>li:before {
+    counter-increment: l4;
+    content: counter(l1) "." counter(l2) "." counter(l3) "." counter(l4) ". ";
+    margin-left: -21px;
+}
+
+.b-content-wrapper ol.turbo-ol-level5>li:before {
+    counter-increment: l5;
+    content: counter(l1) "." counter(l2) "." counter(l3) "." counter(l4) "." counter(l5) ". ";
+    margin-left: -21px;
+}
+
+.b-content-wrapper .turbo-ol-level1 ul>li:before {
+    margin-left: 0px;
+}
+
+.b-content-wrapper .turbo-ol-level1 ul>li {
+    margin-left: 7px;
+}
+
+.b-content-wrapper .turbo-ol-level2 ul>li:before {
+    margin-left: -12px;
+}
+
+.b-content-wrapper .turbo-ol-level2 ul>li {
+    margin-left: 21px;
+}
+

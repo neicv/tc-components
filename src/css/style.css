@@ -1651,9 +1651,40 @@ th:hover .tc-icon-hide:not(.arrow-down) {
     display: block;
     width: 28px;
     height: 30px;
+    font-size: 20px;
     background: none;
     outline: none;
     cursor: pointer;
     color: #fff;
     transition: color 0.3s;
+    border: none;
+}
+
+.turboeditor-toolbar__item button:hover {
+    background-color: lightgrey;
+}
+
+.toolbar__level {
+    min-height: 46px;
+    padding: 9px 15px;
+    border-bottom: 1px solid #eee;
+    box-sizing: border-box;
+}
+
+.flex-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.editor-icon {
+    display: inline-block;
+    text-transform: none;
+    line-height: 100%;
+    font-family: "turboeditor";
+    font-weight: normal;
+    font-style: normal;
+    font-variant: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
