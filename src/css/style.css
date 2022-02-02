@@ -1688,3 +1688,220 @@ th:hover .tc-icon-hide:not(.arrow-down) {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+.turboeditor-menu {
+    position: absolute;
+    background: #fff;
+    white-space: nowrap;
+    top: 40px;
+    box-shadow: 1px 0 18px -5px;
+    border-radius: 4px;
+    padding: 10px 20px;
+    z-index: 1;
+    min-width: 220px;
+    max-width: 700px;
+}
+
+/* PopUpTooltip */
+
+.popup-tooltip__inner {
+    display: block;
+    padding: 8px 10px;
+    background: #fff;
+    border-radius: 2px;
+    box-shadow: 0 0 30px -10px rgba(0, 0, 0, 0.9);
+    border: 1px solid #d7d7d7;
+    cursor: help;
+    line-height: normal;
+    text-decoration: none;
+    font-size: 13px;
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    white-space: pre-wrap;
+}
+
+/* PopUp */
+
+.popup-container {
+    position: absolute;
+    top: -3000px;
+    left: -3000px;
+    z-index: 8000;
+}
+
+.popup-container .side-top {
+    padding-top: 6px;
+}
+
+.popup-container .side-right {
+    padding-right: 6px;
+}
+
+.popup-container .side-left {
+    padding-left: 6px;
+}
+
+.popup-container .side-bottom {
+    padding-bottom: 6px;
+}
+
+.popup-trigger {
+    position: absolute;
+    z-index: 8001;
+}
+
+/* PopUp top-side trigger */
+.popup-trigger.side-top {
+    top: -6px;
+}
+
+.popup-trigger.side-top.center:after,
+.popup-trigger.side-top.center:before {
+    left: 50%;
+}
+
+.popup-trigger.side-top.end::after,
+.popup-trigger.side-top.end::before {
+    right: 10px;
+}
+
+.popup-trigger.side-top.start::after,
+.popup-trigger.side-top.start::before {
+    left: 10px;
+}
+
+.popup-trigger.side-top::before,
+.popup-trigger.side-top::after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    border: 6px solid transparent;
+}
+
+.popup-trigger.side-top::after {
+    border-bottom: 6px solid #fff;
+    top: -5px;
+}
+
+.popup-trigger.side-top::before {
+    border-bottom: 6px solid #d7d7d7;
+    top: -6px;
+}
+
+/* PopUp right-side trigger */
+.popup-trigger.side-right {
+    right: -6px;
+}
+
+.popup-trigger.side-right.center:after,
+.popup-trigger.side-right.center:before {
+    top: 50%;
+}
+
+.popup-trigger.side-right.end::after,
+.popup-trigger.side-right.end::before {
+    bottom: 10px;
+}
+
+.popup-trigger.side-right.start::after,
+.popup-trigger.side-right.start::before {
+    top: 10px;
+}
+
+.popup-trigger.side-right::before,
+.popup-trigger.side-right::after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    border: 6px solid transparent;
+}
+
+.popup-trigger.side-right::after {
+    border-left: 6px solid #fff;
+    right: -5px;
+}
+
+.popup-trigger.side-right::before {
+    border-left: 6px solid #d7d7d7;
+    right: -6px;
+}
+
+/* PopUp bottom-side trigger */
+.popup-trigger.side-bottom {
+    bottom: -6px;
+}
+
+.popup-trigger.side-bottom.center:after,
+.popup-trigger.side-bottom.center:before {
+    left: 50%;
+}
+
+.popup-trigger.side-bottom.end::after,
+.popup-trigger.side-bottom.end::before {
+    right: 10px;
+}
+
+.popup-trigger.side-bottom.start::after,
+.popup-trigger.side-bottom.start::before {
+    left: 10px;
+}
+
+.popup-trigger.side-bottom::before,
+.popup-trigger.side-bottom::after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    border: 6px solid transparent;
+}
+
+.popup-trigger.side-bottom::after {
+    border-top: 6px solid #fff;
+    bottom: -5px;
+}
+
+.popup-trigger.side-bottom::before {
+    border-top: 6px solid #d7d7d7;
+    bottom: -6px;
+}
+
+/* PopUp left-side trigger */
+.popup-trigger.side-left {
+    left: -6px;
+}
+
+.popup-trigger.side-left.center:after,
+.popup-trigger.side-left.center:before {
+    top: 50%;
+}
+
+.popup-trigger.side-left.end::after,
+.popup-trigger.side-left.end::before {
+    bottom: 10px;
+}
+
+.popup-trigger.side-left.start::after,
+.popup-trigger.side-left.start::before {
+    top: 10px;
+}
+
+.popup-trigger.side-left::before,
+.popup-trigger.side-left::after {
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    border: 6px solid transparent;
+}
+
+.popup-trigger.side-left::after {
+    border-right: 6px solid #fff;
+    left: -5px;
+}
+
+.popup-trigger.side-left::before {
+    border-right: 6px solid #d7d7d7;
+    left: -6px;
+}

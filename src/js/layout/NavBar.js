@@ -1,22 +1,15 @@
 import m from 'mithril';
-
-import NavButton from "../ui/NavButtons"
+import mainMenu from '@/config/mainMenu';
+import NavButton from "@/ui/NavButtons";
 
 class NavBar {
     oninit() {
         this.active = 0;
-        this.menu = [
-            { path: 'home', icon: 'fas fa-home', text: 'Home'},
-            { path: 'accordion', icon: 'fas fa-plus"', text: 'Accordion'},
-            { path: 'icons', icon: 'fas fa-list-ol', text: 'Icons'},
-            { path: 'modal', icon: 'fas fa-list-ol', text: 'Modal'},
-            { path: 'pagination', icon: 'fas fa-plus"', text: 'Pagination'},
-            { path: 'signlist', icon: 'fas fa-plus"', text: 'SignList'},
-            { path: 'timeline', icon: 'fas fa-plus"', text: 'Timelines'}
-        ]
+        this.menu   = mainMenu;
 
-        let path = m.route.get().slice(1);
-        let index = this.menu.findIndex(el => el.path === path)
+        let path    = m.route.get().slice(1);
+        let index   = this.menu.findIndex(el => el.path === path);
+
         if (index !== -1) {
             this.active = index;
         }

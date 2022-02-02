@@ -7,6 +7,7 @@ import EditListDoc from './doc/editlist';
 import FontIconsDoc from './doc/fontIcons';
 import ModalDoc from './doc/modal';
 import PaginationDoc from './doc/pagination';
+import PresenceAdnCollabDoc from './doc/presenceAndCollab'
 import SignListDoc from './doc/signlist';
 import TimeLineDoc from './doc/timeline';
 import App from './layout/App.js';
@@ -55,6 +56,11 @@ m.route(root, '/home', {
 	'/pagination': {
 		render() {
             return <App><PaginationDoc/></App>
+        }
+	},
+	'/presence': {
+		render() {
+            return <App><PresenceAdnCollabDoc/></App>
         }
 	},
 	'/signlist': {
