@@ -3,10 +3,11 @@ import Component from "@/lib/Component";
 
 class TooltipContent extends Component {
     view({children}) {
-        const {className, content = '', maxWidth = '', maxHeight = ''} = this.attrs;
+        const {className, content = '', maxWidth = '', maxHeight = '', minWidth = ''} = this.attrs;
 
-        let style = maxWidth ? `max-width: ${maxWidth}px;` : '';
+        let style  = maxWidth  ? `max-width: ${maxWidth}px;` : '';
             style += maxHeight ? `max-height: ${maxHeight}px;` : '';
+            style += minWidth  ? `min-width: ${minWidth}px;` : '';
 
         return (
             <div

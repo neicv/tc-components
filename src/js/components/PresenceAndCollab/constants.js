@@ -1,5 +1,5 @@
 export const DEFAULT_COLORS = [
-    { text: 'Белый', value: '' },
+    // { text: 'Белый', value: '' },
     { text: 'Красный', value: '#F44336' },
     { text: 'red lighten-5', value: '#FFEBEE'},
     { text: 'Розовый', value: '#E91E63' },
@@ -21,7 +21,7 @@ export const DEFAULT_COLORS = [
     { text: 'Коричневый', value: '#795548' },
     { text: 'Тёмно-серый', value: '#607D8B' },
     { text: 'Серый', value: '#9E9E9E' },
-    { text: 'Чёрный', value: '#000000' }
+    // { text: 'Чёрный', value: '#000000' }
 ]
 
 export default DEFAULT_COLORS;
