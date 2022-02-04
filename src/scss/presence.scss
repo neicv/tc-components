@@ -149,10 +149,20 @@
     }
 }
 
-.tc-tooltip-content-figure-title .pointer {
-    cursor: pointer;
-    display: flex;
-    justify-content: right;
+.tc-tooltip-content-figure-title {
+
+    .status {
+        &:not(.active) {
+            color:#ccc;
+        }
+    }
+
+    .pointer {
+        cursor: pointer;
+        display: flex;
+        justify-content: right;
+    }
+
 }
 
 
