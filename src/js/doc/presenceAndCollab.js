@@ -1,6 +1,7 @@
 import m from 'mithril';
 import PresenceAndCollab from '@/components/PresenceAndCollab';
 import Data from './data/presenceAndCollabDocData';
+import Switch from '@/components/Switch';
 
 class PresenceAndCollabDoc {
     oninit() {
@@ -11,51 +12,71 @@ class PresenceAndCollabDoc {
         this.items.push(Data[3])
 
         this.labelRnd = '';
+        this.isMenuView = true;
     }
 
     view(vnode) {
         return (
             <div className='main-content'>
-                <h1>Редактор</h1>
-                <p><spn>Присутствие пользователей и Совместная работа</spn><span>{this.labelRnd}</span></p>
-                <p>
-                    <button
-                        type='button'
-                        className='btn btn--is-elevated primary'
-                        onclick={() => this.addUser()}
-                    >
-                        Добавить
-                    </button>
-                    <button
-                        type='button'
-                        className='btn btn--is-elevated primary ml10'
-                        onclick={() => this.changeUser()}
-                    >
-                        Изменить
-                    </button>
-                    <button
-                        type='button'
-                        className='btn btn--is-elevated primary ml10'
-                        onclick={() => this.deleteUser()}
-                    >
-                        Удалить
-                    </button>
-                    <button
-                        type='button'
-                        className='btn btn--is-elevated primary ml10'
-                        onclick={() => this.rndFunc()}
-                    >
-                        RND
-                    </button>
-                </p>
-                <PresenceAndCollab
-                    items={this.items}
-                    hookOnAddUserClick={click => this.onAddUser = click}
-                    hookOnDeleteUserClick={click => this.onDeleteUser = click}
-                    hookOnChangeUserClick={click => this.onChangeUser = click}
-                />
+                <div className='test-presence'>
+                    <h1>Редактор</h1>
+                    <p>
+                        <div className="spacebetween">
+                            <span>Присутствие пользователей и Совместная работа</span><span>{this.labelRnd}</span>
+                            <label className="switcher-label-placement-start">
+                                <Switch
+                                    value={this.isMenuView}
+                                    onchange={value=> this.changeData(value)}
+                                />
+                                <span className={`${this.isMenuView ? 'text-primary' : 'text-secondary'} fs12`}>Вид: {this.isMenuView ? 'меню' : 'в ряд'}</span>
+                            </label>
+                        </div>
+                    </p>
+                    <p>
+                        <button
+                            type='button'
+                            className='btn btn--is-elevated primary'
+                            onclick={() => this.addUser()}
+                        >
+                            Добавить
+                        </button>
+                        <button
+                            type='button'
+                            className='btn btn--is-elevated primary ml10'
+                            onclick={() => this.changeUser()}
+                        >
+                            Изменить
+                        </button>
+                        <button
+                            type='button'
+                            className='btn btn--is-elevated primary ml10'
+                            onclick={() => this.deleteUser()}
+                        >
+                            Удалить
+                        </button>
+                        {/* <button
+                            type='button'
+                            className='btn btn--is-elevated primary ml10'
+                            onclick={() => this.rndFunc()}
+                        >
+                            RND
+                        </button> */}
+                    </p>
+                    <PresenceAndCollab
+                        items={this.items}
+                        isMenuView={this.isMenuView}
+                        hookOnAddUserClick={click => this.onAddUser = click}
+                        hookOnDeleteUserClick={click => this.onDeleteUser = click}
+                        hookOnChangeUserClick={click => this.onChangeUser = click}
+                    />
+                </div>
             </div>
         )
+    }
+
+    changeData(val) {
+        this.isMenuView = val;
+        // setTimeout(() => m.redraw(), 0);
     }
 
     rndFunc() {

@@ -4,7 +4,7 @@ import PopUpTooltip from "@/components/plugins/PopUpTooltip";
 import ToolTipContent from './TooltipContent';
 
 const DEFAULT_ENTER_DELAY = 500;
-const DEFAULT_LEAVE_DELAY = 1000;
+const DEFAULT_LEAVE_DELAY = 500;
 
 class Tooltip extends Component {
     oninit() {
@@ -24,10 +24,9 @@ class Tooltip extends Component {
             maxWidth    = "",
             minWidth    = "",
             maxHeight   = "",
+            position    = "POSITION_CENTER",
             className,
         } = this.attrs;
-
-        // const isImmediately = immediately?.isImmediately || false;
 
         return (
             <div
@@ -41,7 +40,7 @@ class Tooltip extends Component {
                     <PopUpTooltip
                         data-popup-key={dataPopupKey}
                         side="SIDE_TOP"
-                        position="POSITION_CENTER"
+                        position={position}
                     >
                         <Choose>
                             <When condition={title}>{title}</When>
@@ -117,7 +116,7 @@ class Tooltip extends Component {
                     this.handleClose(event);
                 }, this.leaveDelay);
             }
-        }, 0);
+        }, 100);
     }
 
     handleClose(event) {

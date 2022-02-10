@@ -1,3 +1,11 @@
+.test-presence {
+    .spacebetween {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
 .tc-presence-container {
     display: flex;
     -webkit-align-items: center;
@@ -12,7 +20,7 @@
         justify-content: center;
         z-index: 1;
 
-        font-family: 'Google Sans',Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
+        // font-family: 'Google Sans',Roboto,RobotoDraft,Helvetica,Arial,sans-serif;
         padding: 0 44px 0 0;
         // position: absolute;
         right: 0;
@@ -32,6 +40,19 @@
         max-width: 250px;
         outline: 0;
         text-align: left;
+
+        .online-dot {
+            position: absolute;
+            right: 2px;
+            bottom: -2px;
+            border-style: solid;
+            border-width: 1px;
+            padding: 5px;
+            border-radius: 50%;
+            // border-color: transparent;
+            color: #fff;
+            background-color: #4caf50;
+        }
     }
 
     .tc-presence-plus-widget-inner {
@@ -74,8 +95,11 @@
         overflow: visible;
     }
 
-    .tc-presence-plus-collab-widget-active .tc-presence-plus-collab-widget-image-container {
-        opacity: 1;
+
+    .tc-presence-plus-collab-widget-active {
+        .tc-presence-plus-collab-widget-image-container {
+            opacity: 1;
+        }
     }
 
     .tc-presence-plus-collab-widget-image-container {
@@ -96,6 +120,53 @@
         margin: 2px;
         border: none;
     }
+
+    .tc-presence-plus-collab-widget-focus:focus {
+        outline: none;
+        .tc-presence-plus-collab-widget-color-block {
+            border: 4px solid rgba(0, 0, 0, 0.12);
+            margin: -2px
+        }
+    }
+
+    .tc-presence-plus-widget-overflow-menu {
+        font-weight: 500;
+        .tc-presence-plus-collab-widget-container {
+            width: 100%;
+        }
+
+        .tc-presence-plus-collab-widget-name {
+            color: #222;
+            margin: 9px 0 0 10px;
+            // font-size: 13px;
+            vertical-align: top;
+            color: rgba(0,0,0,0.87);
+
+            &:not(.active) {
+                color:#ccc;
+            }
+        }
+    }
+
+    .tc-presence-plus-widget-overflow-button {
+        position: relative;
+        height: 32px;
+        width: 32px;
+        border-radius: 50%;
+        border-width: 2px;
+        border-style: solid;
+        border-color: #fff;
+        box-shadow: none;
+        background-clip: padding-box;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        margin: 0 0 0 -8px;
+        background-color: #e8eaed;
+        background-image: none;
+        color: rgba(32,33,36,.71);
+        min-width: 0;
+        padding: 0;
+    }
 }
 
 .tc-presence-inline-block {
@@ -105,6 +176,8 @@
 }
 
 .tc-tooltip-content {
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
     padding: 10px;
     cursor: default;
 }
@@ -165,9 +238,126 @@
 
 }
 
+.tc-flat-menu-button {
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background-color: #f5f5f5;
+    background-image: -webkit-linear-gradient(top,#f5f5f5,#f1f1f1);
+    background-image: -moz-linear-gradient(top,#f5f5f5,#f1f1f1);
+    background-image: -ms-linear-gradient(top,#f5f5f5,#f1f1f1);
+    background-image: -o-linear-gradient(top,#f5f5f5,#f1f1f1);
+    background-image: linear-gradient(top,#f5f5f5,#f1f1f1);
+    border: 1px solid #dcdcdc;
+    color: #333;
+    cursor: default;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 27px;
+    list-style: none;
+    margin: 0 2px;
+    min-width: 46px;
+    outline: none;
+    padding: 0 18px 0 6px;
+    text-align: center;
+    text-decoration: none;
+    &:hover {
+        background-color: #d5d5d5;
+    }
+}
 
+.tc-presence-plus-widget-overflow-button .tc-flat-menu-button-caption {
+    -webkit-transition-duration: 200ms;
+    -moz-transition-duration: 200ms;
+    -o-transition-duration: 200ms;
+    transition-duration: 200ms;
+    -webkit-transition-property: opacity;
+    -moz-transition-property: opacity;
+    -o-transition-property: opacity;
+    transition-property: opacity;
+    -webkit-transition-timing-function: cubic-bezier(0.4,0,0.2,1);
+    -moz-transition-timing-function: cubic-bezier(0.4,0,0.2,1);
+    -o-transition-timing-function: cubic-bezier(0.4,0,0.2,1);
+    transition-timing-function: cubic-bezier(0.4,0,0.2,1);
+    left: 0px;
+    line-height: 32px;
+    font-size: 12px;
+    font-weight: 500;
+}
 
+.tc-presence-plus-widget-overflow-menu {
 
+    box-shadow: 0px 2px 2px 0px rgba(0,0,0,0.14),0px 3px 1px -2px rgba(0,0,0,0.12),0px 1px 5px 0px rgba(0,0,0,0.2);
 
+    .tc-presence-plus-menuheader {
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        margin-left: 16px;
+        height: 40px;
+        color: rgba(0,0,0,0.54);
+        font-size: 14px;
+        font-weight: 500;
+    }
 
+    .tc-presence-plus-menuheader-disabled {
+        color: rgba(100,100,100,0.54);
+        cursor: default;
+    }
+
+    .tc-presence-plus-menuitem {
+        color: #202124;
+        font-size: 14px;
+        letter-spacing: .2px;
+        line-height: 20px;
+        position: relative;
+        color: #333;
+        cursor: pointer;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        border-style: none;
+        white-space: nowrap;
+    }
+
+    .tc-presence-plus-menuitem-content {
+        min-height: 20px;
+    }
+
+    .tc-presence-plus-collab-widget-container {
+        margin: 0;
+        height: 48px;
+        width: 100%;
+        display: block;
+    }
+
+    .tc-presence-plus-collab-widget {
+        display: flex;
+        -webkit-align-items: center;
+        align-items: center;
+        height: 48px;
+        padding-right: 20px;
+    }
+
+    .tc-presence-plus-collab-widget-color-block {
+        margin: 0 16px 0;
+        border: none;
+    }
+}
+
+.tc-flat-menu-button-dropdown {
+    position: absolute;
+    top: 0px;
+    left: 9px;
+    height: 36px;
+    width: 36px;
+    line-height: 36px;
+    font-size: 13px;
+    font-weight: 500;
+    pointer-events: none;
+
+    .tc-flat-menu-button-dropdown-on {
+        pointer-events: auto;
+    }
+}
 

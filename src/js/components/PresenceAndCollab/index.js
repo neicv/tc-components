@@ -39,8 +39,9 @@ class PresenceAndCollab extends Component {
     }
 
     view() {
+        const { isMenuView } = this.attrs;
         return (
-            <PresenceAndCollabView items={this.model} />
+            <PresenceAndCollabView items={this.model} isMenuView={isMenuView} />
         )
     }
 
