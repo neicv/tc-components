@@ -11,40 +11,62 @@ const DEFAULT_TEXT_USER_IDLE  = '(Бездействует)';
 
 class PresenceAndCollab extends Component {
     oninit() {
-        this.triggerOpen   = false;
-        this.isImmediately = false;
-        this.openId        = false;
+        this.triggerOpen    = false;
+        this.isImmediately  = false;
+        this.openId         = false;
+        this.isMenuView     = false;
+        this.widthContainer = null;
+
+        this.listenerOnResize = () => this.resizeAction();
+
+        window.addEventListener("resize", this.listenerOnResize);
+    }
+
+    onremove() {
+        window.removeEventListener("resize", this.listenerOnResize);
     }
 
     view() {
         const { items = [], isMenuView = false } = this.attrs;
-        const content = {};
         const count = items.length;
-        const wdthContent  = 36 + (isMenuView ? 0 : 28 * count);
         const countReaders = this.getCountReaders(items.length);
+
+        let wdthContent  = 36 + (isMenuView ? 0 : 28 * count);
+
+        if (count === 0) {
+            return null;
+        }
+        // Если 1 пользователь, то вид в виде виджета
+        this.isMenuView = count === 1 ? false : isMenuView;
+
+        if (this.widthContainer < wdthContent &&  count > 1) {
+            this.isMenuView = true;
+            wdthContent     = 36;
+        }
 
         return (
             <div
                 id="tc-presence-container"
                 class="tc-presence-container tc-presence-inline-block tc-titlebar-button"
+                oncreate={this.setWidthParentContainer.bind(this)}
+                onupdate={this.setWidthParentContainer.bind(this)}
             >
                 <div id="tc-presence" class="tc-presence-inline-block">
                     <div
-                        class="tc-presence-plus-widget tc-presence-inline-block"
+                        class="tc-presence-widget tc-presence-inline-block"
                         style={`width: ${wdthContent}px;`}
                     >
-                        {isMenuView
+                        {this.isMenuView
                         ?
                             <span>
                                 <div
-                                    class="tc-presence-inline-block tc-flat-menu-button tc-presence-plus-widget-overflow-button"
+                                    className="tc-presence-inline-block tc-flat-menu-button tc-presence-widget-overflow-button"
                                     role="button"
                                     aria-expanded="false"
                                     aria-haspopup="true"
-                                    style={`user-select: none; transition: background 0.5s ease 0s; ${ isMenuView ? '' : 'display: none;'}`}
+                                    style={`user-select: none; transition: background 0.5s ease 0s; ${ this.isMenuView ? '' : 'display: none;'}`}
                                     aria-hidden="true"
                                     aria-label={countReaders}
-                                    data-tooltip={countReaders}
                                     data-popup-parent-key='titleCountReaders'
                                     onclick={() => this.clickFlatMenuButton()}
                                     title={countReaders}
@@ -59,9 +81,9 @@ class PresenceAndCollab extends Component {
                                                 {count}
                                             </span>
                                         </Dropdown.Label>
-                                        <Dropdown.Inner className='tc-presence-plus-widget-overflow-menu'>
+                                        <Dropdown.Inner className='tc-presence-widget-overflow-menu'>
                                             <div
-                                                class=" tc-presence-plus-menuheader tc-presence-plus-menuheader-disabled"
+                                                class=" tc-presence-menuheader tc-presence-menuheader-disabled"
                                                 aria-disabled="true"
                                                 style="user-select: none;"
                                             >
@@ -71,19 +93,19 @@ class PresenceAndCollab extends Component {
                                                 items.map(item => {
                                                     return (
                                                         <div
-                                                            class="tc-presence-plus-menuitem"
+                                                            class="tc-presence-menuitem"
                                                             role="menuitem"
                                                             style="user-select: none;"
                                                             id={item.id}
                                                             data-name={item.fio}
                                                         >
                                                             <div
-                                                                class="tc-presence-plus-menuitem-content"
+                                                                class="tc-presence-menuitem-content"
                                                                 onmouseenter={() => this.setImmediatelyOn()}
                                                                 onmouseleave={() => this.setImmediatelyOff()}
                                                                 onclick={() => this.setImmediatelyOn()}
                                                             >
-                                                                {this.getItemView(item, isMenuView)}
+                                                                {this.getItemView(item, this.isMenuView)}
                                                             </div>
                                                         </div>
                                                     )
@@ -95,13 +117,13 @@ class PresenceAndCollab extends Component {
                                 </span>
                             </span>
                         :
-                            <div class="tc-presence-plus-widget-inner tc-presence-inline-block">
+                            <div class="tc-presence-widget-inner tc-presence-inline-block">
                                 <div
-                                    class="tc-presence-plus-widget-collabs tc-presence-inline-block"
+                                    class="tc-presence-widget-collabs tc-presence-inline-block"
                                     onmouseenter={() => this.setImmediatelyOn()}
                                     onmouseleave={() => this.setImmediatelyOff()}
                                 >
-                                    {items.map(item => this.getItemView(item, isMenuView))}
+                                    {items.map(item => this.getItemView(item, this.isMenuView))}
                                 </div>
                             </div>
                         }
@@ -116,10 +138,13 @@ class PresenceAndCollab extends Component {
         const ariaLabel   = item.fio + statusLabel;
         const content     = { content: this.generateToltipContent(item) };
         const position    = isMenuView ? "POSITION_END" : "POSITION_CENTER";
+        const arrow       = !isMenuView;
+        const offsetX     = isMenuView;
+        const offsetY     = isMenuView;
 
         return (
             <div
-                class={`tc-presence-plus-collab-widget-container tc-presence-inline-block ${isMenuView ? '' : 'tc-presence-plus-collab-widget-focus'}`}
+                className={`tc-presence-widget-container tc-presence-inline-block ${isMenuView ? '' : 'tc-presence-widget-focus'}`}
                 role="button"
                 data-name={item.fio}
                 id={item.id}
@@ -129,9 +154,9 @@ class PresenceAndCollab extends Component {
             >
                 <Tooltip
                     data-popup-key={`presence_${item.id}`}
-                    className={`tc-presence-plus-collab-widget ${
+                    className={`tc-presence-widget ${
                         item.active
-                            ? "tc-presence-plus-collab-widget-active"
+                            ? "tc-presence-widget-active"
                             : ""
                     }`}
                     content={content}
@@ -141,16 +166,19 @@ class PresenceAndCollab extends Component {
                     immediately={this.isImmediately}
                     minWidth={300}
                     position={position}
+                    arrow={arrow}
+                    offsetX={offsetX}
+                    offsetY={offsetY}
                 >
-                    <div class="tc-presence-plus-collab-widget-color-block tc-presence-inline-block">
+                    <div class="tc-presence-widget-color-block tc-presence-inline-block">
                         <div
-                            class="tc-presence-plus-collab-widget-image-container"
+                            class="tc-presence-widget-image-container"
                             style={`background-color: ${DEFAULT_BACKGROND_COLOR};`}
                         >
                             {/* ${item.color} || rgb(255, 0, 122); */}
-                            <div class="tc-presence-plus-collab-widget-image-border">
+                            <div class="tc-presence-widget-image-border">
                                 <img
-                                    class="tc-presence-plus-collab-widget-image"
+                                    class="tc-presence-widget-image"
                                     src={item.src}
                                     alt={item.fio}
                                 />
@@ -165,9 +193,9 @@ class PresenceAndCollab extends Component {
                     {
                        isMenuView
                        ?
-                        <div className={`tc-presence-plus-collab-widget-name tc-presence-inline-block ${item.active ? 'active' : ''}`}>
+                        <div className={`tc-presence-widget-name tc-presence-inline-block ${item.active ? 'active' : ''}`}>
                             {item.fio}
-                            <span className="tc-presence-plus-collab-widget-idle-text"> {statusLabel}</span>
+                            <span className="tc-presence-widget-idle-text"> {statusLabel}</span>
                         </div>
                        : null
                     }
@@ -285,6 +313,14 @@ class PresenceAndCollab extends Component {
         );
     }
 
+    setWidthParentContainer({ dom }) {
+        this.widthContainer = dom.parentElement.getBoundingClientRect().width;
+    }
+
+    resizeAction() {
+        setTimeout(() => m.redraw(), 0);
+    }
+
     clickFlatMenuButton() {
         let event = new Event("click", {bubbles: true});
         let elem = document.getElementById('tc-presence-elemen-dropdown');
@@ -328,18 +364,14 @@ class PresenceAndCollab extends Component {
     }
 
     setImmediatelyOn() {
-        console.log('On')
         this.isImmediately = this.triggerOpen;
     }
 
     setImmediatelyOff() {
-        console.log('off - 1')
         if (this.triggerOpen) {
             this.openId        = false;
             this.triggerOpen   = false;
             this.isImmediately = false;
-            console.log('off - 2')
-            // setTimeout(() => m.redraw(), 0);
         }
     }
 }

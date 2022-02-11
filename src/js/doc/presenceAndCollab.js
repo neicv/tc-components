@@ -62,13 +62,36 @@ class PresenceAndCollabDoc {
                             RND
                         </button> */}
                     </p>
-                    <PresenceAndCollab
-                        items={this.items}
-                        isMenuView={this.isMenuView}
-                        hookOnAddUserClick={click => this.onAddUser = click}
-                        hookOnDeleteUserClick={click => this.onDeleteUser = click}
-                        hookOnChangeUserClick={click => this.onChangeUser = click}
-                    />
+                    <div style={'width: 60%;'}>
+                        <div class="toolbar-table-row__coll toolbar__top-panel-main">
+                            <div class="row row_table">
+                                <div class="col-8 v-align-middle">
+                                    Документы...
+                                </div>
+                                <div class="col-2 v-align-middle">
+                                    <div class="tpolbar__info text-center">
+                                        <PresenceAndCollab
+                                            items={this.items}
+                                            isMenuView={this.isMenuView}
+                                            hookOnAddUserClick={click => this.onAddUser = click}
+                                            hookOnDeleteUserClick={click => this.onDeleteUser = click}
+                                            hookOnChangeUserClick={click => this.onChangeUser = click}
+                                        />
+                                    </div>
+                                </div>
+                                <div class="col-2 v-align-middle">
+                                    <div class="toolbar__info">
+                                        <span>Статус документа:</span>
+                                        <div class="cursor-pointer dashed-link color-blue">Черновик</div>
+                                    </div>
+                                    <div class="toolbar__info">
+                                        <span>Тип:</span>
+                                        <div class="cursor-pointer dashed-link color-blue">договор</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

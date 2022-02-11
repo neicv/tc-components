@@ -25,6 +25,9 @@ class Tooltip extends Component {
             minWidth    = "",
             maxHeight   = "",
             position    = "POSITION_CENTER",
+            arrow       = true,
+            offsetX     = false,
+            offsetY     = false,
             className,
         } = this.attrs;
 
@@ -41,6 +44,9 @@ class Tooltip extends Component {
                         data-popup-key={dataPopupKey}
                         side="SIDE_TOP"
                         position={position}
+                        arrow={arrow}
+                        offsetX={offsetX}
+                        offsetY={offsetY}
                     >
                         <Choose>
                             <When condition={title}>{title}</When>
