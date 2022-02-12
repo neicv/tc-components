@@ -41,6 +41,7 @@ class Tooltip extends Component {
                 {children}
                 <If condition={this.isOpen}>
                     <PopUpTooltip
+                        className='tc-tooltip'
                         data-popup-key={dataPopupKey}
                         side="SIDE_TOP"
                         position={position}
@@ -122,7 +123,7 @@ class Tooltip extends Component {
                     this.handleClose(event);
                 }, this.leaveDelay);
             }
-        }, 100);
+        }, 0);
     }
 
     handleClose(event) {

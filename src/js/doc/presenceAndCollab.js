@@ -62,7 +62,7 @@ class PresenceAndCollabDoc {
                             RND
                         </button> */}
                     </p>
-                    <div style={'width: 60%;'}>
+                    <div style={'width: 70%;'}>
                         <div class="toolbar-table-row__coll toolbar__top-panel-main">
                             <div class="row row_table">
                                 <div class="col-8 v-align-middle">

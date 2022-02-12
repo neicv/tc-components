@@ -24,4 +24,7 @@ export const DEFAULT_COLORS = [
     // { text: 'Чёрный', value: '#000000' }
 ]
 
+export const DEFAULT_BACKGROND_COLOR = '#7A7A7A';
+export const LANG                    = "presenceAndCollab";
+
 export default DEFAULT_COLORS;

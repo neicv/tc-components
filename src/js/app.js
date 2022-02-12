@@ -14,13 +14,15 @@ import App from './layout/App.js';
 import {setContent, setLocale} from './localizations';
 // import notificationsLang from 'localizations/notifications';
 import paginationLang from './localizations/pagination.json';
+import presenceAndCollab from './localizations/presenceAndCollab.json';
 
 // Установка локализации.
 setLocale("ru");
 // Регистрация локализаций, которые необходимы во всей авторизованной части проета.
 setContent(
 	// notificationsLang,
-	paginationLang
+	paginationLang,
+	presenceAndCollab
 )
 
 const root = document.body;

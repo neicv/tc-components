@@ -1,13 +1,11 @@
 
 import m from 'mithril';
 import Component from '@/lib/Component';
-import PopUp from "@/components/plugins/PopUp";
-import Tooltip from './tooltip';
+import {translate} from "@/localizations";
 import Dropdown from '@/components/plugins/Dropdown';
+import PresenceAndCollabItem from './PresenceAndCollabItem';
 
-const TEXT_BLANK              = 'Не указано';
-const DEFAULT_BACKGROND_COLOR = '#7A7A7A';
-const DEFAULT_TEXT_USER_IDLE  = '(Бездействует)';
+import { LANG } from '../constants';
 
 class PresenceAndCollab extends Component {
     oninit() {
@@ -77,7 +75,7 @@ class PresenceAndCollab extends Component {
                                     >
                                     <Dropdown center={true} >
                                         <Dropdown.Label indicate={true} className='tc-flat-menu-button-caption' title={countReaders}>
-                                            <span id='tc-presence-elemen-dropdown'>
+                                            <span id='tc-presence-element-dropdown'>
                                                 {count}
                                             </span>
                                         </Dropdown.Label>
@@ -98,14 +96,21 @@ class PresenceAndCollab extends Component {
                                                             style="user-select: none;"
                                                             id={item.id}
                                                             data-name={item.fio}
+                                                            onmouseenter={() => this.setImmediatelyOn()}
+                                                            onmouseleave={() => this.setImmediatelyOff()}
                                                         >
                                                             <div
                                                                 class="tc-presence-menuitem-content"
-                                                                onmouseenter={() => this.setImmediatelyOn()}
-                                                                onmouseleave={() => this.setImmediatelyOff()}
-                                                                onclick={() => this.setImmediatelyOn()}
+
+                                                                onclick={() => this.setClickOn()}
                                                             >
-                                                                {this.getItemView(item, this.isMenuView)}
+                                                                <PresenceAndCollabItem
+                                                                    item={item}
+                                                                    isMenuView={this.isMenuView}
+                                                                    isImmediately={this.isImmediately}
+                                                                    handleEnter={this.handleEnter.bind(this)}
+                                                                    handleOpen={this.handleOpen.bind(this)}
+                                                                />
                                                             </div>
                                                         </div>
                                                     )
@@ -123,190 +128,18 @@ class PresenceAndCollab extends Component {
                                     onmouseenter={() => this.setImmediatelyOn()}
                                     onmouseleave={() => this.setImmediatelyOff()}
                                 >
-                                    {items.map(item => this.getItemView(item, this.isMenuView))}
+                                    {items.map(item =>
+                                        <PresenceAndCollabItem
+                                            item={item}
+                                            isMenuView={this.isMenuView}
+                                            isImmediately={this.isImmediately}
+                                            handleEnter={this.handleEnter.bind(this)}
+                                            handleOpen={this.handleOpen.bind(this)}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         }
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    getItemView(item = {}, isMenuView = false) {
-        const statusLabel = item.active ? "" : DEFAULT_TEXT_USER_IDLE;
-        const ariaLabel   = item.fio + statusLabel;
-        const content     = { content: this.generateToltipContent(item) };
-        const position    = isMenuView ? "POSITION_END" : "POSITION_CENTER";
-        const arrow       = !isMenuView;
-        const offsetX     = isMenuView;
-        const offsetY     = isMenuView;
-
-        return (
-            <div
-                className={`tc-presence-widget-container tc-presence-inline-block ${isMenuView ? '' : 'tc-presence-widget-focus'}`}
-                role="button"
-                data-name={item.fio}
-                id={item.id}
-                tabindex="0"
-                aria-label={ariaLabel}
-                key={`presence_l_${item.id}`}
-            >
-                <Tooltip
-                    data-popup-key={`presence_${item.id}`}
-                    className={`tc-presence-widget ${
-                        item.active
-                            ? "tc-presence-widget-active"
-                            : ""
-                    }`}
-                    content={content}
-                    handleOpen={() => this.handleOpen(item.id)}
-                    handleEnter={() => this.handleEnter(item.id)}
-                    id={item.id}
-                    immediately={this.isImmediately}
-                    minWidth={300}
-                    position={position}
-                    arrow={arrow}
-                    offsetX={offsetX}
-                    offsetY={offsetY}
-                >
-                    <div class="tc-presence-widget-color-block tc-presence-inline-block">
-                        <div
-                            class="tc-presence-widget-image-container"
-                            style={`background-color: ${DEFAULT_BACKGROND_COLOR};`}
-                        >
-                            {/* ${item.color} || rgb(255, 0, 122); */}
-                            <div class="tc-presence-widget-image-border">
-                                <img
-                                    class="tc-presence-widget-image"
-                                    src={item.src}
-                                    alt={item.fio}
-                                />
-                            </div>
-                        </div>
-                        {
-                            item.active
-                            ? <div class="online-dot"></div>
-                            : null
-                        }
-                    </div>
-                    {
-                       isMenuView
-                       ?
-                        <div className={`tc-presence-widget-name tc-presence-inline-block ${item.active ? 'active' : ''}`}>
-                            {item.fio}
-                            <span className="tc-presence-widget-idle-text"> {statusLabel}</span>
-                        </div>
-                       : null
-                    }
-
-                </Tooltip>
-            </div>
-        );
-    }
-
-    generateToltipContent(item) {
-        return (
-            <div
-                className="tc-tooltip-content-card"
-                key={`tc_ttc_${item.id}`}
-                onclick={(e) => {e.preventDefault(); e.stopPropagation()}}
-            >
-                <div className="tc-tooltip-content-card-body">
-                    <figure class="tc-tooltip-content-image-figure">
-                        <img
-                            class="tc-tooltip-content-image"
-                            src={item.src}
-                            alt={item.fio}
-                        />
-                        <figcaption>
-                            <div class="tc-tooltip-content-figure-title fs18">
-                                {item.fio}
-                            </div>
-                            <div class="tc-tooltip-content-figure-title fs14">
-                                {item.email}
-                            </div>
-                            <div className="tc-tooltip-content-figure-title fs14">
-                                <span className={`status ${
-                                        item.active
-                                            ? "active"
-                                            : ""
-                                    }`}
-                                >
-                                    {
-                                        item.active
-                                        ? "(Активен)"
-                                        : "(Бездействует)"
-                                    }
-                                </span>
-                            </div>
-                        </figcaption>
-                    </figure>
-                </div>
-                <hr />
-
-                <If condition={item.isShowMore}>
-                    <div>
-                        <div className="v-align-middle pr15 pb5">
-                            <div className="js-ellipsis">
-                                <div className="text-clipped js-ellipsis-text display-flex">
-                                    <i
-                                        title="Организация"
-                                        className="font-icon case color-blue fs15 pr5 inline-block"
-                                    ></i>
-                                    <span
-                                        title={item.agency || TEXT_BLANK}
-                                        className="text-clipped v-align-middle fs12"
-                                    >
-                                        {item.agency || TEXT_BLANK}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <If condition={item.fio !== ""}>
-                            <div className="v-align-middle pr15 pb5">
-                                <div className="js-ellipsis">
-                                    <div className="text-clipped js-ellipsis-text display-flex">
-                                        <i
-                                            title="Должность"
-                                            className="font-icon position-icon color-blue fs15 pr5"
-                                        ></i>
-                                        <span
-                                            title={item.position || TEXT_BLANK}
-                                            className="text-clipped v-align-middle fs12"
-                                        >
-                                            {item.position || TEXT_BLANK}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="v-align-middle pr15 pb5">
-                                <div className="js-ellipsis">
-                                    <div className="text-clipped js-ellipsis-text display-flex">
-                                        <i
-                                            title="Роль"
-                                            className="font-icon role-icon color-blue fs15 pr5 inline-block"
-                                        ></i>
-                                        <span
-                                            title={item.role || TEXT_BLANK}
-                                            className="text-clipped v-align-middle fs12"
-                                        >
-                                            {item.role || TEXT_BLANK}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </If>
-                    </div>
-                </If>
-                <div
-                    className="tc-tooltip-content-figure-title"
-                    onclick={(event) => this.handleShowMoreClick(event, item)}
-                >
-                    <div class="pointer text-right">
-                        <div class="solid-link color-blue">
-                            {item.isShowMore ? "Скрыть" : "Подробнее"}
-                        </div>
                     </div>
                 </div>
             </div>
@@ -323,7 +156,7 @@ class PresenceAndCollab extends Component {
 
     clickFlatMenuButton() {
         let event = new Event("click", {bubbles: true});
-        let elem = document.getElementById('tc-presence-elemen-dropdown');
+        let elem = document.getElementById('tc-presence-element-dropdown');
 
         if (elem) {
             elem.dispatchEvent(event, true);
@@ -334,16 +167,10 @@ class PresenceAndCollab extends Component {
         let countReaders = '';
 
         if (len) {
-            countReaders = 'Всего ' + len + ' читателя';
+            countReaders = translate(`${LANG}.total`) + len + translate(`${LANG}.readers`);
         }
 
         return countReaders;
-    }
-
-    handleShowMoreClick(e, item) {
-        e.preventDefault();
-        e.stopPropagation();
-        item.isShowMore = !item.isShowMore;
     }
 
     handleEnter(id) {
@@ -358,8 +185,9 @@ class PresenceAndCollab extends Component {
     }
 
     handleOpen(id) {
+        this.openId      = id;
         this.triggerOpen = true;
-        this.openId = id;
+
         this.setImmediatelyOn();
     }
 
@@ -373,6 +201,15 @@ class PresenceAndCollab extends Component {
             this.triggerOpen   = false;
             this.isImmediately = false;
         }
+    }
+
+    setClickOn() {
+        this.setImmediatelyOn();
+        this.triggerOpen = false;
+    }
+
+    getIsImmediately() {
+        return this.isImmediately;
     }
 }
 
