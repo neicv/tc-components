@@ -2,6 +2,23 @@ import m from 'mithril';
 import PresenceAndCollab from '@/components/PresenceAndCollab';
 import Data from './data/presenceAndCollabDocData';
 import Switch from '@/components/Switch';
+import {connect} from "@/lib/midux";
+
+import {
+    requestUsersPresence,
+    addUserToPresence,
+    removeUserFromPresence
+} from "@/actions/common/presenceAndCollab";
+
+const mapStateToProps = state => ({
+    users: state.data,
+});
+
+const mapActionsToProps = {
+    requestUsersPresence,
+    addUserToPresence,
+    removeUserFromPresence
+};
 
 class PresenceAndCollabDoc {
     oninit() {
@@ -15,7 +32,7 @@ class PresenceAndCollabDoc {
         this.isMenuView = true;
     }
 
-    view(vnode) {
+    view({attrs}) {
         return (
             <div className='main-content'>
                 <div className='test-presence'>
@@ -36,21 +53,21 @@ class PresenceAndCollabDoc {
                         <button
                             type='button'
                             className='btn btn--is-elevated primary'
-                            onclick={() => this.addUser()}
+                            onclick={() => this.addUser(attrs)}
                         >
                             Добавить
                         </button>
                         <button
                             type='button'
                             className='btn btn--is-elevated primary ml10'
-                            onclick={() => this.changeUser()}
+                            onclick={() => this.changeUser(attrs)}
                         >
                             Изменить
                         </button>
                         <button
                             type='button'
                             className='btn btn--is-elevated primary ml10'
-                            onclick={() => this.deleteUser()}
+                            onclick={() => this.deleteUser(attrs)}
                         >
                             Удалить
                         </button>
@@ -106,23 +123,25 @@ class PresenceAndCollabDoc {
         this.labelRnd = this.getRandomId(Data)
     }
 
-    changeUser() {
+    changeUser(attrs) {
         const id = this.getRandomId(Data);
         const user = Data.find(el => +el.id === +id);
         this.onChangeUser(user.id);
     }
 
-    addUser() {
+    addUser(attrs) {
         // this.items.shift();
         // this.items.unshift(Data[3])
         const id = this.getRandomId(Data);
         const user = Data.find(el => +el.id === +id);
         this.onAddUser(user);
+        attrs.actions.addUserToPresence(user);
     }
 
-    deleteUser() {
+    deleteUser(attrs) {
         const id = this.getRandomId(Data)
         this.onDeleteUser(id);
+        attrs.actions.removeUserFromPresence(id);
     }
 
     getRandomId(items = []) {
@@ -136,4 +155,4 @@ class PresenceAndCollabDoc {
     }
 }
 
-export default PresenceAndCollabDoc;
+export default connect(mapStateToProps, mapActionsToProps)(PresenceAndCollabDoc);

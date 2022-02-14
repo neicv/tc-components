@@ -16,6 +16,14 @@ import {setContent, setLocale} from './localizations';
 import paginationLang from './localizations/pagination.json';
 import presenceAndCollab from './localizations/presenceAndCollab.json';
 
+import {createStore, applyMiddleware} from 'redux';
+import {composeWithDevTools} from 'redux-devtools-extension';
+import thunk from 'redux-thunk';
+import rootReducer from '@/entry/common-base/rootReducer';
+import {init, store as Provider} from "@/lib/midux";
+import createSagaMiddleware from "redux-saga";
+import {rootSaga} from "@/entry/common-base/rootSaga";
+
 // Установка локализации.
 setLocale("ru");
 // Регистрация локализаций, которые необходимы во всей авторизованной части проета.
@@ -24,6 +32,18 @@ setContent(
 	paginationLang,
 	presenceAndCollab
 )
+
+const saga = createSagaMiddleware();
+
+const store = createStore(
+    rootReducer,
+    composeWithDevTools(applyMiddleware(thunk, saga))
+);
+
+saga.run(rootSaga);
+
+init(m);
+Provider(store);
 
 const root = document.body;
 

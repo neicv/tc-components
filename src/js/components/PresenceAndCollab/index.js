@@ -2,9 +2,7 @@
 import m from 'mithril';
 import Component from '@/lib/Component';
 import PresenceAndCollabView from './components/PresenceAndCollabView';
-import colors from './constants'
-
-// import Model from './Model/model'
+import colors from './constants';
 
 class PresenceAndCollab extends Component {
     constructor(props) {
@@ -23,8 +21,6 @@ class PresenceAndCollab extends Component {
 
         this.model = [];
         this.generateModel(items);
-
-        // this._model = new Model(options);
     }
 
     onbeforeupdate() {
@@ -126,7 +122,9 @@ class PresenceAndCollab extends Component {
             isShowMore,
         };
 
-        delete modelItem.img;
+        if (modelItem.img) {
+            delete modelItem.img;
+        }
 
         this.model.push(modelItem);
     }
