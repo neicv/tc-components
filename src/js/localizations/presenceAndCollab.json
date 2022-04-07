@@ -1,0 +1,16 @@
+{
+  "ru": {
+    "presenceAndCollab":   {
+        "notSpecified":       "Не указано",
+        "userIdle":           "(Бездействует)",
+        "userActive":         "(Активен)",
+        "total":              "Всего ",
+        "readers":            " читателя",
+        "organization":       "Организация",
+        "position":           "Должность",
+        "role":               "Роль",
+        "hide":               "Скрыть",
+        "showMore":           "Подробнее"
+    }
+  }
+}

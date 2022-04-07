@@ -16,8 +16,17 @@ const POSITION_FLEXIBLE = "FLEXIBLE";
 
 const TRIGGER_SIZE  = 6;
 const BOTTOM_BORDER = 10;
+const OFFSET_X = 32;
+const OFFSET_Y = -20;
 
-const DEFAULT_TRIGGER_CONFIG = { side: SIDE_TOP, position: POSITION_END, topBorder: 0 };
+const DEFAULT_TRIGGER_CONFIG = {
+    side: SIDE_TOP,
+    position: POSITION_END,
+    topBorder: 0,
+    arrow: true,
+    offsetX: false,
+    offsetY: false
+};
 
 class PopUp extends Component {
     oninit() {
@@ -59,13 +68,20 @@ class PopUp extends Component {
     }
 
     view({ children, attrs }) {
-        let classesTrigger = classNames(
-            "popup-trigger",
-            { "side-top": this.triggerConfig.side === SIDE_TOP },
-            { "side-right": this.triggerConfig.side === SIDE_RIGHT },
-            { "side-bottom": this.triggerConfig.side === SIDE_BOTTOM },
-            { "side-left": this.triggerConfig.side === SIDE_LEFT }
-        );
+        let classesTrigger;
+
+        if (this.triggerConfig.arrow) {
+            classesTrigger = classNames(
+                "popup-trigger",
+                { "side-top": this.triggerConfig.side === SIDE_TOP },
+                { "side-right": this.triggerConfig.side === SIDE_RIGHT },
+                { "side-bottom": this.triggerConfig.side === SIDE_BOTTOM },
+                { "side-left": this.triggerConfig.side === SIDE_LEFT }
+            );
+        } else {
+            classesTrigger = "popup-trigger";
+        }
+
 
         return (
             <div
@@ -158,6 +174,14 @@ class PopUp extends Component {
             }
 
             triggerEl.style.top = topTrigger + "px";
+        }
+
+        if (this.triggerConfig.offsetX) {
+            left = left + OFFSET_X;
+        }
+
+        if (this.triggerConfig.offsetY) {
+            top = top + OFFSET_Y;
         }
 
         popUpEl.style.top  = top + "px";

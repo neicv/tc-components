@@ -97,6 +97,10 @@
     vertical-align: text-top;
 }
 
+.solid-text, .solid-link {
+    border-bottom: 1px solid;
+}
+
 .dashed-text, .dashed-link, .dashed-link-note {
     border-bottom: 1px dashed;
 }
@@ -106,6 +110,29 @@
 .dashed-link, .dotted-link, .solid-link, .dashed-text, .dotted-text, .solid-text {
     line-height: normal;
     text-decoration: none;
+}
+
+a:hover .dotted-link,
+a:hover .dashed-link,
+a:hover .dashed-link-note,
+a:hover .solid-link,
+.dotted-link:hover,
+.dashed-link:hover,
+.dashed-link-note:hover,
+.solid-link:hover,
+a:hover .dotted-text,
+a:hover .dashed-text,
+a:hover .solid-text,
+.dotted-text:hover,
+.dashed-text:hover,
+.solid-text:hover,
+.styled-link:hover .dotted-text,
+.styled-link:hover .dashed-text,
+.styled-link:hover .solid-text,
+.styled-link:hover .dotted-link,
+.styled-link:hover .dashed-link,
+.styled-link:hover .solid-link {
+    border-bottom-color: transparent;
 }
 
 .cursor-pointer {

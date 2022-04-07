@@ -4,24 +4,36 @@ import PopUpTooltip from "@/components/plugins/PopUpTooltip";
 import ToolTipContent from './TooltipContent';
 
 const DEFAULT_ENTER_DELAY = 500;
-const DEFAULT_LEAVE_DELAY = 1000;
+const DEFAULT_LEAVE_DELAY = 500;
 
 class Tooltip extends Component {
     oninit() {
-        this.isOpen     = false;
+        this.isOpen = false;
         this.enterTimer = null;
         this.enterDelay = DEFAULT_ENTER_DELAY;
         this.leaveDelay = DEFAULT_LEAVE_DELAY;
+        this.immediately = false;
         this.isShowTooltipContent = false;
     }
 
     view({ children }) {
         const dataPopupKey = this.attrs["data-popup-key"];
-        const { title = '', content = '', maxWidth = '', maxHeight = '', className } = this.attrs;
+        const {
+            title       = "",
+            content     = "",
+            maxWidth    = "",
+            minWidth    = "",
+            maxHeight   = "",
+            position    = "POSITION_CENTER",
+            arrow       = true,
+            offsetX     = false,
+            offsetY     = false,
+            className,
+        } = this.attrs;
 
         return (
             <div
-                className={className} // 'tc-presence-plus-collab-tooltip'
+                className={className}
                 data-popup-parent-key={dataPopupKey}
                 onmouseenter={(event) => this.handleEnter(event)}
                 onmouseleave={(event) => this.handleLeave(event)}
@@ -29,21 +41,23 @@ class Tooltip extends Component {
                 {children}
                 <If condition={this.isOpen}>
                     <PopUpTooltip
+                        className='tc-tooltip'
                         data-popup-key={dataPopupKey}
                         side="SIDE_TOP"
-                        position="POSITION_CENTER"
+                        position={position}
+                        arrow={arrow}
+                        offsetX={offsetX}
+                        offsetY={offsetY}
                     >
-                        {/* Hellou - {dataPopupKey} */}
                         <Choose>
-                            <When condition={title}>
-                                {title}
-                            </When>
+                            <When condition={title}>{title}</When>
                             <When condition={content}>
                                 <ToolTipContent
                                     content={content.content}
                                     className={content.className}
                                     maxWidth={maxWidth}
                                     maxHeight={maxHeight}
+                                    minWidth={minWidth}
                                     onmouseenter={() => this.handleEnterToolTipContent()}
                                     onmouseleave={() => this.handleLeaveToolTipContent()}
                                 />
@@ -52,21 +66,23 @@ class Tooltip extends Component {
                     </PopUpTooltip>
                 </If>
             </div>
-        )
+        );
     }
 
     handleEnter(event) {
+        const { handleEnter, immediately = false } = this.attrs;
+
+        if (typeof handleEnter === "function") {
+            handleEnter(event);
+        }
 
         clearTimeout(this.enterTimer);
         clearTimeout(this.leaveTimer);
 
-        if (this.enterDelay) {
-            this.enterTimer = setTimeout(
-                () => {
-                    this.handleOpen(event);
-                },
-                this.enterDelay,
-            );
+        if (this.enterDelay && !immediately) {
+            this.enterTimer = setTimeout(() => {
+                this.handleOpen(event);
+            }, this.enterDelay);
         } else {
             this.handleOpen(event);
         }
@@ -83,17 +99,34 @@ class Tooltip extends Component {
         setTimeout(() => m.redraw(), 0);
     }
 
-    handleLeave (event) {
-        clearTimeout(this.enterTimer);
-        clearTimeout(this.leaveTimer);
+    handleLeave(event) {
+        const { handleLeave } = this.attrs;
+        let isImmediately = false;
 
-        this.leaveTimer = setTimeout(() => {
-          this.handleClose(event);
-        }, this.leaveDelay);
+        setTimeout(() => {
+            const { immediately = false } = this.attrs;
+            isImmediately = immediately;
+
+            if (typeof handleLeave === "function") {
+                handleLeave();
+            }
+        }, 0);
+
+        setTimeout(() => {
+            clearTimeout(this.enterTimer);
+            clearTimeout(this.leaveTimer);
+
+            if (isImmediately) {
+                this.handleClose(event);
+            } else {
+                this.leaveTimer = setTimeout(() => {
+                    this.handleClose(event);
+                }, this.leaveDelay);
+            }
+        }, 0);
     }
 
     handleClose(event) {
-
         if (this.isShowTooltipContent) return;
 
         this.isOpen = false;
@@ -112,7 +145,7 @@ class Tooltip extends Component {
 
     handleLeaveToolTipContent() {
         this.isShowTooltipContent = false;
-        this.handleLeave()
+        this.handleLeave();
     }
 }
 

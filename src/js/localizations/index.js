@@ -47,10 +47,17 @@ export function getContent() {
     return content[getLocale()];
 }
 
-export function translate(path) {
-    let index = (obj, i) => obj[i];
+export function translate(path, params = {}) {
+    let index   = (obj, i) => obj[i],
+        content = path.split('.').reduce(index, getContent());
 
-    return path.split('.').reduce(index, getContent());
+    Object.keys(params).forEach(param => {
+        const value = params[param];
+
+        content = content.replace(`{${param}}`, value);
+    });
+
+    return content;
 }
 
 export default { setLocale, getLocale, setContent, getContent, translate };

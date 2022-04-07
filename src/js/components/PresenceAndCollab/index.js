@@ -1,113 +1,166 @@
 
 import m from 'mithril';
-import Component from '../../lib/Component';
+import Component from '@/lib/Component';
+import PresenceAndCollabView from './components/PresenceAndCollabView';
 import colors from './constants';
-import Tooltip from './components/tooltip';
 
 class PresenceAndCollab extends Component {
+    constructor(props) {
+        super(props);
+        this.addUser    = this.addUser.bind(this);
+        this.changeUser = this.changeUser.bind(this);
+        this.deleteUser = this.deleteUser.bind(this);
+     }
+
     oninit() {
         const { items } = this.attrs;
 
+        this.attrs.hookOnAddUserClick(this.addUser);
+        this.attrs.hookOnChangeUserClick(this.changeUser);
+        this.attrs.hookOnDeleteUserClick(this.deleteUser);
+
         this.model = [];
-
-        items.forEach(element => {
-            let src  = '',
-                char = '',
-                color =  this.randomColor();
-
-            if (element.img === undefined || element.img === '') {
-                char = element.fio && element.fio.trim()[0];
-                src = this.lettersToAvatarImage(char, 23);
-            } else {
-                src = element.img;
-            }
-
-            let modelItem = {
-                ...element,
-                src,
-                color
-            }
-
-            delete modelItem.img;
-
-            this.model.push(modelItem);
-
-        });
+        this.generateModel(items);
     }
 
-    view() {
-
-        const content = {};
-        return (
-
-            <div id="tc-presence-container" class="tc-presence-container tc-presence-inline-block tc-titlebar-button">
-                <div id="tc-presence" class="tc-presence-inline-block">
-                    <div class="tc-presence-plus-widget tc-presence-inline-block" style="width: 36px;">
-                        <div class="tc-presence-plus-widget-inner tc-presence-inline-block">
-                            <div
-                                class="tc-presence-plus-widget-collabs tc-presence-inline-block"
-                            >
-                            {
-                                this.model.map((item, index) => {
-                                    const ariaLabel = item.fio + item.active ? '' : '(Бездействует)';
-                                    const content = {content: this.generateToltipContent(item)};
-
-                                    return (
-                                        <div
-                                            class="tc-presence-plus-collab-widget-container tc-presence-inline-block tc-presence-plus-collab-widget-focus"
-                                            role="button"
-                                            data-name={item.fio}
-                                            id={item.id}
-                                            tabindex="0"
-                                            aria-label={ariaLabel}
-                                        >
-                                            <Tooltip
-                                                data-popup-key={`presence_${item.id}`}
-                                                className={`tc-presence-plus-collab-widget ${item.active ? 'tc-presence-plus-collab-widget-active' : ''}`}
-                                                content={content}
-                                            >
-                                                <div class="tc-presence-plus-collab-widget-color-block tc-presence-inline-block">
-                                                    <div class="tc-presence-plus-collab-widget-image-container" style="background-color: rgb(255, 0, 122);">
-                                                    {/* ${item.color} || rgb(255, 0, 122); */}
-                                                        <div class="tc-presence-plus-collab-widget-image-border">
-                                                            <img
-                                                                class="tc-presence-plus-collab-widget-image"
-                                                                src={item.src}
-                                                                alt={item.fio}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </Tooltip>
-                                        </div>
-                                    )
-                                })
-                            }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )
+    onbeforeupdate() {
+        // const { items } = this.attrs;
+        // if (this.isPropsChange(items)) {
+        //     this.generateModel(items);
+        // }
     }
 
     onremove() {
         this.model = null;
     }
 
-    lettersToAvatarImage(letters, size = 60) {
-        let canvas    = document.createElement('canvas');
-        const context = canvas.getContext("2d");
-        // Generate a random color every time function is called
-        // let color =  "#" + (Math.random() * 0xFFFFFF << 0).toString(16);
-        let color = this.randomColor();
+    view() {
+        const { isMenuView } = this.attrs;
+        return (
+            <PresenceAndCollabView items={this.model} isMenuView={isMenuView} />
+        )
+    }
 
-        canvas.width  = size;
+    refreshModel() {
+        // observe model ?
+        const { items } = this.attrs;
+        generateModel(items);
+
+        const { handleRefreshModel } = this.attrs;
+
+        if (typeof handleRefreshModel === "function") {
+            handleRefreshModel();
+        }
+    }
+
+    /* Изменились ли входные данные
+        Отслеживаются:
+        1. элементы массива по id (Пользователи)
+        2. статус у пользователя
+    */
+    isPropsChange(items) {
+        if (items && items.length && this.model && this.model.length) {
+            if (items.length !== this.model.length) {
+                console.log("change len");
+                return true;
+            }
+
+            const itemsIdArray = items.map((element) => element.id);
+            const modelIdArray = this.model.map((element) => element.id);
+
+            let isNotContain = !itemsIdArray.reduce((acc, current) => {
+                return acc && modelIdArray.includes(current);
+            }, true);
+
+            if (isNotContain) {
+                console.log("id change: ", isNotContain);
+                return true;
+            }
+
+            let isActiveChange = !items.reduce((acc, element) => {
+                return acc && this.model.find(el => el.id === element.id).active === element.active;
+            }, true);
+
+            if (isActiveChange) {
+                console.log("active change: ", isActiveChange);
+                return true;
+            }
+
+            return false;
+        }
+    }
+
+    generateModel(users) {
+        users.forEach((user) => {
+            this.addUser(user);
+        });
+    }
+
+    addUser(user) {
+
+        if (this.model.find(el => el.id === user.id)) {
+            console.log('user alredy added, w id: ', user.id)
+            return;
+        }
+
+        let src = "",
+            char = "",
+            color = this._randomColor(),
+            isShowMore = false;
+
+        if (user.img === undefined || user.img === "") {
+            char = user.fio && user.fio.trim()[0];
+            src = this._lettersToAvatarImage(char, 64);
+        } else {
+            src = user.img;
+        }
+
+        let modelItem = {
+            ...user,
+            src,
+            color,
+            isShowMore,
+        };
+
+        if (modelItem.img) {
+            delete modelItem.img;
+        }
+
+        this.model.push(modelItem);
+    }
+
+    deleteUser(id) {
+        if (id === undefined) {
+            return;
+        }
+
+        this.model = this.model.filter(el => el.id !== id);
+    }
+
+    // Смена активного статуса
+    changeUser(id) {
+        if (id === undefined) {
+            return;
+        }
+
+        let index = this.model.findIndex(el => +el.id === +id);
+
+        if (index !== -1) {
+            this.model[index].active = !this.model[index].active;
+        }
+    }
+
+    _lettersToAvatarImage(letters, size = 60) {
+        let canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        // let color =  "#" + (Math.random() * 0xFFFFFF << 0).toString(16);
+        let color = this._randomColor();
+
+        canvas.width = size;
         canvas.height = size;
 
         context.font = Math.round(canvas.width / 2) + "px Roboto"; // Arial
         context.textAlign = "center";
-        // Setup background and front color
         context.fillStyle = color;
         context.fillRect(0, 0, canvas.width, canvas.height);
         context.fillStyle = "#FFF";
@@ -119,33 +172,11 @@ class PresenceAndCollab extends Component {
         return dataURI;
     }
 
-    randomColor() {
+    _randomColor() {
         let keys = Object.keys(colors);
-        let randomProperty = colors[keys[ keys.length * Math.random() << 0]];
+        let randomProperty = colors[keys[(keys.length * Math.random()) << 0]];
 
         return randomProperty.value;
-    }
-
-    generateToltipContent(item) {
-        return (
-            <div>
-                <div className='tc-tooltip-content-card'>
-                    <figure class="tc-tooltip-content-image-figure">
-                        <img
-                            class="tc-tooltip-content-image"
-                            src={item.src}
-                            alt={item.fio}
-                        />
-                        <figcaption>
-                            <div class="tc-tooltip-content-figure-title fs18">{item.fio}</div>
-                            <div class="tc-tooltip-content-figure-title fs14">{item.email}</div>
-                        </figcaption>
-                    </figure>
-                </div>
-                <hr/>
-                <div class="tc-tooltip-content-figure-title pointer">Подробнее</div>
-            </div>
-        )
     }
 }
 
