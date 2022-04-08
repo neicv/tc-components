@@ -37,7 +37,10 @@ module.exports = {
                 collapseWhitespace: prodMode
             }
         }),
-        new CleanWebpackPlugin(),
+        new CleanWebpackPlugin({
+            protectWebpackAssets: false,
+            cleanAfterEveryBuildPatterns: ['*.LICENSE.txt'],
+        }),
         new CopyWebpackPlugin({
             patterns:
             [
@@ -67,7 +70,7 @@ module.exports = {
             // Options similar to the same options in webpackOptions.output
             // both options are optional
             filename: devMode ? '[name].css' : '[name].[contenthash].css',
-            chunkFilename: devMode ? '[id].css' : '' //'[id].[contenthash].css'
+            chunkFilename: devMode ? '[id].css' : '[id].[contenthash].css' // ''
         }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
