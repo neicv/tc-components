@@ -123,7 +123,8 @@ module.exports = {
                     options: {
                         limit: 10000,
                         outputPath: 'fonts/',
-                        name: devMode ? '[name].[ext]' : '[contenthash].[ext]',
+                        // name: devMode ? '[name].[ext]' : '[contenthash].[ext]',
+                        name: '[name].[ext]',
                         publicPath: url => 'fonts/' + url
                     },
                 },

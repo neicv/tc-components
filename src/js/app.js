@@ -1,5 +1,9 @@
 import '../css/style.css'
 import '../scss/index.scss'
+// Babel has deprecated @babel/polyfill, and the following two imports are used for polyfills instead.
+// import 'core-js/stable';
+// import 'regenerator-runtime/runtime';
+
 import m from 'mithril';
 import HomeView from './doc/home';
 import AccordionDoc from './doc/accordion';
