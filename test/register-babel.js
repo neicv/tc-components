@@ -15,9 +15,13 @@ require("@babel/register")({
                 useESModules   : false
             }
         ],
-        [
-            "transform-react-jsx",
-            { pragma: "m" }
-        ]
+        // [
+        //     "transform-react-jsx",
+        //     { pragma: "m" }
+        // ]
+        ["@babel/plugin-transform-react-jsx", {
+            "pragma": "m",
+            "pragmaFrag": "'['"
+        }],
     ]
 });
