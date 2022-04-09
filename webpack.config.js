@@ -153,15 +153,7 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         cacheDirectory: true,
-                        // if no .babelrc in root dir - uncomment:
-                        // presets: ["@babel/preset-env"],
-                        // sourceMaps: true,
-                        // plugins: [
-                        //     ["@babel/plugin-transform-react-jsx", {
-                        //         "pragma": "m",
-                        //         "pragmaFrag": "'['"
-                        //     }]
-                        // ]
+                        // if no .babelrc in root dir - type cfg babel here:
                     },
                 },
             },
