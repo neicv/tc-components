@@ -14,7 +14,7 @@ module.exports = {
     output: {
         filename: 'bundle.[contenthash].js',
         path: path.resolve(__dirname, 'public'),
-        publicPath: ''
+        // publicPath: ''
     },
     resolve: {
         extensions: ['.js'],
@@ -42,31 +42,31 @@ module.exports = {
             protectWebpackAssets: false,
             cleanAfterEveryBuildPatterns: ['*.LICENSE.txt'],
         }),
-        new CopyWebpackPlugin({
-            patterns:
-            [
-                // {
-                //     from: path.resolve(__dirname, './src/fonts'),
-                //     to: path.resolve(__dirname, './public/fonts')
-                // },
-                // {
-                //     from: path.resolve(__dirname, './src/favicon'),
-                //     to: path.resolve(__dirname, './public/favicon')
-                // },
-                // {
-                //     from: path.resolve(__dirname, './src/assets'),
-                //     to: path.resolve(__dirname, './public/assets')
-                // },
-                // {
-                //     from: path.resolve(__dirname, './src/vendor'),
-                //     to: path.resolve(__dirname, './public/vendor')
-                // },
-                {
-                    from: path.resolve(__dirname, './src/css'),
-                    to: path.resolve(__dirname, './public/css')
-                }
-            ]
-        }),
+        // new CopyWebpackPlugin({
+        //     patterns:
+        //     [
+        //         // {
+        //         //     from: path.resolve(__dirname, './src/fonts'),
+        //         //     to: path.resolve(__dirname, './public/fonts')
+        //         // },
+        //         // {
+        //         //     from: path.resolve(__dirname, './src/favicon'),
+        //         //     to: path.resolve(__dirname, './public/favicon')
+        //         // },
+        //         // {
+        //         //     from: path.resolve(__dirname, './src/assets'),
+        //         //     to: path.resolve(__dirname, './public/assets')
+        //         // },
+        //         // {
+        //         //     from: path.resolve(__dirname, './src/vendor'),
+        //         //     to: path.resolve(__dirname, './public/vendor')
+        //         // },
+        //         {
+        //             from: path.resolve(__dirname, './src/css'),
+        //             to: path.resolve(__dirname, './public/css')
+        //         }
+        //     ]
+        // }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
@@ -120,7 +120,7 @@ module.exports = {
             {
                 test: /\.(woff|woff2|eot|ttf)$/,
                 use: {
-                    loader: 'url-loader', //file-loader
+                    loader: 'file-loader',
                     // loader: 'url-loader?limit=100000',
                     options: {
                         limit: 10000,
