@@ -9,7 +9,7 @@ class NestableDoc {
                 <h1>Nestable</h1>
                 <p>Create nestable lists that can be sorted by drag and drop.</p>
                 <div class="tm-margin">
-
+                    <Nestabele />
                 </div>
             </div>
         )
