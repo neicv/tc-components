@@ -13,7 +13,8 @@ module.exports = {
     entry: './src/js/app.js',
     output: {
         filename: 'bundle.[contenthash].js',
-        path: path.resolve(__dirname, 'public')
+        path: path.resolve(__dirname, 'public'),
+        publicPath: ''
     },
     resolve: {
         extensions: ['.js'],
