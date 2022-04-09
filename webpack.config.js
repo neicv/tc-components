@@ -20,6 +20,7 @@ module.exports = {
         extensions: ['.js'],
         alias: {
             '@': path.resolve(__dirname, 'src/js'),
+            '_': path.resolve(__dirname, 'src'),
             '@doc': path.resolve(__dirname, 'src/js/doc')
         }
     },
