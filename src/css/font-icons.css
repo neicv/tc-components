@@ -1,8 +1,8 @@
 @font-face {
 	font-family: "turboeditor";
-	src: url("~/fonts/turboeditor.eot?#iefix") format("embedded-opentype"),
-		 url("~/fonts/turboeditor.woff") format("woff"),
-		 url("~/fonts/turboeditor.ttf") format("truetype");
+	src: url("../fonts/turboeditor.eot?#iefix") format("embedded-opentype"),
+		 url("../fonts/turboeditor.woff") format("woff"),
+		 url("../fonts/turboeditor.ttf") format("truetype");
 }
 
 .editor-icon {

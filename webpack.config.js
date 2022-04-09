@@ -84,11 +84,12 @@ module.exports = {
                 use: [{
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            publicPath: (resourcePath, context) => {
+                            publicPath: ''
+                            // publicPath: (resourcePath, context) => {
                                     // publicPath is the relative path of the resource to the context
                                     // e.g. for ./css/admin/main.css the publicPath will be ../../
                                     // while for ./css/main.css the publicPath will be ../
-                                    return path.relative(path.dirname(resourcePath), context) + '/'},
+                                    // return path.relative(path.dirname(resourcePath), context) + '/'},
                             // url: false,
                             // only enable hot in development
                             // hmr: devMode, // depricated!
