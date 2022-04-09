@@ -1,11 +1,16 @@
 import '../css/style.css'
 import '../scss/index.scss'
+// Babel has deprecated @babel/polyfill, and the following two imports are used for polyfills instead.
+// import 'core-js/stable';
+// import 'regenerator-runtime/runtime';
+
 import m from 'mithril';
 import HomeView from './doc/home';
 import AccordionDoc from './doc/accordion';
 import EditListDoc from './doc/editlist';
 import FontIconsDoc from './doc/fontIcons';
 import ModalDoc from './doc/modal';
+import NestableDoc from './doc/nestable';
 import PaginationDoc from './doc/pagination';
 import PresenceAdnCollabDoc from './doc/presenceAndCollab'
 import SignListDoc from './doc/signlist';
@@ -73,6 +78,11 @@ m.route(root, '/home', {
 	'/modal': {
 		render() {
             return <App><ModalDoc/></App>
+        }
+	},
+	'/nestable': {
+		render() {
+            return <App><NestableDoc/></App>
         }
 	},
 	'/pagination': {

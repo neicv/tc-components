@@ -90,3 +90,4 @@ npm run makefont
 
 ## Standarts
 [![](https://github.com/neicv/tc-components/workflows/EditorConfig/badge.svg)](https://github.com/neicv/tc-components/actions?query=workflow%3AEditorConfig)
+![Node.js CI](https://github.com/JedWatson/classnames/workflows/Node.js%20CI/badge.svg)

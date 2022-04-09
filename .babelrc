@@ -1,20 +1,26 @@
 {
     "presets": [
         [
-          "@babel/preset-env",
-          {
-            "targets": {
-              "esmodules": true
-            }
-          }
+            "@babel/preset-env"//,
+            // с этой опцией перестал работать интерактив в build mode
+            // {
+            //     "targets": {
+            //         "esmodules": true
+            //     }
+            // }
         ]
-      ],
+    ],
     "sourceMaps": true,
-    "plugins": [
+    "plugins":
+        ["@babel/plugin-proposal-object-rest-spread",
         ["@babel/plugin-transform-react-jsx", {
             "pragma": "m",
             "pragmaFrag": "'['"
         }],
-        ["jsx-control-statements"]
+        // ["@babel/plugin-syntax-jsx"],
+        ["jsx-control-statements"],
+        ["@babel/plugin-transform-runtime", {
+            "regenerator": true
+        }]
     ]
 }

@@ -12,13 +12,15 @@ module.exports = {
     mode: 'development',
     entry: './src/js/app.js',
     output: {
-        filename: 'bundle.[hash].js',
-        path: path.resolve(__dirname, 'public')
+        filename: 'bundle.[contenthash].js',
+        path: path.resolve(__dirname, 'public'),
+        // publicPath: ''
     },
     resolve: {
         extensions: ['.js'],
         alias: {
             '@': path.resolve(__dirname, 'src/js'),
+            '_': path.resolve(__dirname, 'src'),
             '@doc': path.resolve(__dirname, 'src/js/doc')
         }
     },
@@ -37,37 +39,40 @@ module.exports = {
                 collapseWhitespace: prodMode
             }
         }),
-        new CleanWebpackPlugin(),
-        new CopyWebpackPlugin({
-            patterns:
-            [
-                // {
-                //     from: path.resolve(__dirname, './src/fonts'),
-                //     to: path.resolve(__dirname, './public/fonts')
-                // },
-                // {
-                //     from: path.resolve(__dirname, './src/favicon'),
-                //     to: path.resolve(__dirname, './public/favicon')
-                // },
-                // {
-                //     from: path.resolve(__dirname, './src/assets'),
-                //     to: path.resolve(__dirname, './public/assets')
-                // },
-                // {
-                //     from: path.resolve(__dirname, './src/vendor'),
-                //     to: path.resolve(__dirname, './public/vendor')
-                // },
-                {
-                    from: path.resolve(__dirname, './src/css'),
-                    to: path.resolve(__dirname, './public/css')
-                }
-            ]
+        new CleanWebpackPlugin({
+            protectWebpackAssets: false,
+            cleanAfterEveryBuildPatterns: ['*.LICENSE.txt'],
         }),
+        // new CopyWebpackPlugin({
+        //     patterns:
+        //     [
+        //         // {
+        //         //     from: path.resolve(__dirname, './src/fonts'),
+        //         //     to: path.resolve(__dirname, './public/fonts')
+        //         // },
+        //         // {
+        //         //     from: path.resolve(__dirname, './src/favicon'),
+        //         //     to: path.resolve(__dirname, './public/favicon')
+        //         // },
+        //         // {
+        //         //     from: path.resolve(__dirname, './src/assets'),
+        //         //     to: path.resolve(__dirname, './public/assets')
+        //         // },
+        //         // {
+        //         //     from: path.resolve(__dirname, './src/vendor'),
+        //         //     to: path.resolve(__dirname, './public/vendor')
+        //         // },
+        //         {
+        //             from: path.resolve(__dirname, './src/css'),
+        //             to: path.resolve(__dirname, './public/css')
+        //         }
+        //     ]
+        // }),
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output
             // both options are optional
-            filename: devMode ? '[name].css' : '[name].[hash].css',
-            chunkFilename: devMode ? '[id].css' : '' //'[id].[hash].css'
+            filename: devMode ? '[name].css' : '[name].[contenthash].css',
+            chunkFilename: devMode ? '[id].css' : '[id].[contenthash].css' // ''
         }),
         new webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
@@ -78,23 +83,23 @@ module.exports = {
             {
                 test: /\.css$/,
                 exclude: /node_modules/,
-                use: [
-                {
-                    loader: MiniCssExtractPlugin.loader,
-                    options: {
-                    publicPath: (resourcePath, context) => {
-                            // publicPath is the relative path of the resource to the context
-                            // e.g. for ./css/admin/main.css the publicPath will be ../../
-                            // while for ./css/main.css the publicPath will be ../
-                            return path.relative(path.dirname(resourcePath), context) + '/'},
-                    url: false,
-                    // only enable hot in development
-                    hmr: devMode,
-                    // if hmr does not work, this is a forceful method.
-                    reloadAll: true,
+                use: [{
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            publicPath: ''
+                            // publicPath: (resourcePath, context) => {
+                                    // publicPath is the relative path of the resource to the context
+                                    // e.g. for ./css/admin/main.css the publicPath will be ../../
+                                    // while for ./css/main.css the publicPath will be ../
+                                    // return path.relative(path.dirname(resourcePath), context) + '/'},
+                            // url: false,
+                            // only enable hot in development
+                            // hmr: devMode, // depricated!
+                            // if hmr does not work, this is a forceful method.
+                            // reloadAll: true, // depricated!
+                        },
                     },
-                },
-                'css-loader',
+                    'css-loader',
                 ],
                 sideEffects: true,
             },
@@ -104,10 +109,10 @@ module.exports = {
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
-                        options: {
-                        hmr: devMode,
-                        reloadAll: true
-                        }
+                        // options: {
+                        //     hmr: devMode,
+                        //     // reloadAll: true
+                        // }
                     },
                     'css-loader',
                     'sass-loader'
@@ -115,12 +120,16 @@ module.exports = {
             },
             {
                 test: /\.(woff|woff2|eot|ttf)$/,
-                loader: 'file-loader?limit=100000',
-                // loader: 'url-loader?limit=100000',
-                options: {
-                    outputPath: 'fonts/',
-                    name: devMode ? '[name].[ext]' : '[contenthash].[ext]',
-                    publicPath: url => 'fonts/' + url
+                use: {
+                    loader: 'file-loader',
+                    // loader: 'url-loader?limit=100000',
+                    options: {
+                        limit: 10000,
+                        outputPath: 'fonts/',
+                        // name: devMode ? '[name].[ext]' : '[contenthash].[ext]',
+                        name: '[name].[ext]',
+                        publicPath: url => 'fonts/' + url
+                    },
                 },
             },
             {
@@ -131,7 +140,7 @@ module.exports = {
 				    loader: 'file-loader',
 				    options: {
                         //name: '[path][name]-[hash].[ext]',
-                        name: devMode ? '[name].[ext]' : '[name]-[hash].[ext]',
+                        name: devMode ? '[name].[ext]' : '[name]-[contenthash].[ext]',
 					    outputPath: 'assets'
 					},
 				},
@@ -140,19 +149,21 @@ module.exports = {
                 // test: /\.jsx?$/,
                 test: /\.js$/,
                 exclude: /\/node_modules\//,
-                loader: 'babel-loader',
-                query: {
-                    cacheDirectory: true,
-                    // if no .babelrc in root dir - uncomment:
-                    // presets: ["@babel/preset-env"],
-                    // sourceMaps: true,
-                    // plugins: [
-                    //     ["@babel/plugin-transform-react-jsx", {
-                    //         "pragma": "m",
-                    //         "pragmaFrag": "'['"
-                    //     }]
-                    // ]
-                }
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        cacheDirectory: true,
+                        // if no .babelrc in root dir - uncomment:
+                        // presets: ["@babel/preset-env"],
+                        // sourceMaps: true,
+                        // plugins: [
+                        //     ["@babel/plugin-transform-react-jsx", {
+                        //         "pragma": "m",
+                        //         "pragmaFrag": "'['"
+                        //     }]
+                        // ]
+                    },
+                },
             },
         ],
     },
