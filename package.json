@@ -69,6 +69,7 @@
     "classnames": "^2.3.1",
     "commonjs-variables-for-esmodules": "^1.1.0",
     "highlight.js": "^11.2.0",
+    "immutability-helper": "^3.1.1",
     "midux": "^2.2.0",
     "mithril": "^2.0.0",
     "normalize.css": "^8.0.1",
