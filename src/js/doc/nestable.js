@@ -2,6 +2,34 @@ import m from 'mithril';
 import Nestabele from '@/components/Nestable';
 
 class NestableDoc {
+    oninit() {
+        this.items = [
+            {
+                id: 0,
+                text: 'Andy'
+            },
+            {
+                id: 1,
+                text: 'Harry',
+                children: [
+                    {
+                        id: 2,
+                        text: 'David'
+                    }
+                ]
+            },
+            {
+                id: 3,
+                text: 'Lisa',
+                children: [
+                    {
+                        id: 4,
+                        text: 'Richard'
+                    }
+                ]
+            }
+        ];
+    }
 
     view() {
         return (
@@ -9,7 +37,7 @@ class NestableDoc {
                 <h1>Nestable</h1>
                 <p>Create nestable lists that can be sorted by drag and drop.</p>
                 <div class="tm-margin">
-                    <Nestabele />
+                    <Nestabele items={this.items} />
                 </div>
             </div>
         )

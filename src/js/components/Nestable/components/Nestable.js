@@ -10,6 +10,7 @@ import {
   getTransformProps,
   listWithChildren,
   getAllNonEmptyNodesIds,
+  shallowCompare
 } from '../lib/utils';
 
 class Nestable extends Component {
@@ -30,18 +31,56 @@ class Nestable extends Component {
             shift: { x: 0 },
         };
 
-        this.attrs = this.defaultProps(this.attrs);
+        this.props     = this.defaultProps(this.attrs);
+        this.prevProps = {...this.props};
     }
 
     oncreate() {
-    // componentDidMount() {
+        // componentDidMount() {
         let { items, childrenProp } = this.attrs;
 
         // make sure every item has property 'children'
         items = listWithChildren(items, childrenProp);
 
         this.setState({ items });
-      }
+    }
+
+    onbeforeupdate() {
+        // или в view ?
+        this.props = {...this.props, ...this.attrs};
+    }
+
+    onupdate() {
+    // componentDidUpdate(prevProps) {
+        const prevProps = this.prevProps;
+        const { items: itemsNew, childrenProp } = this.props;
+        // const isPropsUpdated = shallowCompare({ props: prevProps, state: {} }, this.props, {});
+        const isPropsUpdated = shallowCompare(prevProps, this.props);
+
+        if (isPropsUpdated) {
+            this.stopTrackMouse();
+
+            let extra = {};
+
+            if (prevProps.collapsed !== this.props.collapsed) {
+                extra.collapsedGroups = [];
+            }
+
+            this.setState({
+                items: listWithChildren(itemsNew, childrenProp),
+                dragItem: null,
+                isDirty: false,
+                ...extra
+            });
+        }
+
+        this.prevProps = {...this.props}
+    }
+
+    onremove() {
+    // componentWillUnmount() {
+        this.stopTrackMouse();
+    }
 
     view() {
 
@@ -95,6 +134,36 @@ class Nestable extends Component {
             ...props
         }
     }
+
+    setState(state) {
+        this.state = {...this.state, ...state}
+    }
+
+    // a simple implementation of the shallowCompare.
+    // only compares the first level properties and hence shallow.
+    // state updates(theoretically) if this function returns true.
+    // shallowCompare(newObj, prevObj){
+    //     for (key in newObj){
+    //         if(newObj[key] !== prevObj[key]) return true;
+    //     }
+    //     return false;
+    // }
+
+    // ––––––––––––––––––––––––––––––––––––
+    // Methods
+    // ––––––––––––––––––––––––––––––––––––
+    startTrackMouse = () => {
+        document.addEventListener('mousemove', this.onMouseMove);
+        document.addEventListener('mouseup', this.onDragEnd);
+        document.addEventListener('keydown', this.onKeyDown);
+    };
+
+    stopTrackMouse = () => {
+        // document.removeEventListener('mousemove', this.onMouseMove);
+        // document.removeEventListener('mouseup', this.onDragEnd);
+        // document.removeEventListener('keydown', this.onKeyDown);
+        this.elCopyStyles = null;
+    };
 }
 
 export default Nestable;
