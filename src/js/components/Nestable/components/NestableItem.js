@@ -63,7 +63,7 @@ class NestableItem extends Component {
         }
 
         const collapseIcon = hasChildren ? (
-            <span onClick={() => options.onToggleCollapse(item)}>
+            <span onclick={() => options.onToggleCollapse(item)}>
                 {renderCollapseIcon({ isCollapsed })}
             </span>
         ) : null;

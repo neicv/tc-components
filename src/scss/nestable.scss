@@ -37,11 +37,27 @@
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: #87ceeb;
-  border: 1px dashed #4682b4;
-  border-radius: 5px;
+//   right: 0;
+//   bottom: 0;
+
+  width: 100%;
+  height: 100%;
+  visibility: visible;
+  opacity: 1;
+  border-radius: 2px;
+  transform: scale(1);
+
+//   background: #87ceeb;
+//   border: 1px dashed #4682b4;
+//   border-radius: 5px;
+
+  box-sizing: border-box;
+  border: 2px dashed #ff7800;
+//   border-radius: 50%;
+//   transform: scale(0.7);
+  transition: all 0.2s;
+  z-index: 1;
+
 }
 .nestable-item-icon {
   margin-right: 5px;

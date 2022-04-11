@@ -1,3 +1,7 @@
+# 0.21.4 / 2022-04-12
+
+  - Add New Component - Nestable
+
 # 0.20.2 / 2022-01-25
 
  - Add Custom Options in Icons Viewer: see New Icons
