@@ -38,13 +38,13 @@ class NestableItem extends Component {
             if (dragItem) {
                 rowProps = {
                     ...rowProps,
-                    onMouseEnter: (e) => options.onMouseEnter(e, item),
+                    onmouseenter: (e) => options.onMouseEnter(e, item),
                 };
             } else {
                 handlerProps = {
                     ...handlerProps,
                     draggable: true,
-                    onDragStart: (e) => options.onDragStart(e, item),
+                    ondragstart: (e) => options.onDragStart(e, item),
                 };
             }
         }
@@ -55,7 +55,6 @@ class NestableItem extends Component {
                     {handler}
                 </span>
             );
-            // wrappedHandler = React.cloneElement(handler, handlerProps);
         } else {
             rowProps = {
                 ...rowProps,

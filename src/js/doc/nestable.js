@@ -1,6 +1,15 @@
 import m from 'mithril';
 import Nestabele from '@/components/Nestable';
 
+const styles = {
+    position: "relative",
+    padding: "10px 15px",
+    fontSize: "20px",
+    border: "1px solid #f9fafa",
+    background: "#f9fafa",
+    cursor: "pointer"
+};
+
 class NestableDoc {
     oninit() {
         this.items = [
@@ -29,6 +38,16 @@ class NestableDoc {
                 ]
             }
         ];
+
+        this.renderItem = ({ item, collapseIcon, handler }) => {
+            return (
+                <div style={styles}>
+                    {handler}
+                    {collapseIcon}
+                    {item.text}
+                </div>
+            )
+        };
     }
 
     view() {
@@ -37,7 +56,7 @@ class NestableDoc {
                 <h1>Nestable</h1>
                 <p>Create nestable lists that can be sorted by drag and drop.</p>
                 <div class="tm-margin">
-                    <Nestabele items={this.items} />
+                    <Nestabele items={this.items} renderItem={this.renderItem} />
                 </div>
             </div>
         )
