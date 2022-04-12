@@ -366,6 +366,24 @@ body {
     background-color: #f6f8fa;
 }
 
+.doc-nestable .tc-table-striped > tr:nth-of-type(odd),
+.doc-nestable .tc-table-striped tbody tr:nth-of-type(odd) {
+    background: #f6f8fa !important;
+}
+
+.doc-nestable .tc-table code {
+    background-color: #afb8c133;
+}
+
+.doc-nestable .tc-table td {
+    vertical-align: middle;
+}
+
+.doc-nestable .tc-table td,
+.doc-nestable .tc-table th {
+    border: 1px solid #d8dee4;
+}
+
 /*
  * TABLE
  */

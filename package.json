@@ -1,6 +1,6 @@
 {
   "name": "tc-components",
-  "version": "0.21.4",
+  "version": "0.21.5",
   "description": "test Mithril Component for TC",
   "main": "app.js",
   "directories": {
