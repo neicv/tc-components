@@ -347,6 +347,25 @@ body {
     padding: 0;
 }
 
+.doc-nestable {
+    width: 950px;
+    border: 1px solid #d8dee4;
+}
+
+.doc-nestable .container{
+    margin: 15px;
+}
+
+.doc-nestable h2 {
+    padding-bottom: .3em;
+    font-size: 1.5em;
+    border-bottom: 1px solid #d8dee4;
+}
+
+.doc-nestable pre {
+    background-color: #f6f8fa;
+}
+
 /*
  * TABLE
  */

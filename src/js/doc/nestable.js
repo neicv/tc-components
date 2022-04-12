@@ -1,5 +1,6 @@
 import m from 'mithril';
 import Nestabele from '@/components/Nestable';
+import NestableInfo from './info/nestableInfo';
 
 const styles = {
     position: "relative",
@@ -53,9 +54,33 @@ class NestableDoc {
     view() {
         return (
             <div className="main-content">
+                <div style={`width: 950px;`}>
                 <h1>Nestable</h1>
                 <p>
-                    Create nestable lists that can be sorted by drag and drop.
+                    Создавайте вложенные списки, которые можно сортировать путем перетаскивания.
+                </p>
+                <p>
+                    <button
+                        type="button"
+                        className='btn primary'
+                        onclick={() => this.collapse(0)}
+                    >
+                        Expand all
+                    </button>
+                    <button
+                        type="button"
+                        className='btn primary ml10'
+                        onclick={() => this.collapse(1)}
+                    >
+                        Collapse all
+                    </button>
+                    <button
+                        type="button"
+                        className='btn primary ml10'
+                        onclick={() => this.collapse(2)}
+                    >
+                        Collapse Harry only
+                    </button>
                 </p>
                 <div class="tm-margin">
                     <Nestabele
@@ -64,17 +89,10 @@ class NestableDoc {
                         setCollapse={click => this.onSetCollapse = click}
                     />
                     <br />
-                    <p>
-                        <button type="button" onclick={() => this.collapse(0)}>
-                            Expand all
-                        </button>
-                        <button type="button" onclick={() => this.collapse(1)}>
-                            Collapse all
-                        </button>
-                        <button type="button" onclick={() => this.collapse(2)}>
-                            Collapse Harry only
-                        </button>
-                    </p>
+                </div>
+                <p>
+                    <NestableInfo />
+                </p>
                 </div>
             </div>
         );
