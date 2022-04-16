@@ -1,8 +1,7 @@
 import m from 'mithril';
-import NestableInfo from './info/nestableInfo';
+import NestableInfo from './articles/nestableInfo';
 import { items1, items2 } from './data/nestableData';
 import Nestable from '../components/Nestable/components/Nestable';
-
 
 const styles = {
     position: "relative",
