@@ -1,9 +1,11 @@
 import m from "mithril";
 import cx from 'classnames';
 import Component from "@/lib/Component";
-import {Store as state} from "../lib/store";
+// import {Store as state} from "../lib/store";
+import {Store} from "../lib/store";
 // new import !!! npm --save immutability-helper
 import update from 'immutability-helper';
+import groupsObserver from '../lib/groups-observer'
 import NestableItem from "./NestableItem";
 
 import {
@@ -21,6 +23,8 @@ class Nestable extends Component {
     constructor(props) {
         super(props);
         this.collapse = this.collapse.bind(this);
+        this.store    = new Store;
+        Object.assign(Nestable.prototype, groupsObserver.methods);
     }
 
     oninit() {
@@ -42,11 +46,15 @@ class Nestable extends Component {
 
         this.props      = this.defaultProps(this.attrs);
         this.prevProps  = { ...this.props };
+        this.group      = this.props.group;
 
-        this.attrs.setCollapse(this.collapse);
+        if (typeof this.attrs.setCollapse === "function") {
+            this.attrs.setCollapse(this.collapse);
+        }
 
         this.setState(this.state);
         this.componentDidMount();
+        this.registerNestable(this)
     }
 
     componentDidMount() {
@@ -95,7 +103,7 @@ class Nestable extends Component {
 
     view() {
         const { group, className } = this.props;
-        const { items, dragItem }  = state.getState();
+        const { items, dragItem }  = this.store.getState();
         const options              = this.getItemOptions();
 
         return (
@@ -150,8 +158,8 @@ class Nestable extends Component {
     setState(newState) {
         // this.state = { ...this.state, ...newState };
 
-        state.setState({ ...state.getState(), ...newState });
-        setTimeout(() => m.redraw(), 0);
+        this.store.setState({ ...this.store.getState(), ...newState });
+        setTimeout(() => m.redraw(), 4);
     }
 
     // ––––––––––––––––––––––––––––––––––––
@@ -159,7 +167,7 @@ class Nestable extends Component {
     // ––––––––––––––––––––––––––––––––––––
     collapse = (itemIds) => {
         const { idProp, childrenProp, collapsed } = this.props;
-        const { items } = state.getState();
+        const { items } = this.store.getState();
 
         if (itemIds === "NONE") {
             this.setState({
@@ -202,7 +210,7 @@ class Nestable extends Component {
     moveItem({ dragItem, pathFrom, pathTo }, extraProps = {}) {
         const { childrenProp, confirmChange } = this.props;
         const dragItemSize = this.getItemDepth(dragItem);
-        let { items }      = state.getState();
+        let { items }      = this.store.getState();
 
         // the remove action might affect the next position,
         // so update next coordinates accordingly
@@ -301,7 +309,7 @@ class Nestable extends Component {
 
     dragApply() {
         const { onChange, idProp } = this.props;
-        const { items, isDirty, dragItem } = state.getState();
+        const { items, isDirty, dragItem } = this.store.getState();
 
         this.setState({
             itemsOld: null,
@@ -316,7 +324,7 @@ class Nestable extends Component {
     }
 
     dragRevert() {
-        const { itemsOld } = state.getState();
+        const { itemsOld } = this.store.getState();
 
         this.setState({
             items: itemsOld,
@@ -329,7 +337,7 @@ class Nestable extends Component {
     // ––––––––––––––––––––––––––––––––––––
     // Getter methods
     // ––––––––––––––––––––––––––––––––––––
-    getPathById(id, items = state.getState().items) {
+    getPathById(id, items = this.store.getState().items) {
         const { idProp, childrenProp } = this.props;
         let path = [];
 
@@ -350,7 +358,7 @@ class Nestable extends Component {
         return path;
     }
 
-    getItemByPath(path, items = state.getState().items) {
+    getItemByPath(path, items = this.store.getState().items) {
         const { childrenProp } = this.props;
         let item = null;
 
@@ -458,9 +466,11 @@ class Nestable extends Component {
             handler,
             idProp,
             childrenProp,
+            group,
+            listId
         } = this.props;
 
-        const { dragItem } = state.getState();
+        const { dragItem } = this.store.getState();
 
         return {
             dragItem,
@@ -469,6 +479,8 @@ class Nestable extends Component {
             renderItem,
             renderCollapseIcon,
             handler,
+            group,
+            listId,
 
             onDragStart     : this.onDragStart,
             onMouseEnter    : this.onMouseEnter,
@@ -479,7 +491,7 @@ class Nestable extends Component {
 
     isCollapsed = (item) => {
         const { collapsed, idProp } = this.props;
-        const { collapsedGroups } = state.getState();
+        const { collapsedGroups } = this.store.getState();
 
         return !!((collapsedGroups.indexOf(item[idProp]) > -1) ^ collapsed);
     };
@@ -500,7 +512,7 @@ class Nestable extends Component {
 
         this.setState({
             dragItem: item,
-            itemsOld: state.getState().items,
+            itemsOld: this.store.getState().items,
         });
     };
 
@@ -515,7 +527,7 @@ class Nestable extends Component {
 
     onMouseMove = (e) => {
         const { group, threshold } = this.props;
-        const { dragItem } = state.getState();
+        const { dragItem } = this.store.getState();
         const { clientX, clientY } = e;
         const transformProps = getTransformProps(clientX, clientY);
         const elCopy = document.querySelector(
@@ -538,7 +550,9 @@ class Nestable extends Component {
             };
             for (let key in transformProps) {
                 if (transformProps.hasOwnProperty(key)) {
-                    elCopy.style[key] = transformProps[key];
+                    if (elCopy /* && elCopy.hasOwnProperty('style') */) {
+                        elCopy.style[key] = transformProps[key];
+                    }
                 }
             }
 
@@ -572,7 +586,7 @@ class Nestable extends Component {
         }
 
         const { collapsed, idProp, childrenProp } = this.props;
-        const { dragItem } = state.getState();
+        const { dragItem } = this.store.getState();
         if (dragItem[idProp] === item[idProp]) return;
 
         const pathFrom = this.getPathById(dragItem[idProp]);
@@ -594,7 +608,7 @@ class Nestable extends Component {
 
     onToggleCollapse = (item, isGetter) => {
         const { collapsed, idProp } = this.props;
-        const { collapsedGroups }   = state.getState();
+        const { collapsedGroups }   = this.store.getState();
         const isCollapsed           = this.isCollapsed(item);
 
         const newState = {
@@ -623,7 +637,7 @@ class Nestable extends Component {
     // ––––––––––––––––––––––––––––––––––––
     renderDragLayer() {
         const { group, idProp } = this.props;
-        const { dragItem } = state.getState();
+        const { dragItem } = this.store.getState();
         const el = document.querySelector(
             ".nestable-" + group + " .nestable-item-" + dragItem[idProp]
         );

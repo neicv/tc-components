@@ -1,7 +1,8 @@
 import m from 'mithril';
-import Nestabele from '@/components/Nestable';
 import NestableInfo from './info/nestableInfo';
 import { items1, items2 } from './data/nestableData';
+import Nestable from '../components/Nestable/components/Nestable';
+
 
 const styles = {
     position: "relative",
@@ -14,7 +15,8 @@ const styles = {
 
 class NestableDoc {
     oninit() {
-        this.items   = items1;
+        this.items   = [...items1];
+        this.items2  = [...items2];
         this.itemsID = 1;
 
         this.renderItem = ({ item, collapseIcon, handler }) => {
@@ -67,12 +69,22 @@ class NestableDoc {
                     </button>
                 </p>
                 <div class="tm-margin">
-                    <Nestabele
+                    <Nestable
                         items={this.items}
+                        group={'gr1'}
                         renderItem={this.renderItem}
                         setCollapse={click => this.onSetCollapse = click}
                     />
                     <br />
+                    <p> Second List </p>
+                    <hr />
+                    <br />
+                    <Nestable
+                        items={this.items2}
+                        group={'gr2'}
+                        renderItem={this.renderItem}
+                        setCollapse={click => this.onSetCollapse = click}
+                    />
                 </div>
                 <p>
                     <NestableInfo />
@@ -101,10 +113,12 @@ class NestableDoc {
     changeItems() {
         if (this.itemsID === 1) {
             this.itemsID = 2;
-            this.items = items2;
+            this.items  = items2;
+            this.items2 = items1;
         } else {
             this.itemsID = 1;
-            this.items = items1;
+            this.items  = items1;
+            this.items2 = items2;
         }
     }
 }

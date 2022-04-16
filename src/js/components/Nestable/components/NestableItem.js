@@ -3,8 +3,27 @@ import cx from 'classnames';
 import Component from "@/lib/Component";
 
 import Icon from "./Icon";
+import groupsObserver from '../lib/groups-observer'
+
+import {
+    closest
+  } from '../lib/utils';
 
 class NestableItem extends Component {
+    constructor(props) {
+        super(props)
+        Object.assign(NestableItem.prototype, groupsObserver.methods);
+    }
+
+    oninit() {
+        this.breakPoint = null;
+        this.moveDown   = false;
+        this.listId     = null;
+        this.item       = null;
+        this.group      = null;
+        this.dragItem   = null;
+
+    }
 
     renderCollapseIcon = ({ isCollapsed }) => (
         <Icon
@@ -24,6 +43,8 @@ class NestableItem extends Component {
             idProp,
             childrenProp,
             renderCollapseIcon = this.renderCollapseIcon,
+            group,
+            listId
         } = options;
 
         const isCollapsed = options.isCollapsed(item);
@@ -44,7 +65,7 @@ class NestableItem extends Component {
                 handlerProps = {
                     ...handlerProps,
                     draggable: true,
-                    ondragstart: (e) => options.onDragStart(e, item),
+                    ondragstart: (e) => this.onDragStart(e, options, item),
                 };
             }
         }
@@ -61,6 +82,13 @@ class NestableItem extends Component {
                 ...handlerProps,
             };
         }
+
+        this.listId   = listId;
+        this.item     = item;
+        this.group    = group;
+        this.dragItem = dragItem;
+
+        rowProps = this.setRowProps(rowProps);
 
         const collapseIcon = hasChildren ? (
             <span onclick={() => options.onToggleCollapse(item)}>
@@ -114,6 +142,93 @@ class NestableItem extends Component {
                 )}
             </li>
         );
+    }
+
+    onDragStart(e, options, item) {
+
+        // console.log('item ', item)
+        const el = closest(e.target, ".nestable-item");
+
+        const tItem = item || el // this.$parent.item
+        this.notifyDragStart(this.group, e, tItem);
+        // options.onDragStart(e, item);
+    }
+
+    // onMouseEnter(e, options, item) {
+    //     options.onMouseEnter(e, item);
+    // }
+
+    setRowProps(rowProps) {
+        const { onmouseenter } = rowProps;
+
+        let tmpOnMouseEnter = null;
+
+        if ( typeof onmouseenter === "function") {
+            tmpOnMouseEnter = onmouseenter;
+        }
+
+        rowProps = {
+            ...rowProps,
+            mouseenter: (e) => this.onMouseEnter(e, tmpOnMouseEnter),
+            mouseleave: () => this.onMouseLeave(),
+            mousemove : (e) => this.onMouseMove(e),
+        }
+
+
+        return rowProps;
+    }
+
+    onMouseEnter(event, tmpOnMouseEnter) {
+
+        if (tmpOnMouseEnter) {
+            tmpOnMouseEnter();
+        }
+
+        if (!this.dragItem) return
+
+        // if we don't know the direction the mouse is moving,
+        // we can not calculate the offset at which we should trigger a swap
+        // we we fallback to the old behavior
+        if (!event.movementY) {
+          return this.sendNotification(event)
+        }
+
+        // when the mouse enters the item we save the size of this item
+        // is is to improve performance, so we do not recalculate the size on every move
+        this.moveDown   = event.movementY > 0
+
+        this.breakPoint = event.target.getBoundingClientRect().height / 2
+    }
+
+    onMouseLeave () {
+        this.breakPoint = null
+    }
+
+    onMouseMove (event) {
+        // if we are not in a drag operation, we can discard the input
+        if (!this.breakPoint) return
+
+        // calculate how much the mouse is away from the center
+        const delta = event.offsetY - this.breakPoint
+
+        // if we have not reached the breakpoint, we can abort here
+        if (this.moveDown && delta < this.breakPoint / 4) return
+        if (!this.moveDown && delta > -this.breakPoint / 4) return
+
+        this.sendNotification(event)
+    }
+
+    sendNotification (event) {
+        // reset the calculated breakpoint
+        this.breakPoint = null
+
+        // and trigger the enter event
+        // const item = this.item || this.$parent.item
+
+        const el = closest(e.target, ".nestable-item");
+        const item = this.item || el // this.$parent.item
+
+        this.notifyMouseEnter(this.group, event, this.listId, item)
     }
 }
 
