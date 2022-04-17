@@ -51,6 +51,11 @@ class NestableItem extends Component {
         const isDragging  = !isCopy && dragItem && dragItem[idProp] === item[idProp];
         const hasChildren = item[childrenProp] && item[childrenProp].length > 0;
 
+        this.listId   = listId;
+        this.item     = item;
+        this.group    = group;
+        this.dragItem = dragItem;
+
         let rowProps = {};
         let handlerProps = {};
         let wrappedHandler;
@@ -65,7 +70,7 @@ class NestableItem extends Component {
                 handlerProps = {
                     ...handlerProps,
                     draggable: true,
-                    ondragstart: (e) => this.onDragStart(e, options, item),
+                    ondragstart: (e) => this.onDragStart(e, options, item)
                 };
             }
         }
@@ -82,11 +87,6 @@ class NestableItem extends Component {
                 ...handlerProps,
             };
         }
-
-        this.listId   = listId;
-        this.item     = item;
-        this.group    = group;
-        this.dragItem = dragItem;
 
         rowProps = this.setRowProps(rowProps);
 
@@ -147,9 +147,9 @@ class NestableItem extends Component {
     onDragStart(e, options, item) {
 
         // console.log('item ', item)
-        const el = closest(e.target, ".nestable-item");
-
-        const tItem = item || el // this.$parent.item
+        // const el = closest(e.target, ".nestable-item");
+        if (!item) console.log('no item!')
+        const tItem = item || null // el // this.$parent.item
         this.notifyDragStart(this.group, e, tItem);
         // options.onDragStart(e, item);
     }
@@ -169,9 +169,9 @@ class NestableItem extends Component {
 
         rowProps = {
             ...rowProps,
-            mouseenter: (e) => this.onMouseEnter(e, tmpOnMouseEnter),
-            mouseleave: () => this.onMouseLeave(),
-            mousemove : (e) => this.onMouseMove(e),
+            onmouseenter: (e) => this.onMouseEnter(e, tmpOnMouseEnter),
+            onmouseleave:  () => this.onMouseLeave(),
+            onmousemove : (e) => this.onMouseMove(e),
         }
 
 
@@ -180,9 +180,9 @@ class NestableItem extends Component {
 
     onMouseEnter(event, tmpOnMouseEnter) {
 
-        if (tmpOnMouseEnter) {
-            tmpOnMouseEnter();
-        }
+        // if (tmpOnMouseEnter) {
+        //     tmpOnMouseEnter();
+        // }
 
         if (!this.dragItem) return
 
@@ -225,8 +225,8 @@ class NestableItem extends Component {
         // and trigger the enter event
         // const item = this.item || this.$parent.item
 
-        const el = closest(e.target, ".nestable-item");
-        const item = this.item || el // this.$parent.item
+        // const el = closest(e.target, ".nestable-item");
+        const item = this.item || null // el // this.$parent.item
 
         this.notifyMouseEnter(this.group, event, this.listId, item)
     }

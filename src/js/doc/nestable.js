@@ -80,7 +80,7 @@ class NestableDoc {
                     <br />
                     <Nestable
                         items={this.items2}
-                        group={'gr2'}
+                        group={'gr1'}
                         renderItem={this.renderItem}
                         setCollapse={click => this.onSetCollapse = click}
                     />

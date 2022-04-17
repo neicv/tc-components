@@ -3,7 +3,7 @@ import cx from 'classnames';
 import Component from "@/lib/Component";
 // import {Store as state} from "../lib/store";
 import {Store} from "../lib/store";
-// new import !!! npm --save immutability-helper
+// new import !!! npm i --save immutability-helper
 import update from 'immutability-helper';
 import groupsObserver from '../lib/groups-observer'
 import NestableItem from "./NestableItem";
@@ -138,6 +138,7 @@ class Nestable extends Component {
             onChange = () => {},
             renderItem = ({ item }) => String(item),
             threshold = 30,
+            listId  = Math.random().toString(36).slice(2)
         } = props;
 
         return {
@@ -151,6 +152,7 @@ class Nestable extends Component {
             onChange,
             renderItem,
             threshold,
+            listId,
             ...props,
         };
     }
@@ -159,7 +161,7 @@ class Nestable extends Component {
         // this.state = { ...this.state, ...newState };
 
         this.store.setState({ ...this.store.getState(), ...newState });
-        setTimeout(() => m.redraw(), 4);
+        setTimeout(() => m.redraw(), 0);
     }
 
     // ––––––––––––––––––––––––––––––––––––
@@ -508,12 +510,15 @@ class Nestable extends Component {
         this.el = closest(e.target, ".nestable-item");
 
         this.startTrackMouse();
-        this.onMouseMove(e);
 
         this.setState({
             dragItem: item,
             itemsOld: this.store.getState().items,
         });
+
+        setTimeout(() => {
+            this.onMouseMove(e);
+        }, 4);
     };
 
     onDragEnd = (e, isCancel) => {
@@ -529,7 +534,34 @@ class Nestable extends Component {
         const { group, threshold } = this.props;
         const { dragItem } = this.store.getState();
         const { clientX, clientY } = e;
+
+        // initialize the initial mouse positoin on the first drag operation
+        if (this.mouse.last.x === 0) {
+            this.mouse.last.x = clientX
+        }
+
         const transformProps = getTransformProps(clientX, clientY);
+
+
+        // In some cases the drag-layer might not be at the top left of the window,
+        // we need to find, where it acually is, and incorperate the position into the calculation.
+        const elDragLayer = document.querySelector('.nestable-' + group + ' .nestable-drag-layer')
+        if (!elDragLayer) return;
+
+
+        // const { top: dragLayerTop, left: dragLayerLeft } = elDragLayer.getBoundingClientRect();
+
+        // const elCopy = document.querySelector('.nestable-' + group + ' .nestable-drag-layer > .nestable-list')
+
+        // if (!this.elCopyStyles) {
+        //     const offset = getOffsetRect(this.el)
+
+        //     this.elCopyStyles = {
+        //     marginTop: `${offset.top - clientY - dragLayerTop}px`,
+        //     marginLeft: `${offset.left - clientX - dragLayerLeft}px`,
+        //     ...transformProps
+        //     }
+
         const elCopy = document.querySelector(
             ".nestable-" + group + " .nestable-drag-layer > .nestable-list"
         );
@@ -543,6 +575,7 @@ class Nestable extends Component {
                 marginLeft: (offset.left - clientX - scroll.left) + 'px',
                 ...transformProps,
             };
+
         } else {
             this.elCopyStyles = {
                 ...this.elCopyStyles,
@@ -579,18 +612,38 @@ class Nestable extends Component {
         }
     };
 
-    onMouseEnter = (e, item) => {
+    onMouseEnter = (e, eventList, item) => {
         if (e) {
             e.preventDefault();
             e.stopPropagation();
         }
 
-        const { collapsed, idProp, childrenProp } = this.props;
+        const { collapsed, idProp, childrenProp, listId } = this.props;
         const { dragItem } = this.store.getState();
-        if (dragItem[idProp] === item[idProp]) return;
+
+        // In some cases, this event fires after the drag operation was already
+        // completed, in which case we can ignore it
+        if (!dragItem) return
+
+        // if (dragItem[idProp] === item[idProp]) return;
+        // if the event does not have a valid item that belongs to this list, ignore it
+        if (item !== null && dragItem[idProp] === item[idProp]) return
 
         const pathFrom = this.getPathById(dragItem[idProp]);
-        const pathTo   = this.getPathById(item[idProp]);
+
+        // if the event is not emitted from this list and the item was not removed from this list,
+        // we can ignore this event
+        if (eventList !== listId && pathFrom.length === 0) return;
+
+        // const pathTo   = this.getPathById(item[idProp]);
+        let pathTo;
+        // if we are dragging to an empty list, we need to remove
+        // the item from the origin list and append it to the start of the new list
+        if (item === null) {
+          pathTo = pathFrom.length > 0 ? [] : [0]
+        } else {
+          pathTo = this.getPathById(item[idProp])
+        }
 
         // if collapsed by default
         // and move last (by count) child
