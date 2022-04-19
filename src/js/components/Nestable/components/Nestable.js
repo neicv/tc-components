@@ -4,9 +4,9 @@ import Component from "@/lib/Component";
 import {Store} from "../lib/store";
 // new import !!! npm i --save immutability-helper
 import update from 'immutability-helper';
-import groupsObserver from '../lib/groups-observer'
+import groupsObserver from '../lib/groups-observer';
 import NestableItem from "./NestableItem";
-import NestablePlaceholder from "./NestablePlaceholder"
+import NestablePlaceholder from "./NestablePlaceholder";
 
 import {
   isArray,
@@ -102,18 +102,18 @@ class Nestable extends Component {
 
     defaultProps(props) {
         const {
-            childrenProp = "children",
-            collapsed = false,
+            childrenProp  = "children",
+            collapsed     = false,
             confirmChange = () => true,
-            group = Math.random().toString(36).slice(2),
-            idProp = "id",
-            items = [],
-            maxDepth = 10,
-            onChange = () => {},
-            renderItem = ({ item }) => String(item),
-            threshold = 30,
-            listId  = Math.random().toString(36).slice(2),
-            placeholder = 'No content'
+            group         = Math.random().toString(36).slice(2),
+            idProp        = "id",
+            items         = [],
+            maxDepth      = 10,
+            onChange      = () => {},
+            renderItem    = ({ item }) => String(item),
+            threshold     = 30,
+            listId        = Math.random().toString(36).slice(2),
+            placeholder   = 'No content'
         } = props;
 
         return {
@@ -173,14 +173,14 @@ class Nestable extends Component {
     // ––––––––––––––––––––––––––––––––––––
     startTrackMouse = () => {
         document.addEventListener("mousemove", this.onMouseMove);
-        document.addEventListener("mouseup", this.onDragEnd);
-        document.addEventListener("keydown", this.onKeyDown);
+        document.addEventListener("mouseup",   this.onDragEnd);
+        document.addEventListener("keydown",   this.onKeyDown);
     };
 
     stopTrackMouse = () => {
         document.removeEventListener('mousemove', this.onMouseMove);
-        document.removeEventListener('mouseup', this.onDragEnd);
-        document.removeEventListener('keydown', this.onKeyDown);
+        document.removeEventListener('mouseup',   this.onDragEnd);
+        document.removeEventListener('keydown',   this.onKeyDown);
         this.elCopyStyles = null;
     };
 
@@ -285,7 +285,7 @@ class Nestable extends Component {
     }
 
     dragApply() {
-        const { onChange, idProp } = this.props;
+        const { onChange, idProp }         = this.props;
         const { items, isDirty, dragItem } = this.store.getState();
 
         this.setState({
@@ -459,10 +459,8 @@ class Nestable extends Component {
             group,
             listId,
 
-            // onDragStart     : this.onDragStart,
-            // onMouseEnter    : this.onMouseEnter,
-            isCollapsed     : this.isCollapsed,
-            onToggleCollapse: this.onToggleCollapse,
+            isCollapsed      : this.isCollapsed,
+            onToggleCollapse : this.onToggleCollapse,
         };
     }
 
@@ -505,12 +503,12 @@ class Nestable extends Component {
 
     onMouseMove = (e) => {
         const { group, threshold } = this.props;
-        const { dragItem } = this.store.getState();
+        const { dragItem }         = this.store.getState();
         const { clientX, clientY } = e;
 
         // initialize the initial mouse positoin on the first drag operation
         if (this.mouse.last.x === 0) {
-            this.mouse.last.x = clientX
+            this.mouse.last.x = clientX;
         }
 
         const transformProps = getTransformProps(clientX, clientY);
@@ -541,7 +539,7 @@ class Nestable extends Component {
             if (elCopy) {
                 for (const key in transformProps) {
                     if (Object.prototype.hasOwnProperty.call(transformProps, key)) {
-                        elCopy.style[key] = transformProps[key]
+                        elCopy.style[key] = transformProps[key];
                     }
                 }
             }
@@ -582,17 +580,23 @@ class Nestable extends Component {
 
         // In some cases, this event fires after the drag operation was already
         // completed, in which case we can ignore it
-        if (!dragItem) return
+        if (!dragItem) {
+            return;
+        }
 
         // if (dragItem[idProp] === item[idProp]) return;
         // if the event does not have a valid item that belongs to this list, ignore it
-        if (item !== null && dragItem[idProp] === item[idProp]) return
+        if (item !== null && dragItem[idProp] === item[idProp]) {
+            return;
+        }
 
         const pathFrom = this.getPathById(dragItem[idProp]);
 
         // if the event is not emitted from this list and the item was not removed from this list,
         // we can ignore this event
-        if (eventList !== listId && pathFrom.length === 0) return;
+        if (eventList !== listId && pathFrom.length === 0) {
+            return;
+        }
 
         // const pathTo   = this.getPathById(item[idProp]);
         let pathTo;
@@ -601,14 +605,14 @@ class Nestable extends Component {
         if (item === null) {
           pathTo = pathFrom.length > 0 ? [] : [0]
         } else {
-          pathTo = this.getPathById(item[idProp])
+          pathTo = this.getPathById(item[idProp]);
         }
 
         // if the move to the new depth is greater than max depth,
         // don't move
-        const newDepth = this.getRealNextPath(pathFrom, pathTo).length + (this.getItemDepth(dragItem) - 1)
+        const newDepth = this.getRealNextPath(pathFrom, pathTo).length + (this.getItemDepth(dragItem) - 1);
         if (newDepth > maxDepth) {
-            return
+            return;
         }
 
         // if collapsed by default

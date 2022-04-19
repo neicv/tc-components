@@ -85,7 +85,7 @@ class NestableDoc {
                         items={this.items2}
                         group={'gr1'}
                         renderItem={this.renderItem}
-                        setCollapse={click => this.onSetCollapse = click}
+                        setCollapse={click => this.onSetCollapse2 = click}
                     />
                 </div>
                 <p>
@@ -101,9 +101,11 @@ class NestableDoc {
             switch (collapseCase) {
                 case 0:
                     this.onSetCollapse("NONE");
+                    this.onSetCollapse2("NONE");
                     break;
                 case 1:
                     this.onSetCollapse("ALL");
+                    this.onSetCollapse2("ALL");
                     break;
                 case 2:
                     this.onSetCollapse([1]);
