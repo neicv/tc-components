@@ -3,11 +3,8 @@ import cx from 'classnames';
 import Component from "@/lib/Component";
 
 import Icon from "./Icon";
-import groupsObserver from '../lib/groups-observer'
-
-import {
-    closest
-  } from '../lib/utils';
+import groupsObserver from '../lib/groups-observer';
+import { DEFAULT_CLASS_ICON_PLUS, DEFAULT_CLASS_ICON_MINUS } from '../constants';
 
 class NestableItem extends Component {
     constructor(props) {
@@ -22,14 +19,13 @@ class NestableItem extends Component {
         this.item       = null;
         this.group      = null;
         this.dragItem   = null;
-
     }
 
     renderCollapseIcon = ({ isCollapsed }) => (
         <Icon
             className={cx("nestable-item-icon", {
-                "icon-plus-gray": isCollapsed,
-                "icon-minus-gray": !isCollapsed,
+                [DEFAULT_CLASS_ICON_PLUS]  : isCollapsed,
+                [DEFAULT_CLASS_ICON_MINUS] : !isCollapsed,
             })}
         />
     );
