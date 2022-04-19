@@ -2,6 +2,9 @@ import m from 'mithril';
 import NestableInfo from './articles/nestableInfo';
 import { items1, items2 } from './data/nestableData';
 import Nestable from '../components/Nestable/components/Nestable';
+// import Nestable2 from '../components/Nestable/components/Nestable';
+
+// const Nes1 = new Nestable
 
 const styles = {
     position: "relative",

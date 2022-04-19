@@ -1,12 +1,12 @@
 import m from "mithril";
 import cx from 'classnames';
 import Component from "@/lib/Component";
-// import {Store as state} from "../lib/store";
 import {Store} from "../lib/store";
 // new import !!! npm i --save immutability-helper
 import update from 'immutability-helper';
 import groupsObserver from '../lib/groups-observer'
 import NestableItem from "./NestableItem";
+import NestablePlaceholder from "./NestablePlaceholder"
 
 import {
   isArray,
@@ -29,12 +29,13 @@ class Nestable extends Component {
 
     oninit() {
         this.state = {
-            items          : [],
+            items           : [],
             // snap copy in case of canceling drag
-            itemsOld       : null,
-            dragItem       : null,
-            isDirty        : false,
-            collapsedGroups: [],
+            itemsOld        : null,
+            dragItem        : null,
+            isDirty         : false,
+            collapsedGroups : [],
+            isRedraw        : false
         };
 
         this.el           = null;
@@ -71,7 +72,6 @@ class Nestable extends Component {
     }
 
     onupdate() {
-    // componentDidUpdate(/*prevProps*/) {
         const prevProps = this.prevProps;
         const { items: itemsNew, childrenProp } = this.props;
         const isPropsUpdated = shallowCompare(prevProps, this.props);
@@ -97,33 +97,7 @@ class Nestable extends Component {
     }
 
     onremove() {
-        // componentWillUnmount() {
         this.stopTrackMouse();
-    }
-
-    view() {
-        const { group, className } = this.props;
-        const { items, dragItem }  = this.store.getState();
-        const options              = this.getItemOptions();
-
-        return (
-            <div className={cx(className, 'nestable', 'nestable-' + group, { 'is-drag-active': dragItem })}>
-                <ol className="nestable-list nestable-group">
-                    {items.map((item, i) => {
-                        return (
-                            <NestableItem
-                                key={i}
-                                index={i}
-                                item={item}
-                                options={options}
-                            />
-                        );
-                    })}
-                </ol>
-
-                {dragItem && this.renderDragLayer()}
-            </div>
-        )
     }
 
     defaultProps(props) {
@@ -138,7 +112,8 @@ class Nestable extends Component {
             onChange = () => {},
             renderItem = ({ item }) => String(item),
             threshold = 30,
-            listId  = Math.random().toString(36).slice(2)
+            listId  = Math.random().toString(36).slice(2),
+            placeholder = 'No content'
         } = props;
 
         return {
@@ -153,14 +128,14 @@ class Nestable extends Component {
             renderItem,
             threshold,
             listId,
+            placeholder,
             ...props,
         };
     }
 
     setState(newState) {
-        // this.state = { ...this.state, ...newState };
-
         this.store.setState({ ...this.store.getState(), ...newState });
+
         setTimeout(() => m.redraw(), 0);
     }
 
@@ -218,7 +193,7 @@ class Nestable extends Component {
         // so update next coordinates accordingly
         const realPathTo = this.getRealNextPath(pathFrom, pathTo, dragItemSize);
 
-        if (realPathTo.length === 0) return;
+        // if (realPathTo.length === 0) return;
 
         // user can validate every movement
         const destinationPath =
@@ -243,7 +218,7 @@ class Nestable extends Component {
         this.setState({
             items,
             isDirty: true,
-            ...extraProps,
+            ...extraProps
         });
     }
 
@@ -316,7 +291,7 @@ class Nestable extends Component {
         this.setState({
             itemsOld: null,
             dragItem: null,
-            isDirty: false,
+            isDirty : false,
         });
 
         if (onChange && isDirty) {
@@ -329,10 +304,10 @@ class Nestable extends Component {
         const { itemsOld } = this.store.getState();
 
         this.setState({
-            items: itemsOld,
+            items   : itemsOld,
             itemsOld: null,
             dragItem: null,
-            isDirty: false,
+            isDirty : false,
         });
     }
 
@@ -408,7 +383,7 @@ class Nestable extends Component {
         const { childrenProp, maxDepth } = this.props;
         const ppLastIndex = prevPath.length - 1;
         const npLastIndex = nextPath.length - 1;
-        const newDepth = nextPath.length + dragItemSize - 1;
+        const newDepth    = nextPath.length + dragItemSize - 1;
 
         if (prevPath.length < nextPath.length) {
             // move into depth
@@ -484,8 +459,8 @@ class Nestable extends Component {
             group,
             listId,
 
-            onDragStart     : this.onDragStart,
-            onMouseEnter    : this.onMouseEnter,
+            // onDragStart     : this.onDragStart,
+            // onMouseEnter    : this.onMouseEnter,
             isCollapsed     : this.isCollapsed,
             onToggleCollapse: this.onToggleCollapse,
         };
@@ -516,9 +491,7 @@ class Nestable extends Component {
             itemsOld: this.store.getState().items,
         });
 
-        setTimeout(() => {
-            this.onMouseMove(e);
-        }, 4);
+        this.onMouseMove(e);
     };
 
     onDragEnd = (e, isCancel) => {
@@ -542,29 +515,12 @@ class Nestable extends Component {
 
         const transformProps = getTransformProps(clientX, clientY);
 
-
         // In some cases the drag-layer might not be at the top left of the window,
         // we need to find, where it acually is, and incorperate the position into the calculation.
-        const elDragLayer = document.querySelector('.nestable-' + group + ' .nestable-drag-layer')
-        if (!elDragLayer) return;
+        // const elDragLayer = document.querySelector('.nestable-' + group + ' .nestable-drag-layer')
+        // if (!elDragLayer) return;
 
-
-        // const { top: dragLayerTop, left: dragLayerLeft } = elDragLayer.getBoundingClientRect();
-
-        // const elCopy = document.querySelector('.nestable-' + group + ' .nestable-drag-layer > .nestable-list')
-
-        // if (!this.elCopyStyles) {
-        //     const offset = getOffsetRect(this.el)
-
-        //     this.elCopyStyles = {
-        //     marginTop: `${offset.top - clientY - dragLayerTop}px`,
-        //     marginLeft: `${offset.left - clientX - dragLayerLeft}px`,
-        //     ...transformProps
-        //     }
-
-        const elCopy = document.querySelector(
-            ".nestable-" + group + " .nestable-drag-layer > .nestable-list"
-        );
+        const elCopy = document.querySelector('.nestable-' + group + ' .nestable-drag-layer > .nestable-list')
 
         if (!this.elCopyStyles) {
             const offset = getOffsetRect(this.el);
@@ -581,10 +537,11 @@ class Nestable extends Component {
                 ...this.elCopyStyles,
                 ...transformProps,
             };
-            for (let key in transformProps) {
-                if (transformProps.hasOwnProperty(key)) {
-                    if (elCopy /* && elCopy.hasOwnProperty('style') */) {
-                        elCopy.style[key] = transformProps[key];
+
+            if (elCopy) {
+                for (const key in transformProps) {
+                    if (Object.prototype.hasOwnProperty.call(transformProps, key)) {
+                        elCopy.style[key] = transformProps[key]
                     }
                 }
             }
@@ -610,6 +567,8 @@ class Nestable extends Component {
                 this.mouse.shift.x = 0;
             }
         }
+
+        setTimeout(() => m.redraw(), 0);
     };
 
     onMouseEnter = (e, eventList, item) => {
@@ -618,7 +577,7 @@ class Nestable extends Component {
             e.stopPropagation();
         }
 
-        const { collapsed, idProp, childrenProp, listId } = this.props;
+        const { collapsed, idProp, childrenProp, listId, maxDepth } = this.props;
         const { dragItem } = this.store.getState();
 
         // In some cases, this event fires after the drag operation was already
@@ -643,6 +602,13 @@ class Nestable extends Component {
           pathTo = pathFrom.length > 0 ? [] : [0]
         } else {
           pathTo = this.getPathById(item[idProp])
+        }
+
+        // if the move to the new depth is greater than max depth,
+        // don't move
+        const newDepth = this.getRealNextPath(pathFrom, pathTo).length + (this.getItemDepth(dragItem) - 1)
+        if (newDepth > maxDepth) {
+            return
         }
 
         // if collapsed by default
@@ -715,6 +681,38 @@ class Nestable extends Component {
                 </ol>
             </div>
         );
+    }
+
+    view() {
+        const { group, className, placeholder } = this.props;
+        const { items, dragItem }  = this.store.getState();
+        const options              = this.getItemOptions();
+
+        return (
+            <div className={cx(className, 'nestable', 'nestable-' + group, { 'is-drag-active': dragItem })}>
+                <ol className="nestable-list nestable-group">
+                    <If condition={items.length}>
+                        {items.map((item, i) => {
+                            return (
+                                <NestableItem
+                                    key={i}
+                                    index={i}
+                                    item={item}
+                                    options={options}
+                                />
+                            );
+                        })}
+                    </If>
+                    <If condition={!items.length}>
+                        <NestablePlaceholder options={options}>
+                            {placeholder}
+                        </NestablePlaceholder>
+                    </If>
+                </ol>
+
+                {dragItem && this.renderDragLayer()}
+            </div>
+        )
     }
 }
 

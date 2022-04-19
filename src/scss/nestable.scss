@@ -37,11 +37,11 @@
   position: absolute;
   top: 0;
   left: 0;
-//   right: 0;
-//   bottom: 0;
+  right: 0;
+  bottom: 0;
 
-  width: 100%;
-  height: 100%;
+//   width: 100%;
+//   height: 100%;
   visibility: visible;
   opacity: 1;
   border-radius: 2px;
@@ -56,7 +56,7 @@
 //   border-radius: 50%;
 //   transform: scale(0.7);
   transition: all 0.2s;
-  z-index: 1;
+//   z-index: 1;
 
 }
 .nestable-item-icon {
@@ -102,3 +102,7 @@
   height: 20px;
   background-image: url("./icon-minus-gray.svg");
 }
+
+.nestable-list-empty {
+    text-align: center;
+  }

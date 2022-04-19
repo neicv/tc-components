@@ -64,13 +64,13 @@ class NestableItem extends Component {
             if (dragItem) {
                 rowProps = {
                     ...rowProps,
-                    onmouseenter: (e) => options.onMouseEnter(e, item),
+                    // onmouseenter: (e) => options.onMouseEnter(e, item),
                 };
             } else {
                 handlerProps = {
                     ...handlerProps,
                     draggable: true,
-                    ondragstart: (e) => this.onDragStart(e, options, item)
+                    ondragstart: (e) => this.onDragStart(e, item),
                 };
             }
         }
@@ -87,8 +87,6 @@ class NestableItem extends Component {
                 ...handlerProps,
             };
         }
-
-        rowProps = this.setRowProps(rowProps);
 
         const collapseIcon = hasChildren ? (
             <span onclick={() => options.onToggleCollapse(item)}>
@@ -120,7 +118,13 @@ class NestableItem extends Component {
 
         return (
             <li {...itemProps}>
-                <div className="nestable-item-name" {...rowProps}>
+                <div
+                    className="nestable-item-name"
+                    {...rowProps}
+                    onmouseenter={(e) => this.onMouseEnter(e)}
+                    onmouseleave={() => this.onMouseLeave()}
+                    onmousemove={(e) => this.onMouseMove(e)}
+                >
                     {content}
                 </div>
 
@@ -144,46 +148,14 @@ class NestableItem extends Component {
         );
     }
 
-    onDragStart(e, options, item) {
+    onDragStart(e, item) {
 
-        // console.log('item ', item)
-        // const el = closest(e.target, ".nestable-item");
-        if (!item) console.log('no item!')
         const tItem = item || null // el // this.$parent.item
+
         this.notifyDragStart(this.group, e, tItem);
-        // options.onDragStart(e, item);
     }
 
-    // onMouseEnter(e, options, item) {
-    //     options.onMouseEnter(e, item);
-    // }
-
-    setRowProps(rowProps) {
-        const { onmouseenter } = rowProps;
-
-        let tmpOnMouseEnter = null;
-
-        if ( typeof onmouseenter === "function") {
-            tmpOnMouseEnter = onmouseenter;
-        }
-
-        rowProps = {
-            ...rowProps,
-            onmouseenter: (e) => this.onMouseEnter(e, tmpOnMouseEnter),
-            onmouseleave:  () => this.onMouseLeave(),
-            onmousemove : (e) => this.onMouseMove(e),
-        }
-
-
-        return rowProps;
-    }
-
-    onMouseEnter(event, tmpOnMouseEnter) {
-
-        // if (tmpOnMouseEnter) {
-        //     tmpOnMouseEnter();
-        // }
-
+    onMouseEnter(event) {
         if (!this.dragItem) return
 
         // if we don't know the direction the mouse is moving,
@@ -195,6 +167,7 @@ class NestableItem extends Component {
 
         // when the mouse enters the item we save the size of this item
         // is is to improve performance, so we do not recalculate the size on every move
+        console.log('set Break Point')
         this.moveDown   = event.movementY > 0
 
         this.breakPoint = event.target.getBoundingClientRect().height / 2

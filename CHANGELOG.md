@@ -1,3 +1,7 @@
+# 0.21.6 / 2022-04-19
+
+  - Add swap DnD between Nestable components
+
 # 0.21.5 / 2022-04-13
 
   - Add New Documentation about Component - Nestable
