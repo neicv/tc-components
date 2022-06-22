@@ -1,7 +1,7 @@
 import m from 'mithril';
 import NestableInfo from './articles/nestableInfo';
 import { items1, items2 } from './data/nestableData';
-import Nestable from '../components/Nestable/components/Nestable';
+import Nestable from '@/components/Nestable/components/Nestable';
 // import Nestable2 from '../components/Nestable/components/Nestable';
 
 // const Nes1 = new Nestable
@@ -14,6 +14,27 @@ const styles = {
     background: "#f9fafa",
     cursor: "pointer"
 };
+
+const handlerStyles = {
+    // position: "absolute",
+    // top: 0,
+    // left: 0,
+    // width: "10px",
+    // height: "100%",
+    // background: "steelblue",
+    cursor: "move",
+
+    content: "",
+    margin: 'auto',
+    height: '25px',
+    width: '0px',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: '5px',
+    borderLeft: '5px dotted #adadad',
+    zIndex: 10,
+}
 
 class NestableDoc {
     oninit() {
@@ -85,6 +106,7 @@ class NestableDoc {
                         items={this.items2}
                         group={'gr1'}
                         renderItem={this.renderItem}
+                        handler={<span style={handlerStyles}/>}
                         setCollapse={click => this.onSetCollapse2 = click}
                     />
                 </div>

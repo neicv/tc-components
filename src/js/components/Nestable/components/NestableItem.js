@@ -73,7 +73,10 @@ class NestableItem extends Component {
 
         if (handler) {
             wrappedHandler = (
-                <span className="nestable-item-handler" {...handlerProps}>
+                <span
+                    className="nestable-item-handler"
+                    {...handlerProps}
+                >
                     {handler}
                 </span>
             );
@@ -92,14 +95,15 @@ class NestableItem extends Component {
 
         const baseClassName = "nestable-item" + (isCopy ? "-copy" : "");
         const itemProps = {
-            className: cx(baseClassName, baseClassName + "-" + item[idProp], {
-                "is-dragging": isDragging,
-                [baseClassName + "--with-children"]: hasChildren,
-                [baseClassName + "--children-open"]:
-                    hasChildren && !isCollapsed,
-                [baseClassName + "--children-collapsed"]:
-                    hasChildren && isCollapsed,
-            }),
+            className: cx(
+                baseClassName,
+                baseClassName + "-" + item[idProp], {
+                    "is-dragging": isDragging,
+                    [baseClassName + "--with-children"]: hasChildren,
+                    [baseClassName + "--children-open"]: hasChildren && !isCollapsed,
+                    [baseClassName + "--children-collapsed"]: hasChildren && isCollapsed,
+                }
+            ),
         };
 
         const content = renderItem({
@@ -151,26 +155,26 @@ class NestableItem extends Component {
         this.notifyDragStart(this.group, e, tItem);
     }
 
-    onMouseEnter(event) {
+    onMouseEnter = (event) => {
         if (!this.dragItem) return
 
         // if we don't know the direction the mouse is moving,
         // we can not calculate the offset at which we should trigger a swap
         // we we fallback to the old behavior
         if (!event.movementY) {
-          return this.sendNotification(event)
+          return this.sendNotification(event);
         }
 
         // when the mouse enters the item we save the size of this item
         // is is to improve performance, so we do not recalculate the size on every move
         console.log('set Break Point')
-        this.moveDown   = event.movementY > 0
+        this.moveDown   = event.movementY > 0;
 
-        this.breakPoint = event.target.getBoundingClientRect().height / 2
+        this.breakPoint = event.target.getBoundingClientRect().height / 2;
     }
 
     onMouseLeave () {
-        this.breakPoint = null
+        this.breakPoint = null;
     }
 
     onMouseMove (event) {

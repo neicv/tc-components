@@ -10,7 +10,8 @@ export const mainMenu =  [
     { path: 'pagination', icon: 'fas fa-plus', text: 'Pagination'},
     { path: 'presence', icon: 'font-icon user', text: 'Presence'},
     { path: 'signlist', icon: 'fas fa-plus', text: 'SignList'},
-    { path: 'timeline', icon: 'fas fa-plus', text: 'Timelines'}
+    { path: 'timeline', icon: 'fas fa-plus', text: 'Timelines'},
+    { path: 'textarea', icon: 'fas fa-plus', text: 'AutoCompleteTextArea'}
 ]
 
 export default mainMenu;

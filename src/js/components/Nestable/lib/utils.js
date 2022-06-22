@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+const globalExcludes = ['creation', 'handler'];
+
 export const objectType = (obj) => {
     return Object.prototype.toString.call(obj).slice(8, -1);
 }
@@ -102,8 +104,8 @@ export const getAllNonEmptyNodesIds = (items, { idProp, childrenProp }) => {
 
 // simplified version shallowCompare from 'react-addons-shallow-compare';
 export const shallowCompare = (props, nextProps) => {
-    const oldProps = props; // _.omit(props, globalExcludes)
-    const newProps = nextProps; //_.omit(nextProps, globalExcludes)
+    const oldProps = _.omit(props, globalExcludes)
+    const newProps = _.omit(nextProps, globalExcludes)
     const keys = Object.keys(props)
     return shallowEqualJS(oldProps, newProps, keys)
 }

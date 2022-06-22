@@ -22,6 +22,19 @@ module.exports = {
             '@': path.resolve(__dirname, 'src/js'),
             '_': path.resolve(__dirname, 'src'),
             '@doc': path.resolve(__dirname, 'src/js/doc')
+        },
+        fallback: {
+            // util: require.resolve("util/"),
+            // http: require.resolve("stream-http"),
+            // https: require.resolve("https-browserify"),
+            // path: require.resolve("path-browserify"),
+            // crypto: require.resolve("crypto-browserify"),
+            // zlib: require.resolve("browserify-zlib"),
+            // stream: require.resolve("stream-browserify"),
+            // vm: require.resolve("vm-browserify"),
+            // os: require.resolve("os-browserify/browser"),
+            // constants: require.resolve("constants-browserify"),
+            // fs: false
         }
     },
     devServer: {

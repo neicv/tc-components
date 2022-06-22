@@ -15,6 +15,7 @@ import PaginationDoc from './doc/pagination';
 import PresenceAdnCollabDoc from './doc/presenceAndCollab'
 import SignListDoc from './doc/signlist';
 import TimeLineDoc from './doc/timeline';
+import AutoCompleteTextAreaDoc from './doc/autoCompleteTextAreaDoc';
 import App from './layout/App.js';
 import {setContent, setLocale} from './localizations';
 // import notificationsLang from 'localizations/notifications';
@@ -103,6 +104,11 @@ m.route(root, '/home', {
 	'/timeline': {
 		render() {
             return <App><TimeLineDoc/></App>
+        }
+	},
+	'/textarea': {
+		render() {
+            return <App><AutoCompleteTextAreaDoc/></App>
         }
 	},
 });

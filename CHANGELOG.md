@@ -1,3 +1,7 @@
+# 0.22.0 / 2022-06-22
+
+  - Add AutoCompleteTextArea component
+
 # 0.21.6 / 2022-04-19
 
   - Add swap DnD between Nestable components
