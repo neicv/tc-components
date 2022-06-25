@@ -2,6 +2,7 @@ import m from "mithril";
 import classNames from "classnames";
 import Component from "@/lib/Component";
 import getCaretCoordinates from "@/lib/textarea-caret";
+import {setHighLightVnode, setHighLight} from "@/lib/highLight";
 import { debounce } from "@/lib/Helpers";
 
 const ESCAPE = 27;
@@ -11,6 +12,8 @@ const LEFT   = 37;
 const RIGHT  = 39;
 const ENTER  = 13;
 const TAB    = 9;
+
+const ALL_SPACES_CHAR = [' ', '\a', '\n', '\t', '\x0A']
 
 const POSITION_CONFIGURATION = {
     X: {
@@ -40,7 +43,9 @@ class AutoCompleteTextarea extends Component {
         this.textareaRef              = null;
         this.dropDownRef              = null;
         this.dropDownMainRef          = null;
+        this.ulScrollContentRef       = null;
         this.isHideCursor             = false;
+        this.searchText               = '';
         this.positionAutocomplete     = {
             top: 0,
             left: 0
@@ -228,6 +233,7 @@ class AutoCompleteTextarea extends Component {
                                 style="list-style:none;margin : 0;padding: 0;"
                                 class="scrollContent"
                                 id="ulScrollContent"
+                                oncreate={({ dom }) => (this.ulScrollContentRef = dom)}
                             >
                                 {
                                     this.referralSearch.map((refSearch, index) => {
@@ -239,7 +245,7 @@ class AutoCompleteTextarea extends Component {
                                                 style={referralStyle}
                                                 class={this.inputValIdTemp === refSearch.id ? 'selectedWithArrow' : ''}
                                             >
-                                                {refSearch.text}
+                                                {this.setHighLight(refSearch.text)}
                                             </li>
                                         )
                                         // @click.self="setReferralTest(refSearch)"
@@ -255,10 +261,11 @@ class AutoCompleteTextarea extends Component {
     }
 
     _onKeyUp(e){
-        const keyCode  = e.keyCode || e.which;
-        const query    = this.getQuery(e.target.value); //this.value;
-        this.inputVal  = e.target.value;
-        const textarea = e.currentTarget && e.currentTarget.nodeName === 'TEXTAREA' ? e.currentTarget : null;
+        const keyCode   = e.keyCode || e.which;
+        const query     = this.getQuery(e.target.value); //this.value;
+        this.searchText = query;
+        this.inputVal   = e.target.value;
+        const textarea  = e.currentTarget && e.currentTarget.nodeName === 'TEXTAREA' ? e.currentTarget : null;
 
         switch (keyCode) {
             case ESCAPE:
@@ -272,7 +279,7 @@ class AutoCompleteTextarea extends Component {
                 if (!this.textSuggestionState) {
                     break;
                 }
-                console.log('dw')
+                // console.log('dw')
                 e.preventDefault();
                 e.stopPropagation();
                 this.inputValTemp = '';
@@ -292,7 +299,7 @@ class AutoCompleteTextarea extends Component {
                     break;
                 }
 
-                console.log('up')
+                // console.log('up')
                 e.preventDefault();
                 e.stopPropagation();
                 this.inputValTemp = '';
@@ -315,7 +322,7 @@ class AutoCompleteTextarea extends Component {
 
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('enter')
+                // console.log('enter')
                 if (this.selectedIndex !== -1) {
                     this.setReferralTest(this.inputValTemp);
                 }
@@ -343,11 +350,11 @@ class AutoCompleteTextarea extends Component {
                     this.options.forEach(item => {
                         if ((item.text.includes(query))) {
                             state = true;
-                            if(state){
-                                var rTemp = {};
-                                rTemp.id = item.id;
-                                rTemp.text = item.text;
-                                this.referralSearch.push(rTemp);
+                            if(state) {
+                                this.referralSearch.push({
+                                    id   : item.id,
+                                    text : item.text
+                                });
                                 this.scrollVisible = true;
                             }
                             else this.selectedIndex = -1;
@@ -378,8 +385,9 @@ class AutoCompleteTextarea extends Component {
 
     setScroll() {
         const selected        = this.selectedIndex;
-        const ulScrollContent = document.getElementById("ulScrollContent");
-        const elHeight        = ulScrollContent.clientHeight;
+        // const ulScrollContent = document.getElementById("ulScrollContent");
+        // const elHeight        = ulScrollContent.clientHeight;
+        const elHeight        = this.ulScrollContentRef?.clientHeight;
         const scrollContent1  = document.getElementById("scrollContent1");
         const scrollTop       = scrollContent1.scrollTop;
         //document.getElementById('scrollContent1').scrollTop += 25;
@@ -431,15 +439,12 @@ class AutoCompleteTextarea extends Component {
     }
 
     textSuggestionControl() {
-        console.log('sug')
-        // this._close();
-        const _this = this;
-        setTimeout(() => {_this._close()}, 300)
+        setTimeout(() => {this._close()}, 300)
     }
 
     setCaretPosition(position = 0) {
         if (!this.textareaRef) return;
-        console.log('set ')
+        // console.log('set ')
         this.textareaRef.focus();
         this.textareaRef.setSelectionRange(position, position);
     };
@@ -470,7 +475,7 @@ class AutoCompleteTextarea extends Component {
 
         let top  = newTop + 8 - this.textareaRef.scrollTop || 0;
         let left = newLeft + 12;
-        console.log('cp: ', newTop, newLeft)
+        // console.log('cp: ', newTop, newLeft)
 
         this.positionAutocomplete = { top, left }
 
@@ -488,7 +493,7 @@ class AutoCompleteTextarea extends Component {
         if ((keyCode === ENTER || keyCode === TAB) && this.inputValIdTemp !== 0) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('break enter')
+            // console.log('break enter')
         }
     }
 
@@ -499,14 +504,14 @@ class AutoCompleteTextarea extends Component {
             e.preventDefault();
             e.stopPropagation();
 
-            console.log('up-dw')
+            // console.log('up-dw')
         }
 
         if ((keyCode === ENTER || keyCode ===TAB) && this.textSuggestionState) {
             e.preventDefault();
             e.stopPropagation();
 
-            console.log('enter dw')
+            // console.log('enter dw')
         }
     }
 
@@ -533,7 +538,8 @@ class AutoCompleteTextarea extends Component {
             const str = text.slice(position);
 
             // TODO группа символов (например ([]))
-            const index = str.indexOf(' ');
+            // const index = str.indexOf(' ');
+            const index = this.getNearestIndex(str);
             if (index !== -1) {
                 res = position + index;
             }
@@ -575,12 +581,45 @@ class AutoCompleteTextarea extends Component {
     }
 
     _close() {
-        this.textSuggestionState = false;
         // this.selectedIndex       = -1;
         this.inputValIdTemp      = 0;
+        this.searchText          = '';
+        this.textSuggestionState = false;
         console.log('close')
         setTimeout(() => m.redraw(), 0)
     }
+
+    stringToRegExp(str) {
+        // escapeStringRegExp
+        let matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g,
+            text = '';
+
+        text = new RegExp(str.replace(matchOperatorsRe, '\\$&'), 'i')
+        return [text];
+    }
+
+    setHighLight(text) {
+        return setHighLightVnode(text, this.stringToRegExp(this.searchText));
+    }
+
+    getNearestIndex(str) {
+        let indexArr = [];
+
+        ALL_SPACES_CHAR.forEach(c => {
+            let i = str.indexOf(c);
+            if (i > -1) {
+                indexArr.push(i);
+            }
+        });
+
+        if (indexArr.length) {
+            indexArr.sort((a, b) => a - b);
+            return indexArr[0];
+        }
+
+        return -1;
+    }
+
 }
 
 export default AutoCompleteTextarea;
