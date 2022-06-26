@@ -2305,3 +2305,10 @@ th:hover .tc-icon-hide:not(.arrow-down) {
 .turbo-dropdown_open .turbo-dropdown__label_indicate::after {
     transform: rotate(180deg);
 }
+
+.doc-autocomplete-textarea {
+    padding: 2px;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+}

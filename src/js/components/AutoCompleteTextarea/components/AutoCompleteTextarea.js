@@ -24,7 +24,15 @@ const POSITION_CONFIGURATION = {
       TOP: "tc_autocomplete--top",
       BOTTOM: "tc_autocomplete--bottom",
     },
-  };
+};
+
+const DEFAULT_WIDTH = 200;
+
+const defaultConfig = {
+    template     : (data, fieldView) => (<span>{data[fieldView]}</span>),
+    countShowItem: 5,
+    // fieldView    : 'text'
+};
 
 class AutoCompleteTextarea extends Component {
     oninit() {
@@ -50,14 +58,15 @@ class AutoCompleteTextarea extends Component {
             top: 0,
             left: 0
         }
-        this.options = [
-            {'id':'1', 'text' : 'тест'},
-            {'id':'2', 'text' : 'test'},
-            {'id':'3', 'text' : 'term'},
-            {'id':'4', 'text' : 'personal'},
-            {'id':'5', 'text' : 'though it makes no difference'},
-        ]
+
+        this._config = { ...defaultConfig, ...this.attrs };
+
+        this._config.data         = this._config.data ? this._config.data : [];
+        this._config.fieldsSearch = this._config.fieldsSearch ? this._config.fieldsSearch : [];
+
+        this._heightConfig = { maxHeight: 0 };
     }
+
     oncreate({ dom }) {
         const { boundariesElement = 'body' } = this.attrs;
 
@@ -96,19 +105,20 @@ class AutoCompleteTextarea extends Component {
         // const top = this.attrs.top || 0;
         // const left = this.attrs.left || 0;
         if (this.dropDownRef && this.textareaRef /*&& this.textSuggestionState*/) {
+            // this.textSuggestionWidth = this.dropDownRef?.clientWidth || DEFAULT_WIDTH;
             console.log('_onUpdate')
-            let top = this.positionAutocomplete.top || 0;
-            let left = this.positionAutocomplete.left || 0;
-            const usedClasses = [];
-            const unusedClasses = [];
+            let top               = this.positionAutocomplete.top || 0,
+                left              = this.positionAutocomplete.left || 0,
+                topPosition       = 0,
+                leftPosition      = 0;
 
-            let topPosition = 0;
-            let leftPosition = 0;
+            const usedClasses     = [];
+            const unusedClasses   = [];
 
-            const containerBounds = this.containerElem.getBoundingClientRect();
-            const dropdownBounds = this.dropDownRef.getBoundingClientRect();
-            const textareaBounds = this.textareaRef.getBoundingClientRect();
-            const computedStyle = window.getComputedStyle(this.dropDownRef);
+            const containerBounds = this.containerElem.getBoundingClientRect(),
+                  dropdownBounds  = this.dropDownRef.getBoundingClientRect(),
+                  textareaBounds  = this.textareaRef.getBoundingClientRect(),
+                  computedStyle   = window.getComputedStyle(this.dropDownRef);
 
             const marginTop = parseInt(
             computedStyle.getPropertyValue("margin-top"),
@@ -138,7 +148,10 @@ class AutoCompleteTextarea extends Component {
             marginRight +
             textareaBounds.left +
             left +
-            dropdownBounds.width;
+            dropdownBounds.width || DEFAULT_WIDTH;
+
+            // this.textSuggestionWidth = dropdownBounds.width || DEFAULT_WIDTH;
+            console.log('width ', dropdownBounds.width )
 
             if (dropdownRight > containerBounds.right &&
                 textareaBounds.left + left > dropdownBounds.width) {
@@ -164,7 +177,7 @@ class AutoCompleteTextarea extends Component {
             }
 
             if (this.attrs?.renderToBody) {
-                topPosition += textareaBounds.top;
+                topPosition  += textareaBounds.top;
                 leftPosition += textareaBounds.left;
             }
 
@@ -182,13 +195,13 @@ class AutoCompleteTextarea extends Component {
 
     view() {
         const { options, value, name } = this.attrs;
-        let referralStyle = "white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"
-        referralStyle +=`'width' : ${this.textSuggestionWidth -40} +'px'`;
+        // let referralStyle = "white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"
+        const referralStyle =`min-width : ${this.textSuggestionWidth - 40 || DEFAULT_WIDTH}px;`
 
         const textAreaStyle = `width: 100%;height: 100%;margin-bottom: 0px; ${this.isHideCursor ? 'caret-color: transparent;' : ''}`
 
         // const autocompleteStyle = `top: ${this.positionAutocomplete.top}; left: ${this.positionAutocomplete.left}; width: ${this.textSuggestionWidth}px';`
-        const autocompleteStyle = `width: ${this.textSuggestionWidth}px';`
+        const autocompleteStyle = `min-width: ${this.textSuggestionWidth || DEFAULT_WIDTH}px;`
 
         if (this.isHideCursor) {
             console.log('hide')
@@ -220,11 +233,15 @@ class AutoCompleteTextarea extends Component {
                 >
                     <If condition={this.textSuggestionState === true}>
                         <div
-                            // style={`width' : ${this.textSuggestionWidth} +'px'`
                             style={autocompleteStyle}
                             class="textarea-suggestion"
                             id="scrollContent1"
-                            oncreate={({ dom }) => (this.dropDownRef = dom)}
+                            oncreate={({ dom }) => {
+                                this.dropDownRef = dom;
+                                console.log('oup')
+                                this.textSuggestionWidth = dom.getBoundingClientRect().width || DEFAULT_WIDTH
+                            }}
+                            // onupdate={({ dom }) => (this.textSuggestionWidth = dom.getBoundingClientRect().width || DEFAULT_WIDTH)}
                             // beforeupdate={() => setTimeout(() => {
                             //     this._onUpdate()
                             // }, 20)}
@@ -242,10 +259,11 @@ class AutoCompleteTextarea extends Component {
 
                                                 onclick={() => this.setReferralTest(refSearch.text)}
                                                 onkeydown={(e) => this._onKeyDownItem(e, refSearch.text)}
-                                                style={referralStyle}
-                                                class={this.inputValIdTemp === refSearch.id ? 'selectedWithArrow' : ''}
+                                                // style={referralStyle}
+                                                className={`referral ${this.inputValIdTemp === refSearch.id ? 'selectedWithArrow' : ''}`}
                                             >
-                                                {this.setHighLight(refSearch.text)}
+                                                {/* {this.setHighLight(refSearch.text)} */}
+                                                {this._renderItem(refSearch, index)}
                                             </li>
                                         )
                                         // @click.self="setReferralTest(refSearch)"
@@ -339,7 +357,8 @@ class AutoCompleteTextarea extends Component {
                     scrollContent1.scrollTop = 0;
                 }
                 this.selectedIndex = -1;
-                this.textSuggestionWidth = textarea.clientWidth;
+                // this.textSuggestionWidth = textarea.clientWidth;
+    
                 var state = false;
                 if(query == '') {
                     this.referralSearch = [];
@@ -347,7 +366,7 @@ class AutoCompleteTextarea extends Component {
                 }
                 else{
                     this.referralSearch = [];
-                    this.options.forEach(item => {
+                    this._config.data.forEach(item => {
                         if ((item.text.includes(query))) {
                             state = true;
                             if(state) {
@@ -522,7 +541,7 @@ class AutoCompleteTextarea extends Component {
             const str = text.slice(0, position);
 
             // TODO группа символов (например ([]))
-            const index = str.lastIndexOf(' ');
+            const index = this.getNearestIndexRight(str);
             if (index !== -1) {
                 res = index + 1;
             }
@@ -539,7 +558,7 @@ class AutoCompleteTextarea extends Component {
 
             // TODO группа символов (например ([]))
             // const index = str.indexOf(' ');
-            const index = this.getNearestIndex(str);
+            const index = this.getNearestIndexLeft(str);
             if (index !== -1) {
                 res = position + index;
             }
@@ -557,7 +576,8 @@ class AutoCompleteTextarea extends Component {
         }
 
         if (value) {
-            const index = value.lastIndexOf(' ');
+            // const index = value.lastIndexOf(' ');
+            const index = this.getNearestIndexRight(value);
             if (index !== -1) {
                 res = value.slice(index + 1);
             }
@@ -602,7 +622,7 @@ class AutoCompleteTextarea extends Component {
         return setHighLightVnode(text, this.stringToRegExp(this.searchText));
     }
 
-    getNearestIndex(str) {
+    getNearestIndexLeft(str) {
         let indexArr = [];
 
         ALL_SPACES_CHAR.forEach(c => {
@@ -618,6 +638,65 @@ class AutoCompleteTextarea extends Component {
         }
 
         return -1;
+    }
+
+    getNearestIndexRight(str) {
+        let indexArr = [];
+
+        ALL_SPACES_CHAR.forEach(c => {
+            let i = str.lastIndexOf(c);
+            if (i > -1) {
+                indexArr.push(i);
+            }
+        });
+
+        if (indexArr.length) {
+            indexArr.sort((a, b) => b - a);
+            return indexArr[0];
+        }
+
+        return -1;
+    }
+
+    _renderItem(item, index, array) {
+        return (
+            <div
+                // oncreate={({ dom }) => this._onCreateItem(dom, isCurrent)}
+                // onupdate={({ dom }) => this._onUpdateItem(dom, isSelected, isLast)}
+            >
+                {this._getTemplateItem(item, index)}
+            </div>
+        );
+    }
+
+    _getTemplateItem(item, index) {
+        const template     = this._config.template,
+              fieldView    = this._config.fieldView,
+              fieldsSearch = [...this._config.fieldsSearch];
+    
+        let data;
+
+        if (item && typeof item === "object") {
+            data = { ...item };
+        } else {
+            data = { value: item };
+            fieldsSearch.push("value");
+        }
+
+        this._setHighLightFields(data, fieldsSearch);
+
+        return template(data, fieldView || "value");
+    }
+
+    // fields - Массив елючей по котрым подсветка и поиск
+    _setHighLightFields(item, fields = []) {
+        if (this.searchText) {
+            fields.forEach(field => {
+                if (item.hasOwnProperty(field)) {
+                    item[field] =  this.setHighLight(item[field]);
+                }
+            });
+        }
     }
 
 }
