@@ -403,17 +403,16 @@ class AutoCompleteTextarea extends Component {
     }
 
     setScroll() {
-        const selected        = this.selectedIndex;
-        // const ulScrollContent = document.getElementById("ulScrollContent");
-        // const elHeight        = ulScrollContent.clientHeight;
-        const elHeight        = this.ulScrollContentRef?.clientHeight;
-        const scrollContent1  = document.getElementById("scrollContent1");
-        const scrollTop       = scrollContent1.scrollTop;
-        //document.getElementById('scrollContent1').scrollTop += 25;
-        const viewport = scrollTop + scrollContent1.clientHeight;
-        const elOffset = elHeight * selected;
-        if (elOffset < scrollTop || (elOffset + elHeight) > viewport)
-        scrollContent1.scrollTop = elOffset;
+        const selected       = this.selectedIndex;
+        const elHeight       = this.ulScrollContentRef?.clientHeight;
+        const scrollContent1 = document.getElementById("scrollContent1");
+        const scrollTop      = scrollContent1.scrollTop;
+        const viewport       = scrollTop + scrollContent1.clientHeight;
+        const elOffset       = elHeight * selected;
+
+        if (elOffset < scrollTop || (elOffset + elHeight) > viewport) {
+            scrollContent1.scrollTop = elOffset;
+        }
     }
 
     setReferralTest(text) {
@@ -538,9 +537,7 @@ class AutoCompleteTextarea extends Component {
         let res = 0;
 
         if (position) {
-            const str = text.slice(0, position);
-
-            // TODO группа символов (например ([]))
+            const str   = text.slice(0, position);
             const index = this.getNearestIndexRight(str);
             if (index !== -1) {
                 res = index + 1;
@@ -554,10 +551,7 @@ class AutoCompleteTextarea extends Component {
         let res = text.length;
 
         if (position) {
-            const str = text.slice(position);
-
-            // TODO группа символов (например ([]))
-            // const index = str.indexOf(' ');
+            const str   = text.slice(position);
             const index = this.getNearestIndexLeft(str);
             if (index !== -1) {
                 res = position + index;
