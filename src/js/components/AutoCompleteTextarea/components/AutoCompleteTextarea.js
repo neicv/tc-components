@@ -358,7 +358,7 @@ class AutoCompleteTextarea extends Component {
                 }
                 this.selectedIndex = -1;
                 // this.textSuggestionWidth = textarea.clientWidth;
-    
+
                 var state = false;
                 if(query == '') {
                     this.referralSearch = [];
@@ -673,7 +673,7 @@ class AutoCompleteTextarea extends Component {
         const template     = this._config.template,
               fieldView    = this._config.fieldView,
               fieldsSearch = [...this._config.fieldsSearch];
-    
+
         let data;
 
         if (item && typeof item === "object") {
