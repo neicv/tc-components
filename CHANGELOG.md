@@ -1,3 +1,8 @@
+# 0.22.3 / 2022-06-28
+
+  - Change AutoCompleteTextArea component
+  - add AutoCompleteTextArea Questionare Mode
+
 # 0.22.0 / 2022-06-22
 
   - Add AutoCompleteTextArea component

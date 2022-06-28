@@ -12,8 +12,11 @@ const LEFT   = 37;
 const RIGHT  = 39;
 const ENTER  = 13;
 const TAB    = 9;
+const LEFT_SQUARE_BRACKET = 219;
 
-const ALL_SPACES_CHAR = [' ', '\a', '\n', '\t', '\x0A']
+const ALL_SPACES_CHAR   = [' ', '\a', '\n', '\t', '\x0A']
+const QUESTIONARE_TRIGGER_RIGHT_CHAR = ['[']
+const QUESTIONARE_TRIGGER_LEFT_CHAR  = [']']
 
 const POSITION_CONFIGURATION = {
     X: {
@@ -26,11 +29,15 @@ const POSITION_CONFIGURATION = {
     },
 };
 
-const DEFAULT_WIDTH = 200;
+const DEFAULT_WIDTH    = 200;
+const MODE_QUESTIONARE = 'questionare';
 
 const defaultConfig = {
-    template     : (data, fieldView) => (<span>{data[fieldView]}</span>),
-    countShowItem: 5,
+    template      : (data, fieldView) => (<span>{data[fieldView]}</span>),
+    countShowItem : 5,
+    isTriggerOnly : false,
+    triggers      : [],
+    mode          : MODE_QUESTIONARE,
     // fieldView    : 'text'
 };
 
@@ -61,10 +68,26 @@ class AutoCompleteTextarea extends Component {
 
         this._config = { ...defaultConfig, ...this.attrs };
 
-        this._config.data         = this._config.data ? this._config.data : [];
-        this._config.fieldsSearch = this._config.fieldsSearch ? this._config.fieldsSearch : [];
+        this._config.data           = this._config.data ? this._config.data : [];
+        this._config.fieldsSearch   = this._config.fieldsSearch ? this._config.fieldsSearch : [];
+
+        this._config.unitedTriggers = this._config.isTriggerOnly
+            ? this._config.triggers
+            : [...ALL_SPACES_CHAR, ...this._config.triggers];
+
+        if (this._config.mode === MODE_QUESTIONARE) {
+            this._config.unitedTriggers = [
+                ...QUESTIONARE_TRIGGER_RIGHT_CHAR,
+                ...QUESTIONARE_TRIGGER_LEFT_CHAR,
+                ...this._config.unitedTriggers
+            ];
+        }
 
         this._heightConfig = { maxHeight: 0 };
+    }
+
+    onbeforeupdate() {
+        //
     }
 
     oncreate({ dom }) {
@@ -257,7 +280,7 @@ class AutoCompleteTextarea extends Component {
                                         return (
                                             <li
 
-                                                onclick={() => this.setReferralTest(refSearch.text)}
+                                                onclick={() => this.setReferralTest(refSearch.text, refSearch.id)}
                                                 onkeydown={(e) => this._onKeyDownItem(e, refSearch.text)}
                                                 // style={referralStyle}
                                                 className={`referral ${this.inputValIdTemp === refSearch.id ? 'selectedWithArrow' : ''}`}
@@ -279,6 +302,7 @@ class AutoCompleteTextarea extends Component {
     }
 
     _onKeyUp(e){
+        let itemText    = '';
         const keyCode   = e.keyCode || e.which;
         const query     = this.getQuery(e.target.value); //this.value;
         this.searchText = query;
@@ -286,6 +310,19 @@ class AutoCompleteTextarea extends Component {
         const textarea  = e.currentTarget && e.currentTarget.nodeName === 'TEXTAREA' ? e.currentTarget : null;
 
         switch (keyCode) {
+            case LEFT_SQUARE_BRACKET:
+                if (this._config.mode === MODE_QUESTIONARE) {
+                    const caretPosition = this.getCaretPosition();
+                    this.inputVal = this.inputVal.slice(0, caretPosition )
+                        + QUESTIONARE_TRIGGER_LEFT_CHAR[0]
+                        + this.inputVal.slice(caretPosition);
+
+                    if (caretPosition) {
+                        setTimeout(() => this.setCaretPosition(caretPosition), 16);
+                    }
+                }
+                break;
+
             case ESCAPE:
                 e.preventDefault();
                 e.stopPropagation();
@@ -342,7 +379,7 @@ class AutoCompleteTextarea extends Component {
                 e.stopPropagation();
                 // console.log('enter')
                 if (this.selectedIndex !== -1) {
-                    this.setReferralTest(this.inputValTemp);
+                    this.setReferralTest(this.inputValTemp, this.inputValIdTemp);
                 }
 
                 // this.selectedIndex = -1;
@@ -367,7 +404,10 @@ class AutoCompleteTextarea extends Component {
                 else{
                     this.referralSearch = [];
                     this._config.data.forEach(item => {
-                        if ((item.text.includes(query))) {
+                        itemText = this._config.mode === MODE_QUESTIONARE
+                            ? item.text + '{' + item.id + '}'
+                            : item.text;
+                        if (itemText.includes(query)) {
                             state = true;
                             if(state) {
                                 this.referralSearch.push({
@@ -415,17 +455,22 @@ class AutoCompleteTextarea extends Component {
         }
     }
 
-    setReferralTest(text) {
+    setReferralTest(text, id) {
         let modifiedText = '';
+
+        const insertText = this._config.mode === MODE_QUESTIONARE
+            ? text + '{' + id + '}'
+            : text;
+
         const caretPosition        = this.getCaretPosition();
         const textToModify         = this.inputVal;
         const startOfTokenPosition = this.getStartOfTokenPosition(textToModify, caretPosition);
         const endOfTokenPosition   = this.getEndOfTokenPosition(textToModify, caretPosition);
-        const cursorPosition       = startOfTokenPosition + text.length;
+        const cursorPosition       = startOfTokenPosition + insertText.length;
         if (startOfTokenPosition) {
-            modifiedText = textToModify.slice(0, startOfTokenPosition ) + text + textToModify.slice(endOfTokenPosition);
+            modifiedText = textToModify.slice(0, startOfTokenPosition ) + insertText + textToModify.slice(endOfTokenPosition);
         } else {
-            modifiedText = text;
+            modifiedText = insertText;
         }
 
 
@@ -443,7 +488,7 @@ class AutoCompleteTextarea extends Component {
             setTimeout(() => {
                 // m.redraw();
 
-                this.setCaretPosition(cursorPosition);
+                this.setCaretPosition(this._config.mode === MODE_QUESTIONARE ? cursorPosition + 1 : cursorPosition );
             }, 16);
         }
 
@@ -571,9 +616,11 @@ class AutoCompleteTextarea extends Component {
 
         if (value) {
             // const index = value.lastIndexOf(' ');
-            const index = this.getNearestIndexRight(value);
+            const index = this.getNearestIndexRight(value, true);
             if (index !== -1) {
                 res = value.slice(index + 1);
+            } else if (this._config.mode === MODE_QUESTIONARE) {
+                res = '';
             }
         }
         return res;
@@ -617,10 +664,18 @@ class AutoCompleteTextarea extends Component {
     }
 
     getNearestIndexLeft(str) {
-        let indexArr = [];
+        let indexArr = [],
+            i;
 
-        ALL_SPACES_CHAR.forEach(c => {
-            let i = str.indexOf(c);
+        if (this._config.mode === MODE_QUESTIONARE) {
+            i = str.indexOf(QUESTIONARE_TRIGGER_LEFT_CHAR);
+            if (i > -1) {
+                return i;
+            }
+        }
+
+        this._config.unitedTriggers.forEach(c => {
+            i = str.indexOf(c);
             if (i > -1) {
                 indexArr.push(i);
             }
@@ -634,10 +689,15 @@ class AutoCompleteTextarea extends Component {
         return -1;
     }
 
-    getNearestIndexRight(str) {
+    getNearestIndexRight(str, isGetQuery = false) {
         let indexArr = [];
 
-        ALL_SPACES_CHAR.forEach(c => {
+        const chars = this._config.mode === MODE_QUESTIONARE && isGetQuery
+            // срабатывает толька на запросе
+            ? QUESTIONARE_TRIGGER_RIGHT_CHAR
+            : this._config.unitedTriggers;
+
+        chars.forEach(c => {
             let i = str.lastIndexOf(c);
             if (i > -1) {
                 indexArr.push(i);

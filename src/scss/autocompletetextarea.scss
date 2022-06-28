@@ -19,9 +19,9 @@
         animation: ani 0.2s forwards;
     }
     .textarea-suggestion ul li {
-        padding: 8px;
+        // padding: 8px;
         font-weight: normal;
-        border-bottom: 1px solid #FAFAFA;
+        /* border-bottom: 1px solid #FAFAFA; */
         color : #777777;
     }
 
@@ -50,7 +50,9 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        // width: 100%;
+        /* margin: 8px;
+        // border-bottom: 1px solid #FAFAFA;
+         width: 100%; */
     }
 
     .tc_autocomplete {

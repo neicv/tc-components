@@ -10,7 +10,10 @@ const template = (item) => {
                 {item.text}
             </span>
             <span class='fs14' style='color: blue;'>
-                {`{${item.id}}`}
+                {/* {`{${item.id}}`} */}
+                {'{'}
+                {item.id}
+                {'}'}
             </span>
         </span>
     )

@@ -2307,7 +2307,7 @@ th:hover .tc-icon-hide:not(.arrow-down) {
 }
 
 .doc-autocomplete-textarea {
-    padding: 2px;
+    padding: 8px;
     display: flex;
     justify-content: space-between;
     border-bottom: 1px solid #eee;
