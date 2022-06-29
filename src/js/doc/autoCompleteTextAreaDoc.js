@@ -26,8 +26,15 @@ class AutoCompleteTextAreaDoc {
             {'id':'191', 'text' : 'тест'},
             {'id':'263', 'text' : 'test'},
             {'id':'351', 'text' : 'term'},
+            {'id':'444', 'text' : 'toast'},
+            {'id':'212', 'text' : 'turtle'},
+            {'id':'786', 'text' : 'temperature'},
+            {'id':'23', 'text' : 'tomhat'},
+            {'id':'7', 'text' : 'telefunken'},
+            {'id':'639', 'text' : 'trance'},
+            {'id':'752', 'text' : 'the piano'},
             {'id':'423', 'text' : 'personal'},
-            {'id':'5454', 'text' : 'though it makes no difference'},
+            {'id':'5454', 'text' : 'though it makes no difference and so'},
         ]
     }
 

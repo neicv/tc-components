@@ -2307,8 +2307,11 @@ th:hover .tc-icon-hide:not(.arrow-down) {
 }
 
 .doc-autocomplete-textarea {
-    padding: 8px;
+    padding: 8px 12px 8px 8px;
     display: flex;
     justify-content: space-between;
+}
+
+.doc-autocomplete-textarea:not(:last-child) {
     border-bottom: 1px solid #eee;
 }

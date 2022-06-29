@@ -1,3 +1,8 @@
+# 0.22.4 / 2022-06-29
+
+  - add AutoCompleteTextArea SrollBar
+  - fix inserting value
+
 # 0.22.3 / 2022-06-28
 
   - Change AutoCompleteTextArea component
