@@ -31,8 +31,10 @@ const POSITION_CONFIGURATION = {
     },
 };
 
-const DEFAULT_WIDTH    = 200;
-const MODE_QUESTIONARE = 'questionare';
+const DEFAULT_WIDTH       = 200;
+const DEFAULT_OFFSET_TOP  = 8;
+const DEFAULT_OFFSET_LEFT = 12;
+const MODE_QUESTIONARE    = 'questionare';
 
 const defaultConfig = {
     template      : (data, fieldView) => (<span>{data[fieldView]}</span>),
@@ -63,6 +65,8 @@ class AutoCompleteTextarea extends Component {
         this.ulScrollContentRef       = null;
         this.isHideCursor             = false;
         this.searchText               = '';
+        this.firstRender              = true;
+        this.isFirstCharAccepted      = true;
         this.positionAutocomplete     = {
             top: 0,
             left: 0
@@ -127,10 +131,7 @@ class AutoCompleteTextarea extends Component {
     }
 
     _onUpdate() {
-        // const top = this.attrs.top || 0;
-        // const left = this.attrs.left || 0;
-        if (this.dropDownRef && this.textareaRef /*&& this.textSuggestionState*/) {
-            // this.textSuggestionWidth = this.dropDownRef?.clientWidth || DEFAULT_WIDTH;
+        if (this.dropDownRef && this.textareaRef) {
             console.log('_onUpdate')
             let top               = this.positionAutocomplete.top || 0,
                 left              = this.positionAutocomplete.left || 0,
@@ -175,9 +176,6 @@ class AutoCompleteTextarea extends Component {
             left +
             dropdownBounds.width || DEFAULT_WIDTH;
 
-            // this.textSuggestionWidth = dropdownBounds.width || DEFAULT_WIDTH;
-            console.log('width ', dropdownBounds.width )
-
             if (dropdownRight > containerBounds.right &&
                 textareaBounds.left + left > dropdownBounds.width) {
                 leftPosition = left - (dropdownRight - containerBounds.right); //dropdownBounds.width;
@@ -196,7 +194,7 @@ class AutoCompleteTextarea extends Component {
                 usedClasses.push(POSITION_CONFIGURATION.Y.TOP);
                 unusedClasses.push(POSITION_CONFIGURATION.Y.BOTTOM);
             } else {
-                topPosition = top;
+                topPosition = top + DEFAULT_OFFSET_TOP;
                 usedClasses.push(POSITION_CONFIGURATION.Y.BOTTOM);
                 unusedClasses.push(POSITION_CONFIGURATION.Y.TOP);
             }
@@ -215,13 +213,23 @@ class AutoCompleteTextarea extends Component {
 
             // setTimeout(() => m.redraw(), 0);
         }
+    }
 
+    setScroll() {
+        const selected       = this.selectedIndex;
+        const elHeight       = this.ulScrollContentRef?.clientHeight;
+        const scrollContent1 = document.getElementById("scrollContent1");
+        const scrollTop      = scrollContent1.scrollTop;
+        const viewport       = scrollTop + scrollContent1.clientHeight;
+        const elOffset       = elHeight * selected;
+
+        if (elOffset < scrollTop || (elOffset + elHeight) > viewport) {
+            scrollContent1.scrollTop = elOffset;
+        }
     }
 
     view() {
         const { options, value, name } = this.attrs;
-        // let referralStyle = "white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"
-        const referralStyle =`min-width : ${this.textSuggestionWidth - 40 || DEFAULT_WIDTH}px;`
 
         const textAreaStyle = `width: 100%;height: 100%;margin-bottom: 0px; ${this.isHideCursor ? 'caret-color: transparent;' : ''}`
 
@@ -253,7 +261,6 @@ class AutoCompleteTextarea extends Component {
                 >
                     <If condition={this.textSuggestionState === true}>
                         <Container
-                        // <div
                             style={autocompleteStyle}
                             // class="textarea-suggestion"
                             className="tc-drop-down-container"
@@ -263,7 +270,6 @@ class AutoCompleteTextarea extends Component {
                                 this._onCreateScrollContainer(dom)
                                 this.textSuggestionWidth = dom.getBoundingClientRect().width || DEFAULT_WIDTH
                             }}
-                            // onupdate={({ dom }) => (this.textSuggestionWidth = dom.getBoundingClientRect().width || DEFAULT_WIDTH)}
                         >
                             <ul
                                 style="list-style:none;margin : 0;padding: 0;"
@@ -278,20 +284,14 @@ class AutoCompleteTextarea extends Component {
                                             <li
 
                                                 onclick={() => this.setReferralTest(refSearch.text, refSearch.id)}
-                                                // onkeydown={(e) => this._onKeyDownItem(e, refSearch.text)}
-                                                // style={referralStyle}
                                                 className={`referral ${this.inputValIdTemp === refSearch.id ? 'selectedWithArrow' : ''}`}
                                             >
-                                                {/* {this.setHighLight(refSearch.text)} */}
                                                 {this._renderItem(refSearch, index, isLast)}
                                             </li>
                                         )
-                                        // @click.self="setReferralTest(refSearch)"
                                     })
                                 }
-
                             </ul>
-                        {/* </div> */}
                         </Container>
                     </If>
                 </div>
@@ -334,6 +334,10 @@ class AutoCompleteTextarea extends Component {
 
         if (isLast) {
             // this._reLoadingData(element, scrollContainer);
+            if (this.firstRender) {
+                this.firstRender = false;
+                this._onUpdate();
+            }
         }
     }
 
@@ -352,14 +356,15 @@ class AutoCompleteTextarea extends Component {
     _onKeyUp(e){
         let itemText    = '';
         const keyCode   = e.keyCode || e.which;
-        const query     = this.getQuery(e.target.value); //this.value;
+        const keyChar   = e.key;
+        const query     = this.getQuery(e.target.value);
         this.searchText = query;
         this.inputVal   = e.target.value;
-        const textarea  = e.currentTarget && e.currentTarget.nodeName === 'TEXTAREA' ? e.currentTarget : null;
 
         switch (keyCode) {
             case LEFT_SQUARE_BRACKET:
-                if (this._config.mode === MODE_QUESTIONARE) {
+                if (this._config.mode === MODE_QUESTIONARE
+                           && keyChar === QUESTIONARE_TRIGGER_RIGHT_CHAR[0]) {
                     const caretPosition = this.getCaretPosition();
                     this.inputVal = this.inputVal.slice(0, caretPosition )
                         + QUESTIONARE_TRIGGER_LEFT_CHAR[0]
@@ -390,7 +395,7 @@ class AutoCompleteTextarea extends Component {
 
                 e.preventDefault();
                 e.stopPropagation();
-                // console.log('enter')
+
                 if (this.selectedIndex !== -1) {
                     this.setReferralTest(this.inputValTemp, this.inputValIdTemp);
                 }
@@ -430,15 +435,18 @@ class AutoCompleteTextarea extends Component {
                 if(this.inputVal == '' || this.inputVal == null || this.referralSearch.length == 0) {
                     this._close();
                 } else {
-                    if (this.selectedIndex === -1) {
+                    if (this.selectedIndex  === -1) {
                         this.selectedIndex  = 0;
                         this.inputValTemp   = this.referralSearch[this.selectedIndex].text;
                         this.inputValIdTemp = this.referralSearch[this.selectedIndex].id;
                     }
 
-                    // this.dropDownMainRef.style.visibility = "hidden";
-                    this.textSuggestionState = true;
+                    if (this.isFirstCharAccepted) {
+                        this.dropDownMainRef.style.visibility = "hidden";
+                        this.isFirstCharAccepted = false;
+                    }
 
+                    this.textSuggestionState = true;
                     this._updateDropDown(e);
                     // setTimeout(() => m.redraw(), 0);
                 }
@@ -464,41 +472,26 @@ class AutoCompleteTextarea extends Component {
             modifiedText = insertText;
         }
 
-
-        // setTimeout(() => {
-        //     this.textareaRef.focus();
-        //     this.isHideCursor = true;
-        //     m.redraw()}
-        // , 0);
-
         this.inputVal = modifiedText;
 
         if (cursorPosition) {
-            // console.log('end', endOfTokenPosition);
-            // setTimeout(() => m.redraw(), 0);
             setTimeout(() => {
-                // m.redraw();
-
                 this.setCaretPosition(this._config.mode === MODE_QUESTIONARE ? cursorPosition + 1 : cursorPosition );
             }, 0);
         }
 
         this._close();
-
-        // setTimeout(() => {
-        //     this.textareaRef.focus();
-        //     this.isHideCursor = false;
-        //     m.redraw()}
-        // , 0);
     }
 
     textSuggestionControl() {
-        setTimeout(() => {this._close()}, 300)
+        setTimeout(() => this._close(), 300)
     }
 
     setCaretPosition(position = 0) {
-        if (!this.textareaRef) return;
-        // console.log('set ')
+        if (!this.textareaRef) {
+            return;
+        }
+
         this.textareaRef.focus();
         this.textareaRef.setSelectionRange(position, position);
     };
@@ -514,7 +507,6 @@ class AutoCompleteTextarea extends Component {
     };
 
     _onChange(e) {
-        // console.log('change')
         this.inputVal = e.target.value;
     }
 
@@ -527,18 +519,12 @@ class AutoCompleteTextarea extends Component {
             selectionEnd - 1
         );
 
-        let top  = newTop + 8 - this.textareaRef.scrollTop || 0;
-        let left = newLeft + 12;
-        // console.log('cp: ', newTop, newLeft)
+        let top  = newTop - this.textareaRef.scrollTop || 0;
+        let left = newLeft + DEFAULT_OFFSET_LEFT;
 
         this.positionAutocomplete = { top, left }
-
-        setTimeout(() => this._onUpdate(), 0);
-    }
-
-    _onChange2(e) {
-        console.log('change')
-        // this.inputVal = e.target.value;
+        // delay not 0 - for grab real heght container
+        setTimeout(() => this._onUpdate(), 16);
     }
 
     _onKeyPress(e) {
@@ -547,14 +533,17 @@ class AutoCompleteTextarea extends Component {
         if ((keyCode === ENTER || keyCode === TAB) && this.inputValIdTemp !== 0) {
             e.preventDefault();
             e.stopPropagation();
-            // console.log('break enter')
         }
     }
 
     _onKeyDown(e) {
         const keyCode  = e.keyCode || e.which;
 
-        if ((keyCode === UP || keyCode === DOWN) && this.textSuggestionState) {
+        if (this.textSuggestionState === false ) {
+            return;
+        }
+
+        if (keyCode === UP || keyCode === DOWN) {
             e.preventDefault();
             e.stopPropagation();
 
@@ -587,11 +576,9 @@ class AutoCompleteTextarea extends Component {
             }
         }
 
-        if ((keyCode === ENTER || keyCode ===TAB) && this.textSuggestionState) {
+        if (keyCode === ENTER || keyCode ===TAB) {
             e.preventDefault();
             e.stopPropagation();
-
-            // console.log('enter dw')
         }
     }
 
@@ -632,8 +619,8 @@ class AutoCompleteTextarea extends Component {
         }
 
         if (value) {
-            // const index = value.lastIndexOf(' ');
             const index = this.getNearestIndexRight(value, true);
+
             if (index !== -1) {
                 res = value.slice(index + 1);
             } else if (this._config.mode === MODE_QUESTIONARE) {
@@ -644,14 +631,14 @@ class AutoCompleteTextarea extends Component {
     }
 
     _onBlur() {
-        // const onChange = this.attrs.onChange;
-        // console.log('blur')
+        const onChange = this.attrs.onChange;
+        console.log('blur')
 
-        // if (typeof onChange === "function") {
-        //     onChange(this.inputVal);
-        // }
-        // // close
-        // this.textSuggestionControl();
+        if (typeof onChange === "function") {
+            onChange(this.inputVal);
+        }
+        // close
+        this.textSuggestionControl();
     }
 
     _resizeAction = (e) => {
@@ -659,11 +646,11 @@ class AutoCompleteTextarea extends Component {
     }
 
     _close() {
-        // this.selectedIndex       = -1;
         this.inputValIdTemp      = 0;
         this.searchText          = '';
         this.textSuggestionState = false;
-        console.log('close')
+        this.isFirstCharAccepted = true;
+
         setTimeout(() => m.redraw(), 0)
     }
 
@@ -806,7 +793,7 @@ class AutoCompleteTextarea extends Component {
         return template(data, fieldView || "value");
     }
 
-    // fields - Массив елючей по котрым подсветка и поиск
+    // fields - Массив елючей по которым подсветка и поиск
     _setHighLightFields(item, fields = []) {
         if (this.searchText) {
             fields.forEach(field => {

@@ -1,3 +1,8 @@
+# 0.22.5 / 2022-06-29
+
+  - All firsе task of visual and logic Done
+  - fix placer Position DropDown
+
 # 0.22.4 / 2022-06-29
 
   - add AutoCompleteTextArea SrollBar

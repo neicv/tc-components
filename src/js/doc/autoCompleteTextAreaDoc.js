@@ -43,6 +43,34 @@ class AutoCompleteTextAreaDoc {
             <div className='main-content'>
                 <h1>Атозаполняемая Тестовая Область</h1>
                 <p>Тестовая TextArea</p>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+
                 <div class="tm-margin">
                     <AutoCompleteTextarea
                         data={this.data}
