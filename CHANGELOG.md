@@ -1,3 +1,7 @@
+# 0.22.6 / 2022-07-04
+
+  - Change code style and move styles to classes
+
 # 0.22.5 / 2022-06-29
 
   - All firsе task of visual and logic Done

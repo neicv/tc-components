@@ -9,7 +9,7 @@ const template = (item) => {
             <span class='fs16'>
                 {item.text}
             </span>
-            <span class='fs14' style='color: blue;'>
+            <span class='fs14' style='color: #42A5F5;'>
                 {/* {`{${item.id}}`} */}
                 {'{'}
                 {item.id}

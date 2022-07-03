@@ -5,36 +5,34 @@ import getCaretCoordinates from "@/lib/textarea-caret";
 import {setHighLightVnode, setHighLight} from "@/lib/highLight";
 import {Container} from '@/components/plugins/ScrollBar';
 import scrollIntoView from "scroll-into-view-if-needed";
-import { debounce } from "@/lib/Helpers";
 
-const ESCAPE = 27;
-const UP     = 38;
-const DOWN   = 40;
-const LEFT   = 37;
-const RIGHT  = 39;
-const ENTER  = 13;
-const TAB    = 9;
+const ESCAPE              = 27;
+const UP                  = 38;
+const DOWN                = 40;
+const ENTER               = 13;
+const TAB                 = 9;
 const LEFT_SQUARE_BRACKET = 219;
 
-const ALL_SPACES_CHAR   = [' ', '\r', '\n', '\t']
+const DEFAULT_WIDTH       = 200;
+const DEFAULT_MARGIN      = 10;
+const DEFAULT_OFFSET_TOP  = 8;
+const DEFAULT_OFFSET_LEFT = 12;
+const MODE_QUESTIONARE    = 'questionare';
+
+const ALL_SPACES_CHAR                = [' ', '\r', '\n', '\t']
 const QUESTIONARE_TRIGGER_RIGHT_CHAR = ['[']
 const QUESTIONARE_TRIGGER_LEFT_CHAR  = [']']
 
 const POSITION_CONFIGURATION = {
     X: {
-      LEFT: "tc_autocomplete--left",
-      RIGHT: "tc_autocomplete--right",
+      LEFT: "tc-autocomplete--left",
+      RIGHT: "tc-autocomplete--right",
     },
     Y: {
-      TOP: "tc_autocomplete--top",
-      BOTTOM: "tc_autocomplete--bottom",
+      TOP: "tc-autocomplete--top",
+      BOTTOM: "tc-autocomplete--bottom",
     },
 };
-
-const DEFAULT_WIDTH       = 200;
-const DEFAULT_OFFSET_TOP  = 8;
-const DEFAULT_OFFSET_LEFT = 12;
-const MODE_QUESTIONARE    = 'questionare';
 
 const defaultConfig = {
     template      : (data, fieldView) => (<span>{data[fieldView]}</span>),
@@ -42,7 +40,6 @@ const defaultConfig = {
     isTriggerOnly : false,
     triggers      : [],
     mode          : MODE_QUESTIONARE,
-    // fieldView    : 'text'
 };
 
 class AutoCompleteTextarea extends Component {
@@ -54,7 +51,6 @@ class AutoCompleteTextarea extends Component {
         this.textSuggestionWidth      = 0;
         this.referralSearch           = [];
         this.inputVal                 = value;
-        this.value                    = value;
         this.selectedIndex            = -1;
         this.referralSearchSelectedId = 0;
         this.inputValTemp             = '';
@@ -90,10 +86,6 @@ class AutoCompleteTextarea extends Component {
         }
 
         this._heightConfig = { maxHeight: 0 };
-    }
-
-    onbeforeupdate() {
-        //
     }
 
     oncreate({ dom }) {
@@ -132,7 +124,6 @@ class AutoCompleteTextarea extends Component {
 
     _onUpdate() {
         if (this.dropDownRef && this.textareaRef) {
-            console.log('_onUpdate')
             let top               = this.positionAutocomplete.top || 0,
                 left              = this.positionAutocomplete.left || 0,
                 topPosition       = 0,
@@ -146,22 +137,10 @@ class AutoCompleteTextarea extends Component {
                   textareaBounds  = this.textareaRef.getBoundingClientRect(),
                   computedStyle   = window.getComputedStyle(this.dropDownRef);
 
-            const marginTop = parseInt(
-            computedStyle.getPropertyValue("margin-top"),
-            10
-            );
-            const marginBottom = parseInt(
-            computedStyle.getPropertyValue("margin-bottom"),
-            10
-            );
-            const marginLeft = parseInt(
-            computedStyle.getPropertyValue("margin-left"),
-            10
-            );
-            const marginRight = parseInt(
-            computedStyle.getPropertyValue("margin-right"),
-            10
-            );
+            const marginTop    = parseInt(computedStyle.getPropertyValue("margin-top"), DEFAULT_MARGIN);
+            const marginBottom = parseInt(computedStyle.getPropertyValue("margin-bottom"), DEFAULT_MARGIN);
+            const marginLeft   = parseInt(computedStyle.getPropertyValue("margin-left"), DEFAULT_MARGIN);
+            const marginRight  = parseInt(computedStyle.getPropertyValue("margin-right"), DEFAULT_MARGIN);
 
             const dropdownBottom =
             marginTop +
@@ -169,6 +148,7 @@ class AutoCompleteTextarea extends Component {
             textareaBounds.top +
             top +
             dropdownBounds.height;
+
             const dropdownRight =
             marginLeft +
             marginRight +
@@ -178,7 +158,7 @@ class AutoCompleteTextarea extends Component {
 
             if (dropdownRight > containerBounds.right &&
                 textareaBounds.left + left > dropdownBounds.width) {
-                leftPosition = left - (dropdownRight - containerBounds.right); //dropdownBounds.width;
+                leftPosition = left - (dropdownRight - containerBounds.right);
                 usedClasses.push(POSITION_CONFIGURATION.X.LEFT);
                 unusedClasses.push(POSITION_CONFIGURATION.X.RIGHT);
                 console.log('left')
@@ -218,30 +198,29 @@ class AutoCompleteTextarea extends Component {
     setScroll() {
         const selected       = this.selectedIndex;
         const elHeight       = this.ulScrollContentRef?.clientHeight;
-        const scrollContent1 = document.getElementById("scrollContent1");
-        const scrollTop      = scrollContent1.scrollTop;
-        const viewport       = scrollTop + scrollContent1.clientHeight;
+        const scrollContent  = document.getElementById("tc-autocomplete-content");
+        const scrollTop      = scrollContent.scrollTop;
+        const viewport       = scrollTop + scrollContent.clientHeight;
         const elOffset       = elHeight * selected;
 
         if (elOffset < scrollTop || (elOffset + elHeight) > viewport) {
-            scrollContent1.scrollTop = elOffset;
+            scrollContent.scrollTop = elOffset;
         }
     }
 
     view() {
-        const { options, value, name } = this.attrs;
+        const { options, name } = this.attrs;
 
-        const textAreaStyle = `width: 100%;height: 100%;margin-bottom: 0px; ${this.isHideCursor ? 'caret-color: transparent;' : ''}`
+        const textAreaClass = `tc-autocomplete-textarea ${this.isHideCursor ? 'caret-color: transparent;' : ''}`
 
-        const autocompleteStyle = `min-width: ${this.textSuggestionWidth || DEFAULT_WIDTH}px;max-height: ${this._heightConfig.heightContainer}px;`
+        const autocompleteStyle = `min-width: ${this.textSuggestionWidth
+            || DEFAULT_WIDTH}px;max-height: ${this._heightConfig.heightContainer}px;`
 
 
         return (
-            <div id='tc-autocomplete-textarea' class='tc-autocomplete-textarea'>
+            <div id='tc-autocomplete-textarea' className={textAreaClass}>
                 <textarea
-                    ref="textSuggestionRef"
                     oncreate={({ dom }) => (this.textareaRef = dom)}
-                    // type="text"
                     value={this.inputVal}
                     oninput={(e) => this._onChange(e)}
                     onkeydown={(e) => this._onKeyDown(e)}
@@ -249,22 +228,18 @@ class AutoCompleteTextarea extends Component {
                     onkeyup={(e) => this._onKeyUp(e)}
                     onblur={() => this._onBlur()}
                     name={name}
-                    style={textAreaStyle}
                 ></textarea>
 
                 <div
-                    id="content"
-                    ref="content"
+                    id="tc-autocomplete-content"
                     oncreate={({ dom }) => (this.dropDownMainRef = dom)}
-                    // class="tc_autocomplete"
-                    class="textarea-suggestion"
+                    className="textarea-suggestion"
                 >
                     <If condition={this.textSuggestionState === true}>
                         <Container
                             style={autocompleteStyle}
-                            // class="textarea-suggestion"
                             className="tc-drop-down-container"
-                            id="scrollContent1"
+                            id="tc-autocomplete-scroll-content"
                             oncreate={({ dom }) => {
                                 this.dropDownRef = dom;
                                 this._onCreateScrollContainer(dom)
@@ -272,19 +247,22 @@ class AutoCompleteTextarea extends Component {
                             }}
                         >
                             <ul
-                                style="list-style:none;margin : 0;padding: 0;"
-                                class="scrollContent"
-                                id="ulScrollContent"
+                                className="tc-autocomplete-scroll-content"
+                                id="tc-autocomplete-ul-scroll-content"
                                 oncreate={({ dom }) => (this.ulScrollContentRef = dom)}
                             >
                                 {
                                     this.referralSearch.map((refSearch, index) => {
                                         const isLast = (this.referralSearch.length - 1) === index;
+                                        const classItem = `tc-autocomplete-referral ${this.inputValIdTemp === refSearch.id
+                                            ? 'tc-autocomplete-selected'
+                                            : ''
+                                        }`
                                         return (
                                             <li
 
                                                 onclick={() => this.setReferralTest(refSearch.text, refSearch.id)}
-                                                className={`referral ${this.inputValIdTemp === refSearch.id ? 'selectedWithArrow' : ''}`}
+                                                className={classItem}
                                             >
                                                 {this._renderItem(refSearch, index, isLast)}
                                             </li>
@@ -355,11 +333,12 @@ class AutoCompleteTextarea extends Component {
 
     _onKeyUp(e){
         let itemText    = '';
+
+        const query     = this.getQuery(e.target.value);
         const keyCode   = e.keyCode || e.which;
         const keyChar   = e.key;
-        const query     = this.getQuery(e.target.value);
-        this.searchText = query;
         this.inputVal   = e.target.value;
+        this.searchText = query;
 
         switch (keyCode) {
             case LEFT_SQUARE_BRACKET:
@@ -432,7 +411,7 @@ class AutoCompleteTextarea extends Component {
                         }
                     });
                 }
-                if(this.inputVal == '' || this.inputVal == null || this.referralSearch.length == 0) {
+                if (this.inputVal == '' || this.inputVal == null || this.referralSearch.length == 0) {
                     this._close();
                 } else {
                     if (this.selectedIndex  === -1) {
@@ -556,7 +535,7 @@ class AutoCompleteTextarea extends Component {
                 } else {
                     this.selectedIndex = 0;
                 }
-                this.inputValTemp = this.referralSearch[this.selectedIndex].text;
+                this.inputValTemp   = this.referralSearch[this.selectedIndex].text;
                 this.inputValIdTemp = this.referralSearch[this.selectedIndex].id;
                 break;
 
@@ -570,13 +549,13 @@ class AutoCompleteTextarea extends Component {
                     }
                 }
 
-                this.inputValTemp = this.referralSearch[this.selectedIndex].text;
+                this.inputValTemp   = this.referralSearch[this.selectedIndex].text;
                 this.inputValIdTemp = this.referralSearch[this.selectedIndex].id;
                 break;
             }
         }
 
-        if (keyCode === ENTER || keyCode ===TAB) {
+        if (keyCode === ENTER || keyCode === TAB) {
             e.preventDefault();
             e.stopPropagation();
         }
@@ -632,7 +611,6 @@ class AutoCompleteTextarea extends Component {
 
     _onBlur() {
         const onChange = this.attrs.onChange;
-        console.log('blur')
 
         if (typeof onChange === "function") {
             onChange(this.inputVal);
