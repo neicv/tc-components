@@ -1,3 +1,7 @@
+import _ from 'lodash';
+
+const globalExcludes = ['creation', 'handler'];
+
 export const objectType = (obj) => {
     return Object.prototype.toString.call(obj).slice(8, -1);
 }
@@ -96,4 +100,80 @@ export const getAllNonEmptyNodesIds = (items, { idProp, childrenProp }) => {
         });
 
     return ids.concat(childrenIds);
+}
+
+// simplified version shallowCompare from 'react-addons-shallow-compare';
+export const shallowCompare = (props, nextProps) => {
+    const oldProps = _.omit(props, globalExcludes)
+    const newProps = _.omit(nextProps, globalExcludes)
+    const keys = Object.keys(props)
+    return shallowEqualJS(oldProps, newProps, keys)
+}
+
+export const shallowCompareWithState = (data, nextProps, nextState) => {
+    const { props = {}, state = {} } = data
+    const stateKeys = Object.keys(state)
+
+    for (let i = 0; i < stateKeys.length; i++) {
+        const key = stateKeys[i]
+        if (state[key] !== nextState[key]) {
+            return true
+        }
+    }
+
+    return shallowCompare(props, nextProps)
+}
+
+const shallowEqualJS = (props, nextProps, keys) => {
+    const shouldUpdate = false
+
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i]
+
+        let oldValue   = props[key]
+        const newValue = nextProps[key]
+
+        if (typeof newValue === 'function') {
+            continue;
+        }
+
+        const isImmutable = !!(newValue && newValue.get && newValue.getIn)
+
+        if (isImmutable) {
+            oldValue = oldValue || new Map()
+            if (!_.isEqual(newValue, oldValue)) {
+
+                return true
+            }
+        }
+
+        if (typeof newValue !== 'undefined' && oldValue === 'undefined') {
+
+            return true;
+        }
+
+        if (typeof newValue === 'object') {
+            if (!_.isEqual(newValue, oldValue)) {
+
+                return true;
+            }
+        }
+
+        if (typeof newValue === 'string'
+            || typeof newValue === 'number'
+            || typeof newValue === 'boolean'
+        ) {
+            if (newValue !== oldValue) {
+
+                return true;
+            }
+        }
+
+        if (newValue !== oldValue) {
+
+            return true;
+        }
+    }
+
+    return shouldUpdate;
 }

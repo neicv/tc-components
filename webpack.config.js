@@ -22,6 +22,19 @@ module.exports = {
             '@': path.resolve(__dirname, 'src/js'),
             '_': path.resolve(__dirname, 'src'),
             '@doc': path.resolve(__dirname, 'src/js/doc')
+        },
+        fallback: {
+            // util: require.resolve("util/"),
+            // http: require.resolve("stream-http"),
+            // https: require.resolve("https-browserify"),
+            // path: require.resolve("path-browserify"),
+            // crypto: require.resolve("crypto-browserify"),
+            // zlib: require.resolve("browserify-zlib"),
+            // stream: require.resolve("stream-browserify"),
+            // vm: require.resolve("vm-browserify"),
+            // os: require.resolve("os-browserify/browser"),
+            // constants: require.resolve("constants-browserify"),
+            // fs: false
         }
     },
     devServer: {
@@ -153,15 +166,7 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         cacheDirectory: true,
-                        // if no .babelrc in root dir - uncomment:
-                        // presets: ["@babel/preset-env"],
-                        // sourceMaps: true,
-                        // plugins: [
-                        //     ["@babel/plugin-transform-react-jsx", {
-                        //         "pragma": "m",
-                        //         "pragmaFrag": "'['"
-                        //     }]
-                        // ]
+                        // if no .babelrc in root dir - type cfg babel here:
                     },
                 },
             },

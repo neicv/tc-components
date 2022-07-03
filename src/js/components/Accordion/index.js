@@ -21,8 +21,8 @@
 
 import m from "mithril";
 import classNames from "classnames";
-import Component from "../../lib/Component";
-import { debounce } from "../../lib/Helpers";
+import Component from "@/lib/Component";
+import { debounce } from "@/lib/Helpers";
 import Chevron from "../Chevron/chevron";
 import Content from "./components/content";
 

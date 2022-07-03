@@ -1,3 +1,5 @@
+import m from "mithril";
+
 function getIntervals(content, regExps) {
     let globalRegExps = convertRegExToGlobal(regExps),
         mapIntervals  = getMapIntervals(globalRegExps, content);
