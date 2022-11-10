@@ -6,33 +6,25 @@ import {setHighLightVnode, setHighLight} from "@/lib/highLight";
 import {Container} from '@/components/plugins/ScrollBar';
 import scrollIntoView from "scroll-into-view-if-needed";
 
-const ESCAPE              = 27;
-const UP                  = 38;
-const DOWN                = 40;
-const ENTER               = 13;
-const TAB                 = 9;
-const LEFT_SQUARE_BRACKET = 219;
-
-const DEFAULT_WIDTH       = 200;
-const DEFAULT_MARGIN      = 10;
-const DEFAULT_OFFSET_TOP  = 8;
-const DEFAULT_OFFSET_LEFT = 12;
-const MODE_QUESTIONARE    = 'questionare';
-
-const ALL_SPACES_CHAR                = [' ', '\r', '\n', '\t']
-const QUESTIONARE_TRIGGER_RIGHT_CHAR = ['[']
-const QUESTIONARE_TRIGGER_LEFT_CHAR  = [']']
-
-const POSITION_CONFIGURATION = {
-    X: {
-      LEFT: "tc-autocomplete--left",
-      RIGHT: "tc-autocomplete--right",
-    },
-    Y: {
-      TOP: "tc-autocomplete--top",
-      BOTTOM: "tc-autocomplete--bottom",
-    },
-};
+import {
+    ESCAPE,
+    UP,
+    DOWN,
+    ENTER,
+    TAB,
+    LEFT_SQUARE_BRACKET,
+    DEFAULT_WIDTH,
+    DEFAULT_MARGIN,
+    DEFAULT_OFFSET_TOP,
+    DEFAULT_OFFSET_LEFT,
+    MODE_QUESTIONARE,
+    ALL_SPACES_CHAR,
+    DEFAULT_WIDTH_SCROLLBAR,
+    QUESTIONARE_TRIGGER_RIGHT_CHAR,
+    QUESTIONARE_TRIGGER_LEFT_CHAR,
+    POSITION_CONFIGURATION,
+    DEFAULT_NUMBER_OF_RESULT,
+} from '../constants';
 
 const defaultConfig = {
     template      : (data, fieldView) => (<span>{data[fieldView]}</span>),
@@ -44,10 +36,9 @@ const defaultConfig = {
 
 class AutoCompleteTextarea extends Component {
     oninit() {
-        const { options, value, name } = this.attrs;
-        //
+        const { value } = this.attrs;
+
         this.textSuggestionState      = false;
-        this.scrollVisible            = false;
         this.textSuggestionWidth      = 0;
         this.referralSearch           = [];
         this.inputVal                 = value;
@@ -72,6 +63,7 @@ class AutoCompleteTextarea extends Component {
 
         this._config.data           = this._config.data ? this._config.data : [];
         this._config.fieldsSearch   = this._config.fieldsSearch ? this._config.fieldsSearch : [];
+        this._config.fieldsCutting  = this._config.fieldsCutting ? this._config.fieldsCutting : {};
 
         this._config.unitedTriggers = this._config.isTriggerOnly
             ? this._config.triggers
@@ -92,27 +84,22 @@ class AutoCompleteTextarea extends Component {
         const { boundariesElement = 'body' } = this.attrs;
 
         if (typeof boundariesElement === "string") {
-          const elem = document.querySelector(boundariesElement);
-          if (!elem) {
-            throw new Error(
-              "Invalid prop boundariesElement: it has to be string or HTMLElement."
-            );
-          }
-          this.containerElem = elem;
+            const elem = document.querySelector(boundariesElement);
+
+            if (!elem) {
+                throw new Error("Invalid prop boundariesElement: it has to be string or HTMLElement.");
+            }
+            this.containerElem = elem;
         } else if (boundariesElement instanceof HTMLElement) {
-          this.containerElem = boundariesElement;
+            this.containerElem = boundariesElement;
         } else {
-          throw new Error(
-            "Invalid prop boundariesElement: it has to be string or HTMLElement."
-          );
+            throw new Error("Invalid prop boundariesElement: it has to be string or HTMLElement.");
         }
 
         if (!this.containerElem || !this.containerElem.contains(dom)) {
-          if (process.env.NODE_ENV !== "test") {
-            throw new Error(
-              "Invalid prop boundariesElement: it has to be one of the parents."
-            );
-          }
+            if (process.env.NODE_ENV !== "test") {
+                throw new Error("Invalid prop boundariesElement: it has to be one of the parents.");
+            }
         }
 
         window.addEventListener("resize", this._resizeAction);
@@ -120,6 +107,21 @@ class AutoCompleteTextarea extends Component {
 
     onremove() {
         window.removeEventListener("resize", this._resizeAction);
+    }
+
+    onbeforeupdate() {
+        const data  = this.attrs.data || [];
+
+        if (this._config.data && this._config.data.length) {
+            const oldValuesSerialized = this._config.data.map(val => val.id).join("");
+            const newValuesSerialized = data.map(val => val.id).join("");
+
+            if (oldValuesSerialized === newValuesSerialized && data) {
+                return;
+            }
+        }
+
+        this._config.data = [...data];
     }
 
     _onUpdate() {
@@ -133,35 +135,43 @@ class AutoCompleteTextarea extends Component {
             const unusedClasses   = [];
 
             const containerBounds = this.containerElem.getBoundingClientRect(),
-                  dropdownBounds  = this.dropDownRef.getBoundingClientRect(),
-                  textareaBounds  = this.textareaRef.getBoundingClientRect(),
-                  computedStyle   = window.getComputedStyle(this.dropDownRef);
+                dropdownBounds  = this.dropDownRef.getBoundingClientRect(),
+                textareaBounds  = this.textareaRef.getBoundingClientRect(),
+                computedStyle   = window.getComputedStyle(this.dropDownRef);
 
             const marginTop    = parseInt(computedStyle.getPropertyValue("margin-top"), DEFAULT_MARGIN);
             const marginBottom = parseInt(computedStyle.getPropertyValue("margin-bottom"), DEFAULT_MARGIN);
             const marginLeft   = parseInt(computedStyle.getPropertyValue("margin-left"), DEFAULT_MARGIN);
             const marginRight  = parseInt(computedStyle.getPropertyValue("margin-right"), DEFAULT_MARGIN);
 
-            const dropdownBottom =
-            marginTop +
-            marginBottom +
-            textareaBounds.top +
-            top +
-            dropdownBounds.height;
+            const dropdownBottom
+            = marginTop
+            + marginBottom
+            + textareaBounds.top
+            + top
+            + dropdownBounds.height;
 
-            const dropdownRight =
-            marginLeft +
-            marginRight +
-            textareaBounds.left +
-            left +
-            dropdownBounds.width || DEFAULT_WIDTH;
+            const dropdownRight
+            = marginLeft
+            + marginRight
+            + textareaBounds.left
+            + left
+            + dropdownBounds.width || DEFAULT_WIDTH;
 
-            if (dropdownRight > containerBounds.right &&
-                textareaBounds.left + left > dropdownBounds.width) {
+            let containerBoundsRight = containerBounds.right;
+
+            if (this._config.mode === MODE_QUESTIONARE) {
+                containerBoundsRight -= DEFAULT_WIDTH_SCROLLBAR
+            }
+
+            if (dropdownRight > containerBoundsRight /*&&
+                textareaBounds.left + left > dropdownBounds.width*/) {
                 leftPosition = left - (dropdownRight - containerBounds.right);
+                if (this._config.mode === MODE_QUESTIONARE) {
+                    leftPosition -= DEFAULT_WIDTH_SCROLLBAR;
+                }
                 usedClasses.push(POSITION_CONFIGURATION.X.LEFT);
                 unusedClasses.push(POSITION_CONFIGURATION.X.RIGHT);
-                console.log('left')
             } else {
                 leftPosition = left;
                 usedClasses.push(POSITION_CONFIGURATION.X.RIGHT);
@@ -169,7 +179,7 @@ class AutoCompleteTextarea extends Component {
             }
 
             if (dropdownBottom > containerBounds.bottom &&
-            textareaBounds.top + top > dropdownBounds.height) {
+                textareaBounds.top + top > dropdownBounds.height) {
                 topPosition = top - dropdownBounds.height;
                 usedClasses.push(POSITION_CONFIGURATION.Y.TOP);
                 unusedClasses.push(POSITION_CONFIGURATION.Y.BOTTOM);
@@ -213,8 +223,11 @@ class AutoCompleteTextarea extends Component {
 
         const textAreaClass = `tc-autocomplete-textarea ${this.isHideCursor ? 'caret-color: transparent;' : ''}`
 
-        const autocompleteStyle = `min-width: ${this.textSuggestionWidth
-            || DEFAULT_WIDTH}px;max-height: ${this._heightConfig.heightContainer}px;`
+        let width = this.textSuggestionWidth || DEFAULT_WIDTH;
+
+        width = this._config.mode === MODE_QUESTIONARE ? width - DEFAULT_WIDTH_SCROLLBAR : width;
+
+        const autocompleteStyle = `min-width: ${width}px;max-height: ${this._heightConfig.heightContainer}px;`
 
 
         return (
@@ -237,6 +250,7 @@ class AutoCompleteTextarea extends Component {
                 >
                     <If condition={this.textSuggestionState === true}>
                         <Container
+                            // isScrollHasY={this.referralSearch.length > 1}
                             style={autocompleteStyle}
                             className="tc-drop-down-container"
                             id="tc-autocomplete-scroll-content"
@@ -254,10 +268,11 @@ class AutoCompleteTextarea extends Component {
                                 {
                                     this.referralSearch.map((refSearch, index) => {
                                         const isLast = (this.referralSearch.length - 1) === index;
-                                        const classItem = `tc-autocomplete-referral ${this.inputValIdTemp === refSearch.id
-                                            ? 'tc-autocomplete-selected'
-                                            : ''
-                                        }`
+                                        const classItem = classNames(
+                                            'tc-autocomplete-referral',
+                                            { 'tc-autocomplete-selected' : this.inputValIdTemp === refSearch.id },
+                                        )
+
                                         return (
                                             <li
 
@@ -331,12 +346,15 @@ class AutoCompleteTextarea extends Component {
         }
     }
 
-    _onKeyUp(e){
-        let itemText    = '';
+    _onKeyUp(e) {
+        let itemText    = '',
+            state       = false,
+            count       = 0;
 
         const query     = this.getQuery(e.target.value);
         const keyCode   = e.keyCode || e.which;
         const keyChar   = e.key;
+
         this.inputVal   = e.target.value;
         this.searchText = query;
 
@@ -345,7 +363,8 @@ class AutoCompleteTextarea extends Component {
                 if (this._config.mode === MODE_QUESTIONARE
                            && keyChar === QUESTIONARE_TRIGGER_RIGHT_CHAR[0]) {
                     const caretPosition = this.getCaretPosition();
-                    this.inputVal = this.inputVal.slice(0, caretPosition )
+
+                    this.inputVal = this.inputVal.slice(0, caretPosition)
                         + QUESTIONARE_TRIGGER_LEFT_CHAR[0]
                         + this.inputVal.slice(caretPosition);
 
@@ -384,37 +403,31 @@ class AutoCompleteTextarea extends Component {
                 this.inputVal      = e.target.value;
                 this.selectedIndex = -1;
 
-                var state = false;
-                if(query == '') {
+                if (query === '') {
                     this.referralSearch = [];
-                    this.scrollVisible = false;
-                }
-                else{
+                } else {
                     this.referralSearch = [];
                     this._config.data.forEach(item => {
+                        if (count >= DEFAULT_NUMBER_OF_RESULT) {
+                            return;
+                        }
+
                         itemText = this._config.mode === MODE_QUESTIONARE
                             ? item.text + '{' + item.id + '}'
                             : item.text;
-                        if (itemText.includes(query)) {
+                        if (itemText.toLowerCase().includes(query.toLowerCase())) {
                             state = true;
-                            if(state) {
-                                this.referralSearch.push({
-                                    id   : item.id,
-                                    text : item.text
-                                });
-                                this.scrollVisible = true;
-                            }
-                            else this.selectedIndex = -1;
-                        }
-                        else{
-                            this.scrollVisible = false;
+                            if (state) {
+                                this.referralSearch.push(item);
+                                count ++;
+                            } else { this.selectedIndex = -1; }
                         }
                     });
                 }
-                if (this.inputVal == '' || this.inputVal == null || this.referralSearch.length == 0) {
+                if (this.inputVal === '' || this.inputVal === null || this.referralSearch.length === 0) {
                     this._close();
                 } else {
-                    if (this.selectedIndex  === -1) {
+                    if (this.selectedIndex === -1) {
                         this.selectedIndex  = 0;
                         this.inputValTemp   = this.referralSearch[this.selectedIndex].text;
                         this.inputValIdTemp = this.referralSearch[this.selectedIndex].id;
@@ -422,7 +435,7 @@ class AutoCompleteTextarea extends Component {
 
                     if (this.isFirstCharAccepted) {
                         this.dropDownMainRef.style.visibility = "hidden";
-                        this.isFirstCharAccepted = false;
+                        this.isFirstCharAccepted              = false;
                     }
 
                     this.textSuggestionState = true;
@@ -445,8 +458,12 @@ class AutoCompleteTextarea extends Component {
         const startOfTokenPosition = this.getStartOfTokenPosition(textToModify, caretPosition);
         const endOfTokenPosition   = this.getEndOfTokenPosition(textToModify, caretPosition);
         const cursorPosition       = startOfTokenPosition + insertText.length;
+
         if (startOfTokenPosition) {
-            modifiedText = textToModify.slice(0, startOfTokenPosition ) + insertText + textToModify.slice(endOfTokenPosition);
+            modifiedText
+            = textToModify.slice(0, startOfTokenPosition)
+            + insertText
+            + textToModify.slice(endOfTokenPosition);
         } else {
             modifiedText = insertText;
         }
@@ -455,7 +472,7 @@ class AutoCompleteTextarea extends Component {
 
         if (cursorPosition) {
             setTimeout(() => {
-                this.setCaretPosition(this._config.mode === MODE_QUESTIONARE ? cursorPosition + 1 : cursorPosition );
+                this.setCaretPosition(this._config.mode === MODE_QUESTIONARE ? cursorPosition + 1 : cursorPosition);
             }, 0);
         }
 
@@ -473,7 +490,7 @@ class AutoCompleteTextarea extends Component {
 
         this.textareaRef.focus();
         this.textareaRef.setSelectionRange(position, position);
-    };
+    }
 
     getCaretPosition = () => {
         if (!this.textareaRef) {
@@ -487,6 +504,10 @@ class AutoCompleteTextarea extends Component {
 
     _onChange(e) {
         this.inputVal = e.target.value;
+
+        if (typeof this._config.onChange === "function") {
+            this._config.onChange(this.inputVal);
+        }
     }
 
     _updateDropDown(e) {
@@ -499,6 +520,7 @@ class AutoCompleteTextarea extends Component {
         );
 
         let top  = newTop - this.textareaRef.scrollTop || 0;
+
         let left = newLeft + DEFAULT_OFFSET_LEFT;
 
         this.positionAutocomplete = { top, left }
@@ -518,7 +540,7 @@ class AutoCompleteTextarea extends Component {
     _onKeyDown(e) {
         const keyCode  = e.keyCode || e.which;
 
-        if (this.textSuggestionState === false ) {
+        if (this.textSuggestionState === false) {
             return;
         }
 
@@ -527,31 +549,31 @@ class AutoCompleteTextarea extends Component {
             e.stopPropagation();
 
             switch (keyCode) {
-            case DOWN:
-                this.inputValTemp = '';
+                case DOWN:
+                    this.inputValTemp = '';
 
-                if(this.selectedIndex < this.referralSearch.length-1) {
-                    this.selectedIndex += 1;
-                } else {
-                    this.selectedIndex = 0;
-                }
-                this.inputValTemp   = this.referralSearch[this.selectedIndex].text;
-                this.inputValIdTemp = this.referralSearch[this.selectedIndex].id;
-                break;
-
-            case UP:
-                this.inputValTemp = '';
-                if (this.selectedIndex < this.referralSearch.length) {
-                    if (this.selectedIndex > 0) {
-                        this.selectedIndex -= 1;
+                    if (this.selectedIndex < this.referralSearch.length - 1) {
+                        this.selectedIndex += 1;
                     } else {
-                        this.selectedIndex = this.referralSearch.length-1;
+                        this.selectedIndex = 0;
                     }
-                }
+                    this.inputValTemp   = this.referralSearch[this.selectedIndex].text;
+                    this.inputValIdTemp = this.referralSearch[this.selectedIndex].id;
+                    break;
 
-                this.inputValTemp   = this.referralSearch[this.selectedIndex].text;
-                this.inputValIdTemp = this.referralSearch[this.selectedIndex].id;
-                break;
+                case UP:
+                    this.inputValTemp = '';
+                    if (this.selectedIndex < this.referralSearch.length) {
+                        if (this.selectedIndex > 0) {
+                            this.selectedIndex -= 1;
+                        } else {
+                            this.selectedIndex = this.referralSearch.length - 1;
+                        }
+                    }
+
+                    this.inputValTemp   = this.referralSearch[this.selectedIndex].text;
+                    this.inputValIdTemp = this.referralSearch[this.selectedIndex].id;
+                    break;
             }
         }
 
@@ -566,7 +588,8 @@ class AutoCompleteTextarea extends Component {
 
         if (position) {
             const str   = text.slice(0, position);
-            const index = this.getNearestIndexRight(str);
+            const index = this.getNearestIndexRight(str, true);
+
             if (index !== -1) {
                 res = index + 1;
             }
@@ -581,6 +604,7 @@ class AutoCompleteTextarea extends Component {
         if (position) {
             const str   = text.slice(position);
             const index = this.getNearestIndexLeft(str);
+
             if (index !== -1) {
                 res = position + index;
             }
@@ -628,6 +652,8 @@ class AutoCompleteTextarea extends Component {
         this.searchText          = '';
         this.textSuggestionState = false;
         this.isFirstCharAccepted = true;
+        this.positionChange      = false;
+        this.positionY           = '';
 
         setTimeout(() => m.redraw(), 0)
     }
@@ -681,6 +707,7 @@ class AutoCompleteTextarea extends Component {
 
         chars.forEach(c => {
             let i = str.lastIndexOf(c);
+
             if (i > -1) {
                 indexArr.push(i);
             }
@@ -753,17 +780,35 @@ class AutoCompleteTextarea extends Component {
     }
 
     _getTemplateItem(item, index) {
-        const template     = this._config.template,
-              fieldView    = this._config.fieldView,
-              fieldsSearch = [...this._config.fieldsSearch];
+        const template    = this._config.template,
+            fieldView     = this._config.fieldView,
+            fieldsSearch  = [...this._config.fieldsSearch],
+            fieldsCutting = {...this._config.fieldsCutting},
+            isCuttingText = this._config?.isCuttingText || false;
 
-        let data;
+        let data, keys;
 
         if (item && typeof item === "object") {
             data = { ...item };
         } else {
             data = { value: item };
             fieldsSearch.push("value");
+        }
+
+        if (isCuttingText) {
+            if (this._config.mode === MODE_QUESTIONARE) {
+                data.name = data.text;
+            }
+
+            keys = Object.keys(fieldsCutting);
+
+            if (keys.length) {
+                keys.forEach(key => {
+                    if (data.hasOwnProperty(key)) {
+                        data[key] = this._cuttingText(data[key], fieldsCutting[key]);
+                    }
+                });
+            }
         }
 
         this._setHighLightFields(data, fieldsSearch);
@@ -782,6 +827,13 @@ class AutoCompleteTextarea extends Component {
         }
     }
 
+    _cuttingText(text = '', len = 0) {
+        if (text.length > len) {
+            return text.slice(0, len) + '...';
+        }
+
+        return text;
+    }
 }
 
 export default AutoCompleteTextarea;

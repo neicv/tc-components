@@ -34,6 +34,8 @@ class AutoCompleteTextAreaDoc {
             {'id':'639', 'text' : 'trance'},
             {'id':'752', 'text' : 'the piano'},
             {'id':'423', 'text' : 'personal'},
+            {'id':'512', 'text' : 'Число 1'},
+            {'id':'513', 'text' : 'Число 2'},
             {'id':'5454', 'text' : 'though it makes no difference and so'},
         ]
     }
