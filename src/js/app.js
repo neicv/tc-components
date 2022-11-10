@@ -76,6 +76,11 @@ m.route(root, '/home', {
             return <App><EditListDoc/></App>
         }
 	},
+	'/excelcp': {
+		render() {
+            return <App><AutoCompleteTextAreaDoc/></App>
+        }
+	},
 	'/modal': {
 		render() {
             return <App><ModalDoc/></App>

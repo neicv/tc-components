@@ -4,6 +4,7 @@ export const mainMenu =  [
     { path: 'home', icon: 'fas fa-home', text: 'Home'},
     { path: 'accordion', icon: 'font-icon pencil', text: 'Accordion'},
     { path: 'editlist', icon: 'editor-icon picture', text: 'Edit List'},
+    { path: 'excelcp', icon: 'excel-icon picture', text: 'Excel C & P'},
     { path: 'icons', icon: 'editor-icon picture', text: 'Icons'},
     { path: 'modal', icon: 'fas fa-list-ol', text: 'Modal'},
     { path: 'nestable', icon: 'fas fa-list-ol', text: 'Nestable'},
