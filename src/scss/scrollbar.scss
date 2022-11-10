@@ -1,0 +1,111 @@
+  /* !ScrollBar */
+
+.turbo-scrollbar {
+    overflow: hidden;
+    position: relative;
+}
+
+.turbo-scrollbar_hovered {
+    .turbo-scrollbar__rail-y, .turbo-scrollbar__rail-x {
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    &:hover {
+      .turbo-scrollbar__rail-y, .turbo-scrollbar__rail-x {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
+}
+
+.turbo-scrollbar_has-y .turbo-scrollbar__rail-y, .turbo-scrollbar_has-x .turbo-scrollbar__rail-x {
+    display: block;
+}
+
+.turbo-scrollbar__rail-x, .turbo-scrollbar__rail-y {
+    display: none;
+    padding: 2px;
+    position: absolute;
+    background-color: rgba(229, 229, 229, 0.8);
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    transition: background-color 0.3s linear;
+    z-index: 5;
+}
+
+.turbo-scrollbar__rail-x:hover, .turbo-scrollbar__rail-y:hover {
+    background-color: rgba(229, 229, 229, 1);
+}
+
+.turbo-scrollbar__trigger {
+    position: absolute;
+    background: #0a71b9;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.turbo-scrollbar__rail-x > span, .turbo-scrollbar__rail-y > span {
+    display: block;
+    position: absolute;
+    z-index: 4;
+}
+
+/* x */
+
+.turbo-scrollbar__rail-x {
+    height: 15px;
+    box-sizing: border-box;
+    left: 0;
+    bottom: 0;
+    transition: height 0.3s linear;
+
+    > span {
+        width: 100%;
+        height: 5px;
+        top: -5px;
+        left: 0;
+    }
+
+    .turbo-scrollbar__trigger {
+        &:active + span {
+            height: calc(100% + 5px);
+        }
+
+        height: calc(100% - 4px);
+    }
+}
+
+/* y */
+
+.turbo-scrollbar__rail-y {
+    width: 15px;
+    box-sizing: border-box;
+    right: 0;
+    top: 0;
+    transition: width 0.3s linear;
+
+    > span {
+        height: 100%;
+        width: 5px;
+        left: -5px;
+        top: 0;
+    }
+
+    .turbo-scrollbar__trigger {
+        &:active + span {
+            width: calc(100% + 5px);
+        }
+
+        width: calc(100% - 4px);
+    }
+}
+
+/* хак для IE10. Отступ рельсы, так как в IE10 она добавляет 1px в scrollHeight */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    .turbo-scrollbar__rail-x {
+        margin-bottom: 1px;
+    }
+}
