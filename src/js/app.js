@@ -8,6 +8,7 @@ import m from 'mithril';
 import HomeView from './doc/home';
 import AccordionDoc from './doc/accordion';
 import EditListDoc from './doc/editlist';
+import ExcelCPDoc from './doc/excelcp';
 import FontIconsDoc from './doc/fontIcons';
 import ModalDoc from './doc/modal';
 import NestableDoc from './doc/nestable';
@@ -78,7 +79,7 @@ m.route(root, '/home', {
 	},
 	'/excelcp': {
 		render() {
-            return <App><AutoCompleteTextAreaDoc/></App>
+            return <App><ExcelCPDoc/></App>
         }
 	},
 	'/modal': {
