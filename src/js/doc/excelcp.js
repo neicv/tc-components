@@ -5,6 +5,11 @@ import excelCPDemoContent from './data/excelCPDemoContent';
 class ExcelCPDoc {
     oninit() {
         this.showModal = false
+        this.currentEl_Id = '';
+        this.result = {
+            r: -1,
+            c: -1
+        };
 
         this.tablesIds        = 0;
         this.tablesModel      = {},
@@ -32,6 +37,21 @@ class ExcelCPDoc {
                     <div class="b-content-wrapper edit-punct" contenteditable="true">
                     </div>
                 </p>
+                <p>
+                    <span>Col_ID: </span>
+                    <span>{this.currentEl_Id}</span>
+                </p>
+                <p>
+                    <span>Coords: </span>
+                    <Choose>
+                        <When condition={this.result.success}>
+                            <span>r: {this.result.r + 1} c: {this.result.c + 1}</span>
+                        </When>
+                        <Otherwise>
+                            <span>r: - c: -</span>
+                        </Otherwise>
+                    </Choose>
+                </p>
             </div>
         )
     }
@@ -48,7 +68,48 @@ class ExcelCPDoc {
         var currentEl = e.target;
 
         console.log(currentEl.id)
+        this.currentEl_Id = currentEl.id;
+
+        const element = document.getElementsByClassName('b-content-wrapper')[0];
+
+        const tables = this.getTablesInElement(element);
+
+        // предидущий ИД !
+        const table = tables[this.tablesIds - 1];
+
+        const tableId = table.id;
+
+        this.result = this.getRowColTable(currentEl.id, this.rowTablesModel[tableId]);
+
+        setTimeout(() => m.redraw(), 0);
     }
+
+
+    getRowColTable = (id, model) => {
+        let r = -1,
+            c = -1,
+            success = false,
+            el;
+
+        for (let row = 0; row < model.length; row++) {
+            // let c = model[row].find(el => el.cellId == id)
+            el = model[row];
+            for (let col = 0; col < el.length; col++) {
+                if (el[col].cellId == id) {
+                    c = col;
+                    break;
+                }
+            }
+
+            if (c != -1) {
+                r = row;
+                success = true;
+                break;
+            }
+        }
+
+        return {r , c, success};
+    };
 
     rebindTables = (element) => {
         var tables = this.getTablesInElement(element),
