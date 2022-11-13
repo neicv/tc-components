@@ -5,7 +5,11 @@ import excelCPDemoContent from './data/excelCPDemoContent';
 class ExcelCPDoc {
     oninit() {
         this.showModal = false
-        this.currentEl_Id = '';
+        this.currentEl  = {
+            id: '',
+            rowSpan: 0,
+            colSpan: 0
+        };
         this.result = {
             r: -1,
             c: -1
@@ -39,7 +43,9 @@ class ExcelCPDoc {
                 </p>
                 <p>
                     <span>Col_ID: </span>
-                    <span>{this.currentEl_Id}</span>
+                    <span>id: {this.currentEl.id}</span>
+                    <span> colSpan: {this.currentEl.rowSpan}</span>
+                    <span> rowSpan: {this.currentEl.colSpan}</span>
                 </p>
                 <p>
                     <span>Coords: </span>
@@ -68,7 +74,12 @@ class ExcelCPDoc {
         var currentEl = e.target;
 
         console.log(currentEl.id)
-        this.currentEl_Id = currentEl.id;
+        this.currentEl = {
+            id: currentEl.id,
+            rowSpan: currentEl.rowSpan,
+            // colSpan: currentEl.hasOwnProperty('colSpan') ? currentEl.colSpan : 0
+            colSpan: currentEl.colSpan
+        }
 
         const element = document.getElementsByClassName('b-content-wrapper')[0];
 
@@ -80,6 +91,14 @@ class ExcelCPDoc {
         const tableId = table.id;
 
         this.result = this.getRowColTable(currentEl.id, this.rowTablesModel[tableId]);
+
+        let AreaLen = 3;
+
+        var model = this.rowTablesModel[tableId];
+
+        var at = this.checkTopSide(AreaLen, model, this.result);
+
+        console.log('allow top: ', at)
 
         setTimeout(() => m.redraw(), 0);
     }
@@ -110,6 +129,32 @@ class ExcelCPDoc {
 
         return {r , c, success};
     };
+
+    checkTopSide(len, model, element) {
+        // входная длин в ячейках (реальных - колспан например 2 - это 2 ячейки)
+        var res = true;
+        // Длина существующей таблицы в ячейках
+        var rowLen = model[0].length;
+
+        if (len === 0 /*|| ограничение по длине*/ ) return false;
+
+        // влезет по длине?
+        if (len > (rowLen - element.c)) return false;
+
+        // проверка верх - линия
+        if (element.r === 0) return true; // проверка по самой верхней - удачна)
+
+        for (var i = 0; i < len; i++) {
+            console.log('cur ', model[element.r][element.c + i].cellId, 'up ', model[element.r - 1][element.c + i].cellId, 'i ', i)
+            if (model[element.r][element.c + i].cellId === model[element.r - 1][element.c + i].cellId) {
+                // нашли что есть мешаюший спан сверху
+                res = false;
+                break;
+            }
+        }
+
+        return res;
+    }
 
     rebindTables = (element) => {
         var tables = this.getTablesInElement(element),
