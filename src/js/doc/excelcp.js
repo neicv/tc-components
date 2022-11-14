@@ -92,13 +92,14 @@ class ExcelCPDoc {
 
         this.result = this.getRowColTable(currentEl.id, this.rowTablesModel[tableId]);
 
-        let AreaLen = 3;
+        let areaLen = 5;
+        let areaHight = 4;
 
         var model = this.rowTablesModel[tableId];
 
-        var at = this.checkTopSide(AreaLen, model, this.result);
+        var at = this.checkTopAndBottomSide(areaLen, areaHight, model, this.result);
 
-        console.log('allow top: ', at)
+        console.log('Allow Paste: ', at)
 
         setTimeout(() => m.redraw(), 0);
     }
@@ -130,26 +131,70 @@ class ExcelCPDoc {
         return {r , c, success};
     };
 
-    checkTopSide(len, model, element) {
+    checkTopAndBottomSide(width, height, model, element) {
+        if (width === 0 || height === 0) return false;
         // входная длин в ячейках (реальных - колспан например 2 - это 2 ячейки)
         var res = true;
         // Длина существующей таблицы в ячейках
-        var rowLen = model[0].length;
+        var rowWidth = model[0].length;
+        // Высота существующей таблицы в строках
+        var tableHeight = model.length;
 
-        if (len === 0 /*|| ограничение по длине*/ ) return false;
+        if (width === 0 /*|| ограничение по длине*/ ) return false;
 
         // влезет по длине?
-        if (len > (rowLen - element.c)) return false;
+        // if (width > (rowWidth /*вместо rowWidth = ограничение по длине*/ - element.c)) return false;
 
-        // проверка верх - линия
-        if (element.r === 0) return true; // проверка по самой верхней - удачна)
+        // if (element.r + height > Максимальная высота таблицы вместо) return false // не влезет
 
-        for (var i = 0; i < len; i++) {
-            console.log('cur ', model[element.r][element.c + i].cellId, 'up ', model[element.r - 1][element.c + i].cellId, 'i ', i)
-            if (model[element.r][element.c + i].cellId === model[element.r - 1][element.c + i].cellId) {
+        var isCheckBottom = (tableHeight - element.r) > height // учесть ограничение по высоте таблицы!!
+
+        var isCheckRight = (rowWidth - element.c) > width // учесть ограничение по ширине таблицы!!!
+
+        console.log('tableHeight ', tableHeight, 'element.r ', element.r, 'height ', height, 'isCheckBottom ', isCheckBottom)
+        console.log('rowWidth ', rowWidth, 'element.c ', element.c, 'width ', width, 'isCheckRight ', isCheckRight)
+
+        for (var i = 0; i < width; i++) {
+            if ((element.c + i) >= rowWidth) break;
+            // console.log('cur ', model[element.r][element.c + i].cellId, 'up ', model[element.r - 1][element.c + i].cellId, 'i ', i)
+            // проверка верх - линия
+            if (element.r !== 0 && (model[element.r][element.c + i].cellId === model[element.r - 1][element.c + i].cellId)) {
                 // нашли что есть мешаюший спан сверху
                 res = false;
+                console.log('fail top')
                 break;
+            }
+            // проверка низ - линия
+
+            // isCheckBottom && console.log('cur ', model[element.r + height - 1][element.c + i].cellId, 'down ', model[element.r  + height][element.c + i].cellId, 'i ', i)
+            if (isCheckBottom && (model[element.r + height - 1][element.c + i].cellId === model[element.r + height][element.c + i].cellId)) {
+                // нашли что есть мешаюший спан снизу
+                res = false;
+                console.log('fail bottom')
+                break;
+            }
+        }
+        // left and right
+        if (res) {
+            for (var i = 0; i < height; i++) {
+                if ((element.r + i)  >= tableHeight) break;
+
+                // проверка left - столбец
+                if (element.c !== 0 && (model[element.r + i][element.c - 1].cellId === model[element.r + i][element.c].cellId)) {
+                    // нашли что есть мешаюший спан слева
+                    res = false;
+                    console.log('fail left')
+                    break;
+                }
+
+                // проверка спарва - линия
+                // isCheckRight && console.log('cur ', model[element.r + i][element.c + width - 1].cellId, 'right ', model[element.r + i][element.c + width].cellId, 'i ', i)
+                if (isCheckRight && (model[element.r + i][element.c + width - 1].cellId === model[element.r + i][element.c + width ].cellId)) {
+                    // нашли что есть мешаюший спан снизу
+                    res = false;
+                    console.log('fail right')
+                    break;
+                }
             }
         }
 
