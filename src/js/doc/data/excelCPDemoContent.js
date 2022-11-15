@@ -47,4 +47,23 @@ export const excelCPDemoContent =`<p>
 </table>
 </p>`
 
+export const pasteTable =
+`<table border=0 cellpadding=0 cellspacing=0 width=192 style='border-collapse:
+collapse;width:144pt'>
+<!--StartFragment-->
+<col width=64 span=3 style='width:48pt'>
+<tr height=20 style='height:15.0pt'>
+ <td height=20 class=xl65 align=right width=64 style='height:15.0pt;
+ width:48pt'>11</td>
+ <td class=xl65 align=right width=64 style='border-left:none;width:48pt'>12</td>
+ <td class=xl65 align=right width=64 style='border-left:none;width:48pt'>13</td>
+</tr>
+<tr height=20 style='height:15.0pt'>
+ <td height=20 class=xl65 align=right style='height:15.0pt;border-top:none'>21</td>
+ <td class=xl65 align=right style='border-top:none;border-left:none'>22</td>
+ <td class=xl65 align=right style='border-top:none;border-left:none'>23</td>
+</tr>
+<!--EndFragment-->
+</table>`
+
 export default excelCPDemoContent;

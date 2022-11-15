@@ -1,6 +1,6 @@
 import m from 'mithril';
 // import EditList from '@/components/EditList';
-import excelCPDemoContent from './data/excelCPDemoContent';
+import { excelCPDemoContent, pasteTable } from './data/excelCPDemoContent';
 
 class ExcelCPDoc {
     oninit() {
@@ -58,6 +58,7 @@ class ExcelCPDoc {
                         </Otherwise>
                     </Choose>
                 </p>
+                <p id='paste_table'></p>
             </div>
         )
     }
@@ -67,6 +68,15 @@ class ExcelCPDoc {
 
         if (cnt) {
             cnt.innerHTML = excelCPDemoContent;
+        }
+
+        const pasteContent = document.getElementById('paste_table');
+
+        if (pasteContent) {
+            const el = document.createElement('table');
+            el.innerHTML = pasteTable;
+
+            pasteContent.appendChild(el);
         }
     }
 
@@ -83,6 +93,8 @@ class ExcelCPDoc {
 
         const element = document.getElementsByClassName('b-content-wrapper')[0];
 
+        const pasteContent = document.getElementById('paste_table').firstChild;
+
         const tables = this.getTablesInElement(element);
 
         // предидущий ИД !
@@ -92,14 +104,21 @@ class ExcelCPDoc {
 
         this.result = this.getRowColTable(currentEl.id, this.rowTablesModel[tableId]);
 
-        let areaLen = 5;
-        let areaHight = 4;
+        let areaLen = pasteContent.rows[0].cells.length //3;
+        let areaHight = pasteContent.rows.length //2;
 
         var model = this.rowTablesModel[tableId];
 
-        var at = this.checkTopAndBottomSide(areaLen, areaHight, model, this.result);
+        var alowPaste = this.isCanInsertTable(areaLen, areaHight, model, this.result);
 
-        console.log('Allow Paste: ', at)
+        console.log('Allow Paste: ', alowPaste)
+
+        if (alowPaste) {
+            var dimm = this.getDeleteRegionTable(areaLen, areaHight, model, this.result, table);
+            console.log('Left DIMM Array: ', dimm.l, 'Delete model ', dimm.d);
+
+            this.deleteRegionTable(dimm.d, this.result, table);
+        }
 
         setTimeout(() => m.redraw(), 0);
     }
@@ -131,7 +150,7 @@ class ExcelCPDoc {
         return {r , c, success};
     };
 
-    checkTopAndBottomSide(width, height, model, element) {
+    isCanInsertTable(width, height, model, element) {
         if (width === 0 || height === 0) return false;
         // входная длин в ячейках (реальных - колспан например 2 - это 2 ячейки)
         var res = true;
@@ -199,6 +218,91 @@ class ExcelCPDoc {
         }
 
         return res;
+    }
+
+    getDeleteRegionTable(width, height, model, element, table) {
+        var delModel = [],
+            leftSideModel = [];
+
+        if (width === 0 || height === 0) return { d: [], l: [] };
+
+        // Длина существующей таблицы в ячейках
+        var rowWidth = model[0].length;
+        // Высота существующей таблицы в строках
+        var tableHeight = model.length;
+
+        width = width > rowWidth ? rowWidth : width;
+        height = height > tableHeight ? tableHeight : height;
+
+
+
+        for (var y = 0; y < height; y++) {
+            if ((element.r + y)  >= tableHeight) break;
+
+            var rowArr = [];
+            for (var x = 0; x < width; x++) {
+                if ((element.c + x) >= rowWidth) break;
+
+                var cellId = model[element.r + y][element.c + x].cellId
+                if (rowArr.length && rowArr[rowArr.length - 1] === cellId) continue;
+
+                rowArr.push(cellId);
+
+
+            }
+
+            delModel.push(rowArr);
+
+            if (element.c > 0) {
+                var row = table.rows[element.r + y];
+                var colsIds = [];
+
+                // row.cells.forEach( el => {
+                //     colsIds.push(el.id)
+                // })
+
+                for (var z = 0; z < row.cells.length; z ++) {
+                    colsIds.push(row.cells[z].id);
+                }
+
+                for (var i = 0; i < element.c; i++) {
+                    var cellId = model[element.r + y][element.c - i - 1].cellId;
+                    if (colsIds.includes(cellId)) {
+                        leftSideModel.push(cellId);
+                        break;
+                    }
+                }
+            }
+
+            if (element.c === 0 || leftSideModel.length == 0) {
+                leftSideModel.push(null);
+            }
+        }
+
+        return {
+            d: delModel,
+            l: leftSideModel
+        }
+    }
+
+    deleteRegionTable(deleteModel, element, table) {
+        var el = null;
+
+        for (var y = 0; y < deleteModel.length; y++) {
+            var rowModel = deleteModel[y];
+            var row = table.rows[element.r + y];
+
+            for (var x = 0; x < rowModel.length; x++) {
+                el = document.getElementById(rowModel[x]);
+                if (el) {
+                    row.removeChild(el);
+                }
+            }
+        }
+    }
+
+    insertAfter(newNode, referenceNode) {
+        referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
     }
 
     rebindTables = (element) => {
