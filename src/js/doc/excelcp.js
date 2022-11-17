@@ -2,9 +2,24 @@ import m from 'mithril';
 // import EditList from '@/components/EditList';
 import { excelCPDemoContent, pasteTable } from './data/excelCPDemoContent';
 
+const consts = {};
+consts.BORDER_HIDDEN_CLASS = {
+    TOP   : "hide-top-border",
+    BOTTOM: "hide-bottom-border",
+    LEFT  : "hide-left-border",
+    RIGHT : "hide-right-border"
+};
+
+consts.BORDER_BOTTOM = "BOTTOM";
+consts.BORDER_TOP    = "TOP";
+consts.BORDER_LEFT   = "LEFT";
+consts.BORDER_RIGHT  = "RIGHT";
+
 class ExcelCPDoc {
     oninit() {
         this.showModal = false
+
+        this.pasteTable = null;
         this.currentEl  = {
             id: '',
             rowSpan: 0,
@@ -67,16 +82,20 @@ class ExcelCPDoc {
         const cnt = document.getElementsByClassName('b-content-wrapper')[0];
 
         if (cnt) {
-            cnt.innerHTML = excelCPDemoContent;
+            cnt.innerHTML = excelCPDemoContent.replace(/>&nbsp;</g, '><');
         }
 
         const pasteContent = document.getElementById('paste_table');
 
         if (pasteContent) {
-            const el = document.createElement('table');
-            el.innerHTML = pasteTable;
+            // const el = document.createElement('table');
+            // el.innerHTML = pasteTable;
 
-            pasteContent.appendChild(el);
+            // this.pasteTable = el;
+
+            // pasteContent.appendChild(el);
+            pasteContent.insertAdjacentHTML('afterbegin', pasteTable)
+            this.pasteTable = pasteContent.firstChild;
         }
     }
 
@@ -93,19 +112,20 @@ class ExcelCPDoc {
 
         const element = document.getElementsByClassName('b-content-wrapper')[0];
 
-        const pasteContent = document.getElementById('paste_table').firstChild;
+        // const pasteContent = document.getElementById('paste_table').firstChild;
 
         const tables = this.getTablesInElement(element);
 
-        // предидущий ИД !
-        const table = tables[this.tablesIds - 1];
+        // предидущий ИД ! УЧЕСТЬ ЛОГИКУ Оригинального таблеса!!!
+        // const table = tables[this.tablesIds - 1];
+        const table = tables[0];
 
         const tableId = table.id;
 
         this.result = this.getRowColTable(currentEl.id, this.rowTablesModel[tableId]);
 
-        let areaLen = pasteContent.rows[0].cells.length //3;
-        let areaHight = pasteContent.rows.length //2;
+        let areaLen = this.pasteTable.rows[0].cells.length //3;
+        let areaHight = this.pasteTable.rows.length //2;
 
         var model = this.rowTablesModel[tableId];
 
@@ -118,6 +138,16 @@ class ExcelCPDoc {
             console.log('Left DIMM Array: ', dimm.l, 'Delete model ', dimm.d);
 
             this.deleteRegionTable(dimm.d, this.result, table);
+            this.insertTable(dimm.l, this.result, table, this.pasteTable);
+
+            this.rebindTables(element);
+            this.removeCustomStyles(element);
+
+            if (this.LIBsearchAndUnionNeighboringTables(element)) {
+                this.rebindTables(element);
+            }
+        } else {
+            alert('Мы не можем это сделать в объединённой ячейке')
         }
 
         setTimeout(() => m.redraw(), 0);
@@ -257,10 +287,6 @@ class ExcelCPDoc {
                 var row = table.rows[element.r + y];
                 var colsIds = [];
 
-                // row.cells.forEach( el => {
-                //     colsIds.push(el.id)
-                // })
-
                 for (var z = 0; z < row.cells.length; z ++) {
                     colsIds.push(row.cells[z].id);
                 }
@@ -283,7 +309,7 @@ class ExcelCPDoc {
             d: delModel,
             l: leftSideModel
         }
-    }
+    };
 
     deleteRegionTable(deleteModel, element, table) {
         var el = null;
@@ -299,7 +325,42 @@ class ExcelCPDoc {
                 }
             }
         }
-    }
+    };
+
+    insertTable(leftsideModel, element, curTable, pasteTable) {
+        var el = null,
+            cell, curRow, pasteRow;
+
+        if (!curTable) return;
+
+        for (var y = 0; y < leftsideModel.length; y++) {
+            // curRow ... если надо переделать в cells mode
+            curRow = curTable.rows[element.r + y];
+            pasteRow = pasteTable.rows[y];
+            el = document.getElementById(leftsideModel[y]);
+
+            if (el) {
+                for (var x = pasteRow.cells.length - 1; x >= 0; x--) {
+                    cell = document.createElement('td');
+                    cell.innerHTML = pasteRow.cells[x].innerHTML;
+                    // cell.style.width = pasteRow.cells[x].style.width;
+                    this.insertAfter(cell, el);
+                    // this.cloneAttributes(pasteRow.cells[x], cell);
+                    this.setBorder(pasteRow.cells[x], cell)
+                }
+            } else {
+                for (var x = pasteRow.cells.length - 1; x >= 0; x--) {
+                    cell = curRow.insertCell(0);
+                    cell.innerHTML = pasteRow.cells[x].innerHTML;
+
+                    this.setBorder(pasteRow.cells[x], cell)
+                    // Если копируем атрибуты и стиль
+                    // cell.style.width = pasteRow.cells[x].style.width;
+                    // this.cloneAttributes(pasteRow.cells[x], cell);
+                }
+            }
+        }
+    };
 
     insertAfter(newNode, referenceNode) {
         referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
@@ -314,18 +375,104 @@ class ExcelCPDoc {
             table = tables[t];
 
             this.fixWarningTable(table);
-            this.addColTagForTable(table);
+            this.addColTagForTable(table, false);
             this.fixCountColOfTable(table);
             this.setIdForTable(table);
             this.getTableModel.call(this, table);
             // helpers.setBrForEmptyCell(table);
+            this.LIBsetCoordinates(table, this.tablesModel[table.id]);
+
+            this.setBalanceCells(table);
+
+            // UPDATE Model
+            this.fixWarningTable(table);
+            this.addColTagForTable(table, false);
+            this.fixCountColOfTable(table);
+            this.setIdForTable(table);
+            this.getTableModel.call(this, table);
+            // helpers.setBrForEmptyCell(table);
+            this.LIBsetCoordinates(table, this.tablesModel[table.id]);
+
+            this.fixColSpanAndRowSpan(table);
+
             // helpers.removeTableListeners.call(this, table);
             // helpers.applyTableListeners.call(this, table);
+
             console.log(table);
         }
     };
 
+    fixColSpanAndRowSpan = function(table) {
+        var row, cel;
+        for (var r = 0; r < table.rows.length; r++) {
+            row = table.rows[r];
+            for (var c = 0; c < row.cells.length; c++) {
+                cel = row.cells[c];
+
+                cel.rowSpan = cel.rowSpan ? cel.rowSpan : 1;
+                cel.colSpan = cel.colSpan || 1;
+            }
+        }
+    }
+
+    setBorder(from, to) {
+        if (from.style.borderLeft === 'none') {
+            to.classList.add(consts.BORDER_HIDDEN_CLASS[consts.BORDER_LEFT]);
+        }
+
+        if (from.style.borderRight === 'none') {
+            to.classList.add(consts.BORDER_HIDDEN_CLASS[consts.BORDER_RIGHT]);
+        }
+
+        if (from.style.borderTop === 'none') {
+            to.classList.add(consts.BORDER_HIDDEN_CLASS[consts.BORDER_TOP]);
+        }
+
+        if (from.style.borderBottom === 'none') {
+            to.classList.add(consts.BORDER_HIDDEN_CLASS[consts.BORDER_BOTTOM]);
+        }
+    }
+
     // FROM TABLES.JS
+    removeCustomStyles = function(element) {
+        var styles = element.querySelectorAll('style'),
+            sLen   = styles.length,
+            s, style;
+
+        for (s = 0; s < sLen; s++) {
+            style = styles[s];
+            style.parentNode.removeChild(style);
+        }
+    };
+
+    setBrForEmptyCell = function(table) {
+        var emptyTDs = table.querySelectorAll("td:empty"),
+            emptyTHs = table.querySelectorAll("th:empty"),
+            index, cell;
+
+        for (index = 0; index < emptyTDs.length; index++) {
+            cell = emptyTDs[index];
+
+            cell.appendChild(document.createElement("br"));
+        }
+
+        for (index = 0; index < emptyTHs.length; index++) {
+            cell = emptyTHs[index];
+
+            cell.appendChild(document.createElement("br"));
+        }
+    };
+
+    cloneAttributes = function(sourceElement, toElement) {
+        var attributes = Array.prototype.slice.call(sourceElement.attributes),
+            attr       = attributes.pop();
+
+        while (attr) {
+            toElement.setAttribute(attr.nodeName, attr.nodeValue);
+            attr = attributes.pop();
+        }
+    }
+
     getTablesInElement = function(element) {
         var allTables = element.querySelectorAll('table'),
             tables    = [],
@@ -418,14 +565,14 @@ class ExcelCPDoc {
                         columnGroup.appendChild(column);
                     }
                 } else {
-                    tableWidth  = parseInt(helpers.getAllWidthCellsInRow(table));
+                    tableWidth  = parseInt(this.getAllWidthCellsInRow(table));
                     widthColumn = 0;
 
                     for (index = 0; index < cols.length; index++) {
-                        column             = d.createElement("col");
+                        column             = document.createElement("col");
                         column.style.width = cols[index].style.width;
 
-                        helpers.cloneAttributes(cols[index], column);
+                        this.cloneAttributes(cols[index], column);
 
                         widthColumn += parseInt(column.style.width);
                         columnGroup.appendChild(column);
@@ -435,9 +582,9 @@ class ExcelCPDoc {
                         columnGroup = d.createElement("colgroup");
                         cells       = table.querySelectorAll(":scope > tbody > tr:nth-child(1) td");
                         for (index = 0; index < cells.length; index++) {
-                            column             = d.createElement("col");
+                            column             = document.createElement("col");
                             cell               = cells[index];
-                            computedStyle      = d.defaultView.getComputedStyle(cell);
+                            computedStyle      = document.defaultView.getComputedStyle(cell);
                             column.style.width = (parseInt(computedStyle.width) / parseInt(tableWidth) * 100).toFixed(1) + "%";
                             columnGroup.appendChild(column);
                         }
@@ -599,6 +746,67 @@ class ExcelCPDoc {
         return tableModel;
     };
 
+    getAllWidthCellsInRow = function(table) {
+        var allWidth = 0,
+            cells    = table.querySelectorAll(":scope > tbody > tr:nth-child(1) td"),
+            index, cell;
+
+        for (index = 0; index < cells.length; index++) {
+            cell = cells[index];
+            allWidth += parseFloat(document.defaultView.getComputedStyle(cell).width);
+        }
+
+        return allWidth.toFixed(1);
+    };
+
+    setBalanceCells = function(element) {
+        var table      = element,
+            cellsModel = this.tablesModel[table.id].cells,
+            emptyRows, index, index2, row, cell, minRowSpan, nearCellId;
+
+        emptyRows = table.querySelectorAll(":scope > tbody > tr:empty");
+
+        for (index = 0; index < emptyRows.length; index++) {
+            row = emptyRows[index];
+
+            if (row.cells.length === 0) {
+                row.parentNode.removeChild(row);
+            }
+        }
+
+        for (index = 0; index < table.rows.length; index++) {
+            row        = table.rows[index];
+            minRowSpan = row.cells[0].rowSpan;
+
+            for (index2 = 0; index2 < row.cells.length; index2++) {
+                cell = row.cells[index2];
+
+                if (minRowSpan > cell.rowSpan) {
+                    minRowSpan = cell.rowSpan;
+                }
+            }
+
+            if ((minRowSpan - 1) > 0 && emptyRows.length > 0) {
+                cell = row.cells[0];
+
+                while (cell) {
+                    cell.rowSpan = cell.rowSpan - (minRowSpan - 1);
+                    nearCellId   = cellsModel[cell.id].next[0];
+                    cell         = nearCellId ? table.querySelector("#" + nearCellId) : null;
+                }
+
+                nearCellId = cellsModel[row.cells[0].id].prev[0];
+                cell       = nearCellId ? table.querySelector("#" + nearCellId) : null;
+
+                while (cell) {
+                    cell.rowSpan = cell.rowSpan - (minRowSpan - 1);
+                    nearCellId   = cellsModel[cell.id].prev[0];
+                    cell         = nearCellId ? table.querySelector("#" + nearCellId) : null;
+                }
+            }
+        }
+    };
+
     // From LIB TABLE UTILS
     LIBsetIdForTable = (table, tableId) => {
         const cols  = [].map.call(table.querySelectorAll(":scope > colgroup > col"), item => item);
@@ -724,6 +932,48 @@ class ExcelCPDoc {
 
         return output;
     };
+
+    LIBsearchAndUnionNeighboringTables = itemElement => {
+        const nextTables = itemElement.querySelectorAll("table + table");
+
+        let isUnion = false;
+
+        [].forEach.call(nextTables, table => {
+            const previousTable = table.previousElementSibling;
+
+            if (previousTable && previousTable.nodeName === "TABLE") {
+                const countCols     = table.querySelectorAll(":scope > colgroup > col").length;
+                const countPrevCols = previousTable.querySelectorAll(":scope > colgroup > col").length;
+
+                if (countCols === countPrevCols) {
+                    [].forEach.call(table.rows, row => {
+                        const newRow = previousTable.insertRow();
+
+                        newRow.innerHTML = row.innerHTML;
+                    });
+
+                    table.parentNode.removeChild(table);
+
+                    isUnion = true;
+                }
+            }
+        });
+
+        return isUnion;
+    };
+
+    LIBsetCoordinates = (table, model) => {
+        [].forEach.call(table.rows, row => {
+            [].forEach.call(row.cells, cell => {
+                const modelCell     = model.cells[cell.id];
+                const coordinateCol = `C${modelCell.leftIndexCol}`;
+                const coordinateRow = `R${modelCell.topIndexRow}`;
+
+                cell.setAttribute("data-coordinateCol", coordinateCol);
+                cell.setAttribute("data-coordinateRow", coordinateRow);
+            });
+        });
+    }
 
 }
 
